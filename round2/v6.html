@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — Elevate Your Team's Performance</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface-light: #18182a;
+      --border: #252536;
+      --text: #eaeaf0;
+      --text-secondary: #8888a0;
+      --text-tertiary: #555568;
+      --green: #22d97f;
+      --green-dim: #1aaf66;
+      --blue: #38bdf8;
+      --blue-dim: #2596cc;
+      --cyan: #06b6d4;
+      --gradient-sport: linear-gradient(90deg, #22d97f, #38bdf8, #22d97f);
+      --gradient-accent: linear-gradient(135deg, #22d97f, #38bdf8);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- Animated Gradient Text ---- */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .gradient-text {
+      background: var(--gradient-sport);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 5s ease infinite;
+    }
+
+    /* ---- Shimmer Button ---- */
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .shimmer-btn {
+      display: inline-block;
+      padding: 14px 36px;
+      background: var(--gradient-accent);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 80%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      animation: shimmer 2.5s ease-in-out infinite;
+    }
+
+    .shimmer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(34, 217, 127, 0.25);
+    }
+
+    .shimmer-btn-outline {
+      display: inline-block;
+      padding: 14px 36px;
+      background: transparent;
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .shimmer-btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+      transform: translateY(-2px);
+    }
+
+    /* ---- Nav ---- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+    }
+
+    .logo-mark {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-left: 2px;
+      vertical-align: super;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+
+    .nav-cta {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--bg);
+      background: var(--gradient-accent);
+      padding: 8px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(34, 217, 127, 0.3);
+    }
+
+    /* ---- Hero ---- */
+    .hero {
+      padding: 100px 48px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-bg-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .hero-bg-line::before {
+      content: '';
+      position: absolute;
+      top: 40%;
+      left: -10%;
+      width: 120%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
+      opacity: 0.15;
+      transform: rotate(-5deg);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding: 6px 14px;
+      border: 1px solid rgba(34, 217, 127, 0.25);
+      border-radius: 4px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.08;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 .sub-line {
+      text-transform: none;
+      font-weight: 400;
+      font-size: 0.5em;
+      letter-spacing: -0.5px;
+      display: block;
+      margin-top: 8px;
+      -webkit-text-fill-color: initial;
+      color: var(--text-secondary);
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 440px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ---- Hero Alert Mock ---- */
+    .hero-mock {
+      position: relative;
+      z-index: 1;
+    }
+
+    .mock-phone {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      max-width: 320px;
+      margin-left: auto;
+    }
+
+    .mock-phone-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mock-phone-header span {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .mock-phone-header .app-name {
+      font-weight: 700;
+      color: var(--green);
+      font-size: 13px;
+    }
+
+    .alert-notification {
+      background: var(--surface-light);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .alert-notification:hover {
+      background: rgba(34, 217, 127, 0.05);
+    }
+
+    .alert-notification.red { border-left-color: #ef4444; }
+    .alert-notification.yellow { border-left-color: #f59e0b; }
+    .alert-notification.green { border-left-color: var(--green); }
+
+    .alert-notification .alert-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .alert-notification .alert-body {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .alert-notification .alert-time {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+    }
+
+    /* ---- Angled Divider ---- */
+    .angle-divider {
+      height: 60px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .angle-divider::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -5%;
+      width: 110%;
+      height: 100%;
+      background: var(--surface);
+      clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .angle-divider-reverse {
+      height: 60px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .angle-divider-reverse::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -5%;
+      width: 110%;
+      height: 100%;
+      background: var(--bg);
+      clip-path: polygon(0 40%, 100% 0, 100% 100%, 0 100%);
+    }
+
+    /* ---- Product ---- */
+    .product {
+      background: var(--surface);
+      padding: 60px 48px 80px;
+      text-align: center;
+    }
+
+    .product h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .product p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ---- Bento Grid Features ---- */
+    .features {
+      padding: 80px 48px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 16px;
+    }
+
+    .bento-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      transition: all 0.3s ease;
+    }
+
+    .bento-item:hover {
+      border-color: #353548;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .bento-item.span-2 {
+      grid-column: span 2;
+    }
+
+    .bento-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .bento-icon.green { background: rgba(34, 217, 127, 0.1); color: var(--green); }
+    .bento-icon.blue { background: rgba(56, 189, 248, 0.1); color: var(--blue); }
+    .bento-icon.cyan { background: rgba(6, 182, 212, 0.1); color: var(--cyan); }
+
+    .bento-item h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .bento-item p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ---- Stat strip inside bento ---- */
+    .bento-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .bento-stat {
+      text-align: center;
+    }
+
+    .bento-stat .bento-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .bento-stat .bento-stat-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---- How It Works ---- */
+    .how-it-works {
+      background: var(--surface);
+      padding: 80px 48px;
+    }
+
+    .how-it-works-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .how-it-works h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 60px;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 15%;
+      width: 70%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--green), var(--blue));
+      opacity: 0.2;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 18px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step:nth-child(1) .step-num {
+      background: rgba(34, 217, 127, 0.12);
+      color: var(--green);
+      border: 2px solid rgba(34, 217, 127, 0.3);
+    }
+
+    .step:nth-child(2) .step-num {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--blue);
+      border: 2px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .step:nth-child(3) .step-num {
+      background: rgba(6, 182, 212, 0.12);
+      color: var(--cyan);
+      border: 2px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .step h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 260px;
+      margin: 0 auto;
+    }
+
+    /* ---- Dashboard Mock ---- */
+    .dashboard-section {
+      padding: 80px 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .dashboard-section h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .dash-mock {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .dash-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dash-topbar h3 {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dash-topbar .live-badge {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .dash-body {
+      padding: 24px;
+    }
+
+    .dash-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .dash-stat {
+      background: var(--surface-light);
+      border-radius: 10px;
+      padding: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .dash-stat:hover {
+      background: rgba(34, 217, 127, 0.06);
+      border: 1px solid rgba(34, 217, 127, 0.15);
+      margin: -1px;
+    }
+
+    .dash-stat .ds-label {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dash-stat .ds-value {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .dash-stat:nth-child(1) .ds-value { color: var(--green); }
+    .dash-stat:nth-child(2) .ds-value { color: var(--blue); }
+    .dash-stat:nth-child(3) .ds-value { color: #f59e0b; }
+    .dash-stat:nth-child(4) .ds-value { color: var(--text); }
+
+    .dash-chart-area {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 100px;
+      padding: 0 4px;
+    }
+
+    .dcb {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+
+    .dcb:hover { opacity: 0.7; }
+
+    .dcb:nth-child(1) { height: 50%; background: var(--gradient-accent); }
+    .dcb:nth-child(2) { height: 65%; background: var(--gradient-accent); }
+    .dcb:nth-child(3) { height: 40%; background: var(--gradient-accent); }
+    .dcb:nth-child(4) { height: 80%; background: var(--gradient-accent); }
+    .dcb:nth-child(5) { height: 55%; background: rgba(245, 158, 11, 0.4); }
+    .dcb:nth-child(6) { height: 90%; background: var(--gradient-accent); }
+    .dcb:nth-child(7) { height: 45%; background: rgba(245, 158, 11, 0.4); }
+    .dcb:nth-child(8) { height: 75%; background: var(--gradient-accent); }
+    .dcb:nth-child(9) { height: 95%; background: var(--gradient-accent); }
+    .dcb:nth-child(10) { height: 60%; background: var(--gradient-accent); }
+    .dcb:nth-child(11) { height: 85%; background: var(--gradient-accent); }
+    .dcb:nth-child(12) { height: 70%; background: var(--gradient-accent); }
+    .dcb:nth-child(13) { height: 50%; background: rgba(245, 158, 11, 0.4); }
+    .dcb:nth-child(14) { height: 88%; background: var(--gradient-accent); }
+
+    /* ---- Testimonials ---- */
+    .testimonials {
+      background: var(--surface);
+      padding: 80px 48px;
+    }
+
+    .testimonials-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .testimonials h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .testimonial-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      border-color: #353548;
+      transform: translateY(-4px);
+    }
+
+    .testimonial-card blockquote {
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      font-style: normal;
+    }
+
+    .testimonial-card .tc-author {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .testimonial-card .tc-role {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* ---- Final CTA ---- */
+    .final-cta {
+      text-align: center;
+      padding: 100px 48px;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .final-cta-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(34, 217, 127, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .final-cta h2 {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    .final-cta p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    .final-cta-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      text-align: center;
+      padding: 32px 48px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 60px 24px 50px;
+        gap: 40px;
+      }
+      .hero h1 { font-size: 32px; letter-spacing: -1px; }
+      .mock-phone { margin: 0 auto; }
+      .product { padding: 40px 24px 60px; }
+      .features { padding: 60px 24px; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-item.span-2 { grid-column: span 1; }
+      .how-it-works { padding: 60px 24px; }
+      .steps { grid-template-columns: 1fr; gap: 24px; }
+      .steps::before { display: none; }
+      .dashboard-section { padding: 60px 24px; }
+      .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
+      .testimonials { padding: 60px 24px; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .final-cta { padding: 60px 24px; }
+      .final-cta h2 { font-size: 28px; }
+      .final-cta-buttons { flex-direction: column; align-items: center; }
+      .hero-buttons { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="logo">REFLECT<span class="logo-mark"></span></div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">Process</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">Get Started</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg-line"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Athlete Wellness Platform</div>
+      <h1>
+        <span class="gradient-text">Outperform.<br>Outprepare.</span>
+        <span class="sub-line">Real-time athlete wellness data that keeps your team ready.</span>
+      </h1>
+      <p>Automated post-practice check-ins via SMS. Instant alerts, injury heatmaps, and AI insights -- for coaches managing 15 to 60+ athletes.</p>
+      <div class="hero-buttons">
+        <a href="#cta" class="shimmer-btn">Start Free Trial</a>
+        <a href="#dashboard" class="shimmer-btn-outline">See Dashboard</a>
+      </div>
+    </div>
+
+    <div class="hero-mock">
+      <div class="mock-phone">
+        <div class="mock-phone-header">
+          <span class="app-name">Reflect Alerts</span>
+          <span>Now</span>
+        </div>
+        <div class="alert-notification red">
+          <div class="alert-title">Injury Flag: J. Rivera</div>
+          <div class="alert-body">Reported knee pain (severity 7/10). Third report this week. Recommend evaluation.</div>
+          <div class="alert-time">2 min ago</div>
+        </div>
+        <div class="alert-notification yellow">
+          <div class="alert-title">Readiness Alert: M. Chen</div>
+          <div class="alert-body">Readiness score dropped 2.1 pts over 3 days. Below team baseline.</div>
+          <div class="alert-time">18 min ago</div>
+        </div>
+        <div class="alert-notification green">
+          <div class="alert-title">Check-In Complete</div>
+          <div class="alert-body">42 of 44 athletes responded. Average readiness: 7.8/10.</div>
+          <div class="alert-time">1 hour ago</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Angle Divider -->
+  <div class="angle-divider"></div>
+
+  <!-- Product -->
+  <section class="product">
+    <h2>The always-on assistant coach</h2>
+    <p>Athletes respond to brief SMS or WhatsApp surveys in under 60 seconds. No app downloads, no logins. You get real-time dashboards with trend analysis, injury heatmaps, flag alerts, and AI-powered coaching insights -- data that makes your decisions sharper.</p>
+  </section>
+
+  <!-- Angle Divider Reverse -->
+  <div class="angle-divider-reverse"></div>
+
+  <!-- Bento Features -->
+  <section class="features" id="features">
+    <h2>Built to perform</h2>
+    <div class="bento-grid">
+      <div class="bento-item span-2">
+        <div class="bento-icon green">&#9993;</div>
+        <h3>SMS & WhatsApp Check-Ins</h3>
+        <p>Automated post-practice surveys. Athletes rate readiness, energy, effort, and flag injuries -- in 60 seconds, on the device they already carry. No app needed. No excuses.</p>
+        <div class="bento-stats">
+          <div class="bento-stat">
+            <div class="bento-stat-value">94%</div>
+            <div class="bento-stat-label">Response Rate</div>
+          </div>
+          <div class="bento-stat">
+            <div class="bento-stat-value">60s</div>
+            <div class="bento-stat-label">Avg Completion</div>
+          </div>
+          <div class="bento-stat">
+            <div class="bento-stat-value">0</div>
+            <div class="bento-stat-label">App Downloads</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bento-item">
+        <div class="bento-icon blue">&#9888;</div>
+        <h3>Instant Flag Alerts</h3>
+        <p>Custom thresholds trigger real-time notifications. Low readiness, pain reports, abnormal patterns -- you know immediately.</p>
+      </div>
+
+      <div class="bento-item">
+        <div class="bento-icon cyan">&#9733;</div>
+        <h3>AI Coaching Intelligence</h3>
+        <p>Pattern detection across your entire roster. Flags overtraining signals and injury correlations the human eye would miss.</p>
+      </div>
+
+      <div class="bento-item span-2">
+        <div class="bento-icon green">&#9729;</div>
+        <h3>Wellness Dashboards & Injury Heatmaps</h3>
+        <p>See your entire team's status in one view. Trend lines, readiness scores, workload tracking, and body-mapped injury data. Filter by position, sport, or custom groups. Export reports for athletic directors and medical staff.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <div class="angle-divider"></div>
+  <section class="how-it-works" id="how">
+    <div class="how-it-works-inner">
+      <h2>The Gameplan</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Practice Ends</h3>
+          <p>Reflect auto-sends a brief wellness check-in via SMS or WhatsApp. Scheduled, customizable, hands-off.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Athletes Respond</h3>
+          <p>60 seconds. Readiness, energy, effort, injuries. Works on any phone. No downloads required.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>You Act on Data</h3>
+          <p>Real-time dashboards, AI insights, instant alerts. Catch red flags the same day they appear.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="angle-divider-reverse"></div>
+
+  <!-- Dashboard Mock -->
+  <section class="dashboard-section" id="dashboard">
+    <h2>Command center for your roster</h2>
+    <div class="dash-mock">
+      <div class="dash-topbar">
+        <h3>Team Performance</h3>
+        <div class="live-badge">
+          <span class="live-dot"></span>
+          Live
+        </div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-stats-row">
+          <div class="dash-stat">
+            <div class="ds-label">Response Rate</div>
+            <div class="ds-value">94%</div>
+          </div>
+          <div class="dash-stat">
+            <div class="ds-label">Avg Readiness</div>
+            <div class="ds-value">7.8</div>
+          </div>
+          <div class="dash-stat">
+            <div class="ds-label">Active Flags</div>
+            <div class="ds-value">3</div>
+          </div>
+          <div class="dash-stat">
+            <div class="ds-label">Roster Size</div>
+            <div class="ds-value">44</div>
+          </div>
+        </div>
+        <div class="dash-chart-area">
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+          <div class="dcb"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <div class="angle-divider"></div>
+  <section class="testimonials">
+    <div class="testimonials-inner">
+      <h2>Coaches trust the data</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <blockquote>"We caught a developing hamstring issue across three players in the same position group. Reflect flagged the pattern before any of them would have reported it."</blockquote>
+          <div class="tc-author">Sarah M.</div>
+          <div class="tc-role">Head Athletic Trainer, D1 Soccer</div>
+        </div>
+        <div class="testimonial-card">
+          <blockquote>"Response rate went from 40% on paper forms to 94% in the first week. Athletes actually do it because it takes less than a minute on their phone."</blockquote>
+          <div class="tc-author">Coach James T.</div>
+          <div class="tc-role">Strength & Conditioning, NCAA Basketball</div>
+        </div>
+        <div class="testimonial-card">
+          <blockquote>"The AI noticed a readiness dip before conference games we hadn't connected to our travel schedule. That insight changed how we plan road trips."</blockquote>
+          <div class="tc-author">Dr. Lin K.</div>
+          <div class="tc-role">Sports Science Director, Pro Rugby</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="angle-divider-reverse"></div>
+
+  <!-- Final CTA -->
+  <section class="final-cta" id="cta">
+    <div class="final-cta-glow"></div>
+    <h2><span class="gradient-text">Ready to level up?</span></h2>
+    <p>Free trial. No credit card. Five-minute setup. Start getting the wellness data your athletes deserve and your coaching decisions demand.</p>
+    <div class="final-cta-buttons">
+      <a href="#" class="shimmer-btn">Start Free Trial</a>
+      <a href="#" class="shimmer-btn-outline">Book a Demo</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Reflect. Elevate your team's performance.</p>
+  </footer>
+
+</body>
+</html>

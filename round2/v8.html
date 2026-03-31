@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — The Always-On Assistant Coach</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #111111;
+      --bg-raised: #1a1a1a;
+      --bg-subtle: #222222;
+      --border: rgba(255,255,255,0.08);
+      --text: #f5f5f5;
+      --text-secondary: rgba(255,255,255,0.5);
+      --accent: #d4a054;
+      --accent-light: rgba(212,160,84,0.12);
+      --accent-glow: rgba(212,160,84,0.25);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- Nav ---- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(17,17,17,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .nav-right { display: flex; gap: 36px; align-items: center; }
+    .nav-right a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .nav-right a:hover { color: var(--text); }
+
+    /* ---- Buttons ---- */
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 32px;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      letter-spacing: -0.2px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.25) 50%, transparent 75%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
+    }
+
+    .btn-ghost {
+      display: inline-block;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); }
+
+    /* ---- Hero ---- */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 120px 64px 100px;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -2.5px;
+      margin-bottom: 28px;
+      background: linear-gradient(135deg, #f5f0e8, var(--accent), #e8c88a, #f5f0e8);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-shift 6s ease infinite;
+    }
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero p {
+      font-size: 19px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; }
+
+    /* ---- Product Preview ---- */
+    .product-preview {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 64px 120px;
+    }
+    .preview-frame {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Border beam */
+    .preview-frame::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px;
+      right: -2px; bottom: -2px;
+      border-radius: calc(var(--radius-lg) + 2px);
+      background: conic-gradient(from var(--beam-angle, 0deg), transparent 0%, transparent 75%, var(--accent) 85%, transparent 95%);
+      z-index: -1;
+      animation: beam-rotate 4s linear infinite;
+    }
+    @keyframes beam-rotate {
+      0% { --beam-angle: 0deg; }
+      100% { --beam-angle: 360deg; }
+    }
+    @property --beam-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    .preview-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .preview-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--bg-subtle);
+    }
+    .preview-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .preview-stat {
+      background: var(--bg-subtle);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .preview-stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    .preview-stat-value.warm { color: var(--accent); }
+    .preview-stat-value.green { color: #4ade80; }
+    .preview-stat-value.red { color: #f87171; }
+    .preview-stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+    .preview-bar-row {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 48px;
+    }
+    .preview-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: var(--accent);
+    }
+    .preview-bar:nth-child(1) { height: 55%; opacity: 0.4; }
+    .preview-bar:nth-child(2) { height: 70%; opacity: 0.5; }
+    .preview-bar:nth-child(3) { height: 40%; opacity: 0.35; }
+    .preview-bar:nth-child(4) { height: 85%; opacity: 0.7; }
+    .preview-bar:nth-child(5) { height: 65%; opacity: 0.55; }
+    .preview-bar:nth-child(6) { height: 90%; opacity: 0.85; }
+    .preview-bar:nth-child(7) { height: 100%; opacity: 1; }
+
+    /* ---- Section structure ---- */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 64px;
+    }
+    .section-center { text-align: center; }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section-heading {
+      font-size: 44px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .section-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 460px;
+      line-height: 1.6;
+    }
+    .section-center .section-desc { margin: 0 auto; }
+
+    /* ---- Divider ---- */
+    .divider {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 64px;
+    }
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ---- Value Prop (tight 2-col) ---- */
+    .value-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .value-row .big-number {
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -3px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .value-row .big-unit {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .value-row h3 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .value-row p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ---- Feature Cards ---- */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .feature-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(212,160,84,0.25);
+      transform: translateY(-2px);
+    }
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* ---- How It Works ---- */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+      counter-reset: step-counter;
+    }
+    .step-item {
+      counter-increment: step-counter;
+      text-align: center;
+    }
+    .step-item::before {
+      content: counter(step-counter);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 auto 20px;
+    }
+    .step-item h3 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      margin-bottom: 8px;
+    }
+    .step-item p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ---- Testimonials ---- */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .testimonial-card {
+      background: var(--bg-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+    }
+    .testimonial-card blockquote {
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-style: normal;
+    }
+    .testimonial-author {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .testimonial-role {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ---- Final CTA ---- */
+    .cta-section {
+      text-align: center;
+      padding: 120px 64px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .cta-section .section-heading {
+      font-size: 52px;
+      background: linear-gradient(135deg, #f5f0e8, var(--accent), #e8c88a);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-shift 6s ease infinite;
+      max-width: 640px;
+      margin: 0 auto 20px;
+    }
+    .cta-section .section-desc {
+      margin: 0 auto 48px;
+    }
+
+    /* ---- Footer ---- */
+    footer {
+      padding: 32px 64px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    footer span { font-size: 13px; color: var(--text-secondary); }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 900px) {
+      nav { padding: 16px 32px; }
+      .hero { padding: 80px 32px 60px; }
+      .hero h1 { font-size: 42px; }
+      .product-preview { padding: 0 32px 80px; }
+      .section { padding: 80px 32px; }
+      .value-row { grid-template-columns: 1fr; gap: 48px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 80px 32px; }
+      .cta-section .section-heading { font-size: 38px; }
+      .divider { padding: 0 32px; }
+      .preview-stats { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 34px; letter-spacing: -1.5px; }
+      .hero p { font-size: 16px; }
+      .section-heading { font-size: 32px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .nav-right a:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="logo">Reflect</div>
+    <div class="nav-right">
+      <a href="#features">Features</a>
+      <a href="#how">Process</a>
+      <a href="#" class="btn-primary" style="padding: 10px 24px; font-size: 13px;">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-eyebrow">Athlete Wellness Intelligence</div>
+    <h1>Know your team before they hit the field.</h1>
+    <p>Automated check-ins via SMS. Real-time dashboards. AI-powered insights. The always-on assistant coach.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">Start Free Trial</a>
+      <a href="#how" class="btn-ghost">Learn More</a>
+    </div>
+  </section>
+
+  <!-- Product Preview -->
+  <div class="product-preview">
+    <div class="preview-frame">
+      <div class="preview-topbar">
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+        <div class="preview-dot"></div>
+      </div>
+      <div class="preview-stats">
+        <div class="preview-stat">
+          <div class="preview-stat-value warm">87%</div>
+          <div class="preview-stat-label">Team Readiness</div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-value green">93%</div>
+          <div class="preview-stat-label">Response Rate</div>
+        </div>
+        <div class="preview-stat">
+          <div class="preview-stat-value red">3</div>
+          <div class="preview-stat-label">Active Flags</div>
+        </div>
+      </div>
+      <div class="preview-bar-row">
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+        <div class="preview-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- Value Props -->
+  <div class="section">
+    <div class="value-row">
+      <div>
+        <div class="big-number">60</div>
+        <div class="big-unit">Seconds</div>
+        <h3>That's all it takes.</h3>
+        <p>Athletes respond to a brief SMS survey — readiness, energy, effort, injuries. No app to download. No login to remember. Works where they already are.</p>
+      </div>
+      <div>
+        <div class="big-number">93%</div>
+        <div class="big-unit">Average Response Rate</div>
+        <h3>Because texting isn't optional.</h3>
+        <p>Paper forms get ignored. Apps get deleted. Text messages get answered. Reflect meets athletes in the channel they already use every day.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- Features -->
+  <div class="section section-center" id="features">
+    <div class="section-eyebrow">Features</div>
+    <h2 class="section-heading">Precision tools for<br>modern coaching.</h2>
+    <p class="section-desc">Every feature designed with restraint. Nothing unnecessary. Everything essential.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">D</div>
+        <h3>Live Dashboards</h3>
+        <p>Real-time readiness, energy, and effort data across your entire roster. See who's ready and who's not, at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">!</div>
+        <h3>Smart Alerts</h3>
+        <p>Automatic flags for recurring pain, declining readiness, or unusual patterns. Know before the athlete tells you.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">H</div>
+        <h3>Injury Heatmaps</h3>
+        <p>Aggregate soreness data visualized on body maps. Spot clusters. Prevent cascading injuries across the roster.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">AI</div>
+        <h3>AI Insights</h3>
+        <p>Ask questions in plain English. "Who needs rest this week?" Get answers grounded in your team's actual data.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">T</div>
+        <h3>Trend Analysis</h3>
+        <p>Track wellness trajectories over days, weeks, and months. See the patterns that daily snapshots miss.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">S</div>
+        <h3>SMS + WhatsApp</h3>
+        <p>No app downloads. No accounts. Athletes just reply to a text. Integrates with the tools they already have.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- How It Works -->
+  <div class="section section-center" id="how">
+    <div class="section-eyebrow">Process</div>
+    <h2 class="section-heading">Live in minutes.</h2>
+    <p class="section-desc">If your athletes can text, they can use Reflect.</p>
+
+    <div class="steps-grid">
+      <div class="step-item">
+        <h3>Upload Roster</h3>
+        <p>Import via CSV or add manually. Names and phone numbers. That's it.</p>
+      </div>
+      <div class="step-item">
+        <h3>Set Schedule</h3>
+        <p>Post-practice, game day morning, or custom. You choose when check-ins go out.</p>
+      </div>
+      <div class="step-item">
+        <h3>Athletes Text Back</h3>
+        <p>Brief survey via SMS or WhatsApp. Readiness, energy, effort, injuries. Done in 60 seconds.</p>
+      </div>
+      <div class="step-item">
+        <h3>Insights Arrive</h3>
+        <p>Your dashboard populates with real-time data, trend lines, flags, and AI recommendations.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- Testimonials -->
+  <div class="section">
+    <div class="section-eyebrow">Testimonials</div>
+    <h2 class="section-heading">Coaches trust Reflect.</h2>
+
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <blockquote>"We caught a recurring hamstring issue across three athletes before it became a crisis. Reflect paid for itself immediately."</blockquote>
+        <div class="testimonial-author">Sarah Kim</div>
+        <div class="testimonial-role">Head Athletic Trainer, D1 Soccer</div>
+      </div>
+      <div class="testimonial-card">
+        <blockquote>"Response rate went from 40% on paper forms to 93%. The athletes actually do it because it's just texting."</blockquote>
+        <div class="testimonial-author">Marcus Johnson</div>
+        <div class="testimonial-role">Head Coach, Varsity Basketball</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><hr></div>
+
+  <!-- Final CTA -->
+  <section class="cta-section">
+    <h2 class="section-heading">Insights that last a season.</h2>
+    <p class="section-desc">Replace clipboards and spreadsheets with real-time athlete intelligence.</p>
+    <a href="#" class="btn-primary" style="padding: 16px 44px; font-size: 16px;">Start Free Trial</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="logo" style="font-size: 15px;">Reflect</span>
+    <span>&copy; 2026 Reflect</span>
+  </footer>
+
+</body>
+</html>

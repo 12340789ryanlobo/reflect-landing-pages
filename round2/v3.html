@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — See It In Action</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafafa;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --accent: #6366f1;
+    --accent-light: #eef2ff;
+    --accent-dark: #4338ca;
+    --accent-dim: rgba(99, 102, 241, 0.1);
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --orange: #f59e0b;
+    --orange-light: #fffbeb;
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.04);
+    --shadow-xl: 0 20px 50px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--gray-900);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .shimmer-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--accent);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(99,102,241,0.3);
+  }
+  .shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  .shimmer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99,102,241,0.3);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    background: var(--white);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-secondary:hover {
+    border-color: var(--gray-300);
+    box-shadow: var(--shadow-md);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  /* NAV */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.85);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--gray-900);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+  }
+  .nav-links li a {
+    color: var(--gray-500);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  .nav-links li a:hover { color: var(--gray-900); }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+  }
+  .nav-cta:hover { opacity: 0.9; }
+
+  /* HERO — PHONE MOCKUP CENTER */
+  .hero {
+    padding: 80px 24px 60px;
+    text-align: center;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .hero .badge { margin-bottom: 24px; }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    max-width: 700px;
+    margin: 0 auto 16px;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--gray-500);
+    max-width: 520px;
+    margin: 0 auto 32px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+
+  /* PHONE MOCKUP */
+  .phone-wrapper {
+    display: flex;
+    justify-content: center;
+    perspective: 1000px;
+  }
+  .phone {
+    width: 300px;
+    background: var(--white);
+    border-radius: 32px;
+    border: 3px solid var(--gray-200);
+    box-shadow: var(--shadow-xl), 0 0 0 1px rgba(0,0,0,0.04);
+    padding: 16px;
+    animation: float 6s ease-in-out infinite;
+  }
+  .phone-notch {
+    width: 100px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--gray-200);
+    margin: 0 auto 16px;
+  }
+  .phone-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phone-header {
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    text-align: left;
+    padding: 4px 0;
+  }
+
+  /* SMS BUBBLES */
+  .sms-bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    max-width: 85%;
+  }
+  .sms-incoming {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .sms-outgoing {
+    background: var(--accent);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+    margin-left: auto;
+  }
+  .sms-time {
+    font-size: 0.65rem;
+    color: var(--gray-400);
+    margin-top: 2px;
+  }
+  .sms-time.right { text-align: right; }
+
+  /* PRODUCT EXPLANATION */
+  .product-section {
+    padding: 100px 24px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-100);
+  }
+  .product-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .product-text .overline {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .product-text h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .product-text p {
+    font-size: 1.05rem;
+    color: var(--gray-500);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .product-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .product-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.925rem;
+    color: var(--gray-600);
+  }
+  .product-list li::before {
+    content: '\2713';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* NOTIFICATION CARDS (product visual) */
+  .notif-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .notif-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: all 0.3s ease;
+  }
+  .notif-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .notif-content h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .notif-content p {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .notif-time {
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    margin-left: auto;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* BENTO FEATURES */
+  .features-section {
+    padding: 100px 24px;
+    background: var(--bg);
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .section-header .overline {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .section-header h2 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+  .section-header p {
+    font-size: 1.05rem;
+    color: var(--gray-500);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .bento-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--gray-300);
+  }
+  .bento-card.featured {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  .bento-card .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    margin-bottom: 20px;
+  }
+  .bento-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .bento-card p {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+  }
+
+  /* MINI DASHBOARD inside bento */
+  .mini-dash {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .mini-stat {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .mini-stat .val {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+  }
+  .mini-stat .lbl {
+    font-size: 0.7rem;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  /* MINI HEATMAP (CSS only) */
+  .mini-heatmap {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .heat-cell {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+  .heat-cell:hover { transform: scale(1.3); }
+  .h0 { background: var(--green-light); }
+  .h1 { background: #bbf7d0; }
+  .h2 { background: #fef08a; }
+  .h3 { background: #fdba74; }
+  .h4 { background: #fca5a5; }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 100px 24px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-100);
+  }
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 1120px;
+    margin: 0 auto;
+    counter-reset: howstep;
+  }
+  .how-step {
+    text-align: center;
+    counter-increment: howstep;
+  }
+  .how-step .step-visual {
+    width: 100%;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    margin-bottom: 20px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .how-step .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--white);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .how-step h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .how-step p {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+
+  /* Mini SMS in step visual */
+  .mini-sms {
+    width: 80%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  .mini-sms.in {
+    background: var(--gray-200);
+    color: var(--gray-700);
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .mini-sms.out {
+    background: var(--accent);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  }
+
+  /* Mini bars in step visual */
+  .mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 60px;
+  }
+  .mini-bar {
+    width: 20px;
+    border-radius: 3px 3px 0 0;
+  }
+  .mb1 { height: 50%; background: var(--accent); opacity: 0.5; }
+  .mb2 { height: 70%; background: var(--accent); opacity: 0.65; }
+  .mb3 { height: 45%; background: var(--accent); opacity: 0.45; }
+  .mb4 { height: 85%; background: var(--accent); opacity: 0.8; }
+  .mb5 { height: 95%; background: var(--accent); }
+
+  /* Mini alert in step */
+  .mini-alert {
+    background: var(--orange-light);
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    color: #92400e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 85%;
+  }
+  .mini-alert-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  /* MARQUEE TESTIMONIALS */
+  .testimonials-section {
+    padding: 80px 0;
+    overflow: hidden;
+    background: var(--bg);
+    border-top: 1px solid var(--gray-100);
+  }
+  .marquee-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin-top: 48px;
+  }
+  .marquee-wrapper::before,
+  .marquee-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg), transparent);
+  }
+  .marquee-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg), transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 16px;
+    animation: marquee 45s linear infinite;
+    width: max-content;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  .tcard {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 24px;
+    min-width: 320px;
+    max-width: 320px;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+  }
+  .tcard:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--gray-300);
+  }
+  .tcard p {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .tcard .author { font-size: 0.85rem; font-weight: 600; color: var(--gray-900); }
+  .tcard .role { font-size: 0.75rem; color: var(--gray-400); }
+
+  /* FINAL CTA */
+  .final-cta {
+    padding: 100px 24px;
+    text-align: center;
+    background: var(--white);
+    border-top: 1px solid var(--gray-100);
+  }
+  .final-cta h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .final-cta p {
+    font-size: 1.05rem;
+    color: var(--gray-500);
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--gray-200);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--gray-400);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .product-inner { grid-template-columns: 1fr; gap: 40px; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-card.featured { grid-column: span 1; }
+    .how-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .mini-dash { grid-template-columns: 1fr; }
+    .phone { width: 260px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+  <nav>
+    <div class="logo">Reflect<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#product">Product</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#cta" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">The Always-On Assistant Coach</div>
+  <h1>See what your athletes are telling you</h1>
+  <p>Reflect automates post-practice check-ins via SMS and WhatsApp. Athletes respond in 60 seconds. You see everything in real time.</p>
+  <div class="hero-actions">
+    <a class="shimmer-btn" href="#cta">Start Free Trial</a>
+    <a class="btn-secondary" href="#how">See How It Works</a>
+  </div>
+
+  <!-- Phone Mockup -->
+  <div class="phone-wrapper">
+    <div class="phone">
+      <div class="phone-notch"></div>
+      <div class="phone-content">
+        <div class="phone-header">Reflect &middot; Post-Practice Check-in</div>
+        <div class="sms-bubble sms-incoming">Hey Jordan! Quick post-practice check-in. How's your readiness today? (1-10)</div>
+        <div class="sms-time">4:32 PM</div>
+        <div class="sms-bubble sms-outgoing">8</div>
+        <div class="sms-time right">4:33 PM</div>
+        <div class="sms-bubble sms-incoming">Great! Energy level? (1-10)</div>
+        <div class="sms-time">4:33 PM</div>
+        <div class="sms-bubble sms-outgoing">7</div>
+        <div class="sms-time right">4:33 PM</div>
+        <div class="sms-bubble sms-incoming">Any pain or discomfort today?</div>
+        <div class="sms-time">4:33 PM</div>
+        <div class="sms-bubble sms-outgoing">Left knee is a little sore</div>
+        <div class="sms-time right">4:34 PM</div>
+        <div class="sms-bubble sms-incoming">Got it, flagged for your coach. Thanks Jordan! Rest up.</div>
+        <div class="sms-time">4:34 PM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="product-section" id="product">
+  <div class="product-inner">
+    <div class="product-text">
+      <div class="overline">How It Works</div>
+      <h2>Coaches see everything. Athletes do almost nothing.</h2>
+      <p>Reflect sends brief wellness surveys after every practice and competition via SMS or WhatsApp. Athletes respond in under 60 seconds. Coaches get real-time dashboards with readiness scores, injury heatmaps, trend lines, and AI-powered insights. No app downloads. Zero friction.</p>
+      <ul class="product-list">
+        <li>SMS &amp; WhatsApp — no app required</li>
+        <li>5 questions, 60 seconds to complete</li>
+        <li>Instant flag alerts for coaches</li>
+        <li>AI-powered trend analysis</li>
+      </ul>
+    </div>
+    <div class="notif-stack">
+      <div class="notif-card">
+        <div class="notif-icon" style="background:var(--green-light);color:var(--green);">&#10003;</div>
+        <div class="notif-content">
+          <h4>47 of 50 check-ins received</h4>
+          <p>Post-practice check-in for Tuesday completed. 94% response rate.</p>
+        </div>
+        <div class="notif-time">2m ago</div>
+      </div>
+      <div class="notif-card">
+        <div class="notif-icon" style="background:var(--orange-light);color:var(--orange);">&#9888;</div>
+        <div class="notif-content">
+          <h4>Flag: Sam Garcia — Low Readiness</h4>
+          <p>Readiness score dropped to 3.8. Third consecutive decline this week.</p>
+        </div>
+        <div class="notif-time">5m ago</div>
+      </div>
+      <div class="notif-card">
+        <div class="notif-icon" style="background:var(--accent-light);color:var(--accent);">&#9733;</div>
+        <div class="notif-content">
+          <h4>AI Insight</h4>
+          <p>"Defensive line readiness trending down 12% week-over-week. Consider reducing Thursday volume."</p>
+        </div>
+        <div class="notif-time">8m ago</div>
+      </div>
+      <div class="notif-card">
+        <div class="notif-icon" style="background:var(--red-light);color:var(--red);">&#9679;</div>
+        <div class="notif-content">
+          <h4>Injury Report: Left Knee</h4>
+          <p>Jordan Williams reported left knee soreness after practice.</p>
+        </div>
+        <div class="notif-time">12m ago</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES — BENTO -->
+<section class="features-section" id="features">
+  <div class="section-header">
+    <div class="overline">Features</div>
+    <h2>Everything coaches need. Beautifully simple.</h2>
+    <p>Powerful tools that stay invisible to athletes and indispensable for you.</p>
+  </div>
+  <div class="bento-grid">
+    <div class="bento-card featured">
+      <div class="card-icon" style="background:var(--accent-light);color:var(--accent);">&#9776;</div>
+      <h3>Real-Time Dashboards</h3>
+      <p>Track team readiness, energy, and effort across days, weeks, and full seasons. Every data point updates the moment athletes respond.</p>
+      <div class="mini-dash">
+        <div class="mini-stat">
+          <div class="val">8.4</div>
+          <div class="lbl">Readiness</div>
+        </div>
+        <div class="mini-stat">
+          <div class="val">94%</div>
+          <div class="lbl">Response</div>
+        </div>
+        <div class="mini-stat">
+          <div class="val">7.2</div>
+          <div class="lbl">Energy</div>
+        </div>
+      </div>
+    </div>
+    <div class="bento-card">
+      <div class="card-icon" style="background:var(--orange-light);color:var(--orange);">&#9889;</div>
+      <h3>Instant Flag Alerts</h3>
+      <p>Get notified the moment an athlete reports pain, low energy, or declining readiness. Intervene before injuries happen.</p>
+    </div>
+    <div class="bento-card">
+      <div class="card-icon" style="background:var(--red-light);color:var(--red);">&#9678;</div>
+      <h3>Injury Heatmaps</h3>
+      <p>Visual body maps reveal where your team hurts. Spot patterns across positions and training cycles.</p>
+      <div class="mini-heatmap">
+        <div class="heat-cell h0"></div><div class="heat-cell h1"></div><div class="heat-cell h0"></div><div class="heat-cell h2"></div><div class="heat-cell h0"></div>
+        <div class="heat-cell h1"></div><div class="heat-cell h3"></div><div class="heat-cell h2"></div><div class="heat-cell h1"></div><div class="heat-cell h0"></div>
+        <div class="heat-cell h0"></div><div class="heat-cell h2"></div><div class="heat-cell h4"></div><div class="heat-cell h3"></div><div class="heat-cell h1"></div>
+        <div class="heat-cell h1"></div><div class="heat-cell h0"></div><div class="heat-cell h1"></div><div class="heat-cell h0"></div><div class="heat-cell h0"></div>
+      </div>
+    </div>
+    <div class="bento-card">
+      <div class="card-icon" style="background:var(--accent-light);color:var(--accent);">&#9733;</div>
+      <h3>AI Coaching Insights</h3>
+      <p>An intelligent assistant analyzes trends and surfaces recommendations you might miss.</p>
+    </div>
+    <div class="bento-card featured">
+      <div class="card-icon" style="background:var(--green-light);color:var(--green);">&#8646;</div>
+      <h3>SMS &amp; WhatsApp — No App Required</h3>
+      <p>Works where athletes already are. No app to download, no portal to log into. Athletes just reply to a text message. Response rates jump from ~40% (paper/app) to 95%+ because it takes less than 60 seconds.</p>
+    </div>
+    <div class="bento-card">
+      <div class="card-icon" style="background:var(--gray-100);color:var(--gray-600);">&#9881;</div>
+      <h3>Custom Surveys</h3>
+      <p>Tailor questions to your sport, season phase, and coaching philosophy. Full control, zero complexity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-header">
+    <div class="overline">Process</div>
+    <h2>Three steps. Zero friction.</h2>
+    <p>Set up in minutes. Start collecting insights today.</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="step-visual">
+        <div class="mini-sms in">Hey Jordan! Quick post-practice check-in. Readiness? (1-10)</div>
+        <div class="mini-sms out">8</div>
+      </div>
+      <div class="step-num">1</div>
+      <h3>Athletes get a text</h3>
+      <p>After practice, Reflect sends a brief check-in via SMS or WhatsApp. Five questions, sixty seconds.</p>
+    </div>
+    <div class="how-step">
+      <div class="step-visual">
+        <div class="mini-bars">
+          <div class="mini-bar mb1"></div>
+          <div class="mini-bar mb2"></div>
+          <div class="mini-bar mb3"></div>
+          <div class="mini-bar mb4"></div>
+          <div class="mini-bar mb5"></div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--gray-400);margin-top:4px;">Real-time dashboard update</div>
+      </div>
+      <div class="step-num">2</div>
+      <h3>Data flows instantly</h3>
+      <p>Responses populate your dashboard in real time. Readiness scores, trends, and injury data — all automatic.</p>
+    </div>
+    <div class="how-step">
+      <div class="step-visual">
+        <div class="mini-alert">
+          <div class="mini-alert-dot"></div>
+          Flag: Sam Garcia — Readiness 3.8, declining 3 days
+        </div>
+        <div class="mini-alert" style="background:var(--accent-light);border-color:#c7d2fe;color:var(--accent-dark);">
+          <div class="mini-alert-dot" style="background:var(--accent);"></div>
+          AI: Reduce defensive line volume Thursday
+        </div>
+      </div>
+      <div class="step-num">3</div>
+      <h3>Coaches take action</h3>
+      <p>Flag alerts and AI insights tell you exactly who needs attention and what to adjust. Intervene early.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-header">
+    <div class="overline">Testimonials</div>
+    <h2>Trusted by coaches who care</h2>
+    <p>From D1 programs to high school teams, coaches love what Reflect reveals.</p>
+  </div>
+  <div class="marquee-wrapper">
+    <div class="marquee-track">
+      <div class="tcard">
+        <p>"Reflect changed how we manage athlete load. I see who's struggling before they tell me — that's made all the difference."</p>
+        <div class="author">Sarah Mitchell</div>
+        <div class="role">Head Coach, D1 Women's Soccer</div>
+      </div>
+      <div class="tcard">
+        <p>"Response rate went from 40% on paper forms to 95% with Reflect. Athletes actually want to check in because it takes seconds."</p>
+        <div class="author">Marcus Rivera</div>
+        <div class="role">Athletic Trainer, Big Ten Conference</div>
+      </div>
+      <div class="tcard">
+        <p>"The injury heatmap caught a pattern in our linemen's shoulders that was invisible before. Prevented three surgeries."</p>
+        <div class="author">James O'Brien</div>
+        <div class="role">Head Coach, Varsity Football</div>
+      </div>
+      <div class="tcard">
+        <p>"I manage 52 athletes. Before Reflect, I had no idea how half of them felt. Now I know in real time. It's like an extra assistant."</p>
+        <div class="author">Dr. Lisa Chen</div>
+        <div class="role">Director of Sports Medicine</div>
+      </div>
+      <div class="tcard">
+        <p>"The AI insights flagged a freshman's declining readiness before anyone noticed. We adjusted her training — best season ever."</p>
+        <div class="author">Amanda Torres</div>
+        <div class="role">Head Coach, D2 Volleyball</div>
+      </div>
+      <div class="tcard">
+        <p>"Finally, a tool athletes actually use. SMS was the right call. No downloads, no passwords — just a quick reply after practice."</p>
+        <div class="author">David Kim</div>
+        <div class="role">Strength &amp; Conditioning Coach</div>
+      </div>
+      <!-- duplicate for seamless loop -->
+      <div class="tcard">
+        <p>"Reflect changed how we manage athlete load. I see who's struggling before they tell me — that's made all the difference."</p>
+        <div class="author">Sarah Mitchell</div>
+        <div class="role">Head Coach, D1 Women's Soccer</div>
+      </div>
+      <div class="tcard">
+        <p>"Response rate went from 40% on paper forms to 95% with Reflect. Athletes actually want to check in because it takes seconds."</p>
+        <div class="author">Marcus Rivera</div>
+        <div class="role">Athletic Trainer, Big Ten Conference</div>
+      </div>
+      <div class="tcard">
+        <p>"The injury heatmap caught a pattern in our linemen's shoulders that was invisible before. Prevented three surgeries."</p>
+        <div class="author">James O'Brien</div>
+        <div class="role">Head Coach, Varsity Football</div>
+      </div>
+      <div class="tcard">
+        <p>"I manage 52 athletes. Before Reflect, I had no idea how half of them felt. Now I know in real time. It's like an extra assistant."</p>
+        <div class="author">Dr. Lisa Chen</div>
+        <div class="role">Director of Sports Medicine</div>
+      </div>
+      <div class="tcard">
+        <p>"The AI insights flagged a freshman's declining readiness before anyone noticed. We adjusted her training — best season ever."</p>
+        <div class="author">Amanda Torres</div>
+        <div class="role">Head Coach, D2 Volleyball</div>
+      </div>
+      <div class="tcard">
+        <p>"Finally, a tool athletes actually use. SMS was the right call. No downloads, no passwords — just a quick reply after practice."</p>
+        <div class="author">David Kim</div>
+        <div class="role">Strength &amp; Conditioning Coach</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="cta">
+  <h2>Your athletes are already telling you something</h2>
+  <p>Start listening with the tool that meets them where they are. Set up in minutes, not months.</p>
+  <a class="shimmer-btn" href="#">Start Free Trial</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 Reflect. The always-on assistant coach.</p>
+</footer>
+
+</body>
+</html>
