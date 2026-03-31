@@ -7,10 +7,10 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    /* Single hue: blue (220) — all variation from tints/shades */
     --h:220;
     --50:hsl(var(--h),60%,97%);
     --100:hsl(var(--h),55%,93%);
+    --150:hsl(var(--h),52%,89%);
     --200:hsl(var(--h),50%,85%);
     --300:hsl(var(--h),48%,72%);
     --400:hsl(var(--h),50%,58%);
@@ -19,106 +19,340 @@
     --700:hsl(var(--h),65%,28%);
     --800:hsl(var(--h),70%,18%);
     --900:hsl(var(--h),75%,10%);
-    --950:hsl(var(--h),80%,6%);
+    --950:hsl(var(--h),80%,5%);
   }
   html{font-size:16px;scroll-behavior:smooth}
-  body{font-family:'Georgia','Times New Roman',serif;background:var(--50);color:var(--900);line-height:1.7;overflow-x:hidden}
-  h1,h2,h3,h4{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.2}
-  a{color:var(--600);text-decoration:none}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:var(--950);color:var(--200);line-height:1.65;overflow-x:hidden;
+  }
 
-  .container{max-width:1000px;margin:0 auto;padding:0 1.5rem}
-  .btn{display:inline-block;padding:.85rem 2.25rem;border-radius:.375rem;font-weight:600;font-size:.95rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;cursor:pointer;border:none}
-  .btn-solid{background:var(--700);color:var(--50)}
-  .btn-ghost{background:transparent;border:1.5px solid var(--300);color:var(--700)}
+  /* ---------- ANIMATED GRADIENT TEXT ---------- */
+  .gradient-text{
+    background:linear-gradient(90deg,
+      hsl(var(--h),60%,75%),
+      hsl(var(--h),80%,55%),
+      hsl(var(--h),50%,85%),
+      hsl(var(--h),70%,65%),
+      hsl(var(--h),60%,75%));
+    background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gradShift 6s ease infinite;
+  }
+  @keyframes gradShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
 
-  /* NAV */
-  nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;max-width:1000px;margin:0 auto}
-  .logo{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-weight:800;font-size:1.3rem;color:var(--700);letter-spacing:-.02em}
+  /* ---------- SHIMMER BUTTON ---------- */
+  .btn-shimmer{
+    display:inline-block;padding:1rem 2.5rem;border:none;border-radius:.5rem;
+    font-weight:700;font-size:1rem;cursor:pointer;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,hsl(var(--h),65%,30%),hsl(var(--h),70%,22%));
+    color:hsl(var(--h),60%,90%);letter-spacing:.01em;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .btn-shimmer:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 30px hsla(var(--h),70%,50%,.3);
+  }
+  .btn-shimmer::after{
+    content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+    background:linear-gradient(90deg,transparent,hsla(var(--h),80%,70%,.25),transparent);
+    animation:shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer{
+    0%{left:-100%}
+    100%{left:200%}
+  }
+
+  .btn-ghost{
+    display:inline-block;padding:1rem 2.5rem;border-radius:.5rem;
+    font-weight:600;font-size:1rem;cursor:pointer;
+    background:transparent;border:1.5px solid var(--600);color:var(--300);
+    transition:background .2s,border-color .2s;
+  }
+  .btn-ghost:hover{background:hsla(var(--h),50%,30%,.15);border-color:var(--400)}
+
+  a{color:var(--400);text-decoration:none}
+
+  .container{max-width:1100px;margin:0 auto;padding:0 2rem}
+
+  /* ---------- NAV ---------- */
+  nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.25rem 2rem;max-width:1100px;margin:0 auto;
+    border-bottom:1px solid hsla(var(--h),40%,30%,.3);
+  }
+  .logo{font-weight:800;font-size:1.25rem;color:var(--300);letter-spacing:-.02em}
   nav ul{list-style:none;display:flex;gap:2rem}
-  nav ul li a{color:var(--400);font-size:.9rem;font-weight:500;font-family:-apple-system,sans-serif}
+  nav ul li a{color:var(--400);font-size:.875rem;font-weight:500;transition:color .2s}
+  nav ul li a:hover{color:var(--200)}
 
-  /* HERO */
-  .hero{padding:6rem 0 5rem;text-align:center}
-  .hero h1{font-size:3.25rem;font-weight:800;color:var(--800);letter-spacing:-.04em;max-width:700px;margin:0 auto}
-  .hero .sub{font-size:1.15rem;color:var(--400);max-width:520px;margin:1.5rem auto 2.5rem}
+  /* ---------- HERO ---------- */
+  .hero{padding:7rem 0 6rem;text-align:center}
+  .hero-label{
+    display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--400);
+    border:1px solid hsla(var(--h),50%,40%,.3);border-radius:2rem;
+    padding:.4rem 1.25rem;margin-bottom:2rem;
+  }
+  .hero h1{
+    font-size:clamp(2.5rem,6vw,4rem);font-weight:800;letter-spacing:-.04em;
+    line-height:1.1;max-width:750px;margin:0 auto;
+  }
+  .hero .sub{
+    font-size:1.15rem;color:var(--400);max-width:540px;margin:1.75rem auto 2.75rem;
+    line-height:1.7;
+  }
   .hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 
-  /* Decorative divider */
-  .divider{width:60px;height:3px;background:var(--300);margin:0 auto;border-radius:2px}
+  /* ---------- SECTION HEADERS ---------- */
+  .section-tag{
+    font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--500);margin-bottom:.75rem;
+  }
+  .section-title{
+    font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:800;letter-spacing:-.03em;
+    color:var(--100);line-height:1.2;margin-bottom:1rem;
+  }
+  .section-sub{font-size:1rem;color:var(--400);max-width:560px;line-height:1.7}
 
-  /* PRODUCT INTRO */
+  /* ---------- PRODUCT INTRO ---------- */
   .intro{padding:5rem 0;text-align:center}
-  .intro h2{font-size:1.75rem;font-weight:700;color:var(--800);margin-bottom:1rem}
-  .intro p{max-width:620px;margin:0 auto;color:var(--500);font-size:1.05rem}
+  .intro .section-sub{margin:0 auto}
 
-  /* FEATURES */
-  .features{padding:4rem 0}
-  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:3rem}
-  .feat{text-align:center}
-  .feat-dot{width:56px;height:56px;border-radius:50%;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center}
-  .feat h3{font-size:1.1rem;font-weight:700;color:var(--800);margin-bottom:.5rem}
-  .feat p{font-size:.92rem;color:var(--400);line-height:1.6}
+  /* ---------- MOCK DASHBOARD (monochrome) ---------- */
+  .dashboard-section{padding:4rem 0}
+  .dash-frame{
+    background:hsl(var(--h),70%,8%);border:1px solid hsla(var(--h),50%,25%,.4);
+    border-radius:1rem;overflow:hidden;
+    box-shadow:0 0 60px hsla(var(--h),60%,20%,.15);
+  }
+  .dash-topbar{
+    display:flex;align-items:center;gap:.75rem;padding:.75rem 1.25rem;
+    border-bottom:1px solid hsla(var(--h),50%,25%,.3);
+  }
+  .dash-dot{width:10px;height:10px;border-radius:50%;background:var(--700)}
+  .dash-dot:first-child{background:hsl(var(--h),50%,45%)}
+  .dash-title{font-size:.75rem;color:var(--400);margin-left:.5rem;font-weight:600}
+  .dash-body{display:grid;grid-template-columns:200px 1fr;min-height:340px}
+  .dash-sidebar{
+    border-right:1px solid hsla(var(--h),50%,25%,.3);padding:1.25rem;
+    display:flex;flex-direction:column;gap:.25rem;
+  }
+  .dash-nav-item{
+    font-size:.75rem;padding:.5rem .75rem;border-radius:.375rem;color:var(--400);
+    cursor:default;transition:background .2s;
+  }
+  .dash-nav-item:hover{background:hsla(var(--h),50%,30%,.15)}
+  .dash-nav-item.active{background:hsla(var(--h),60%,30%,.25);color:var(--200);font-weight:600}
+  .dash-main{padding:1.5rem}
+  .dash-main h3{font-size:.85rem;font-weight:700;color:var(--200);margin-bottom:1rem}
 
-  /* HOW */
-  .how{padding:5rem 0}
-  .how-header{text-align:center;margin-bottom:3rem}
-  .how-header h2{font-size:1.75rem;font-weight:700;color:var(--800)}
-  .how-header p{color:var(--400);margin-top:.5rem}
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
-  .step{background:var(--100);border-radius:.75rem;padding:2rem 1.5rem;text-align:center;border:1px solid var(--200)}
-  .step-n{font-size:2rem;font-weight:800;color:var(--300);margin-bottom:.5rem;font-family:-apple-system,sans-serif}
-  .step h4{font-size:1rem;font-weight:700;color:var(--700);margin-bottom:.5rem}
-  .step p{font-size:.85rem;color:var(--400)}
+  /* mini chart bars */
+  .mini-chart{display:flex;align-items:flex-end;gap:6px;height:100px;margin-bottom:1.5rem}
+  .mini-bar{
+    flex:1;border-radius:3px 3px 0 0;min-width:0;
+    transition:opacity .2s;position:relative;
+  }
+  .mini-bar:hover{opacity:.8}
 
-  /* SHOWCASE — metrics */
-  .showcase{padding:5rem 0;background:var(--800);color:var(--100)}
-  .showcase .container{text-align:center}
-  .showcase h2{font-size:1.75rem;font-weight:700;color:var(--100);margin-bottom:.5rem}
-  .showcase .sub{color:var(--300);margin-bottom:3rem}
-  .show-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
-  .show-card{background:var(--700);border:1px solid var(--600);border-radius:.75rem;padding:2rem 1rem;text-align:center}
-  .show-card .big{font-size:2.5rem;font-weight:800;color:var(--200);font-family:-apple-system,sans-serif}
-  .show-card .label{font-size:.8rem;color:var(--400);margin-top:.25rem;font-family:-apple-system,sans-serif}
+  /* mini stats row */
+  .dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+  .dash-stat{
+    background:hsla(var(--h),50%,20%,.3);border:1px solid hsla(var(--h),50%,25%,.3);
+    border-radius:.5rem;padding:1rem;text-align:center;
+  }
+  .dash-stat .val{font-size:1.5rem;font-weight:800;color:var(--200)}
+  .dash-stat .lbl{font-size:.65rem;color:var(--400);text-transform:uppercase;letter-spacing:.08em;margin-top:.25rem}
 
-  /* PROGRESS VIS */
-  .vis{padding:5rem 0}
-  .vis-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
-  .vis-text h2{font-size:1.75rem;font-weight:700;color:var(--800);margin-bottom:1rem}
-  .vis-text p{color:var(--400);font-size:1rem;margin-bottom:1.5rem}
-  .bar-chart{display:flex;flex-direction:column;gap:.75rem}
-  .bc-row{display:flex;align-items:center;gap:1rem}
-  .bc-label{width:80px;text-align:right;font-size:.8rem;color:var(--400);font-family:-apple-system,sans-serif;flex-shrink:0}
-  .bc-track{flex:1;height:22px;background:var(--100);border-radius:4px;overflow:hidden}
-  .bc-fill{height:100%;border-radius:4px}
-  .bc-val{width:40px;font-size:.8rem;font-weight:700;color:var(--700);font-family:-apple-system,sans-serif}
+  /* ---------- BENTO GRID FEATURES with SHINE BORDER ---------- */
+  .features{padding:5rem 0}
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:auto auto;
+    gap:1px;
+    margin-top:3rem;
+  }
+  .bento-card{
+    position:relative;padding:2rem;
+    background:hsl(var(--h),70%,7%);
+    border-radius:.75rem;overflow:hidden;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .bento-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 40px hsla(var(--h),60%,20%,.2);
+  }
+  /* Shine border via rotating conic-gradient */
+  .bento-card::before{
+    content:'';position:absolute;inset:-1px;border-radius:.75rem;padding:1px;
+    background:conic-gradient(from var(--shine-angle,0deg),
+      transparent 0%,hsla(var(--h),70%,55%,.5) 10%,transparent 20%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:shineSpin 4s linear infinite;
+  }
+  @keyframes shineSpin{
+    to{--shine-angle:360deg}
+  }
+  /* fallback for browsers without @property */
+  @property --shine-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
 
-  /* TESTIMONIALS */
-  .testimonials{padding:5rem 0;background:var(--100)}
-  .test-header{text-align:center;margin-bottom:3rem}
-  .test-header h2{font-size:1.75rem;font-weight:700;color:var(--800)}
-  .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
-  .test-card{background:var(--50);border:1px solid var(--200);border-radius:.75rem;padding:2rem}
-  .test-card blockquote{font-size:.95rem;color:var(--600);line-height:1.65;margin-bottom:1.25rem;font-style:italic}
-  .test-card .name{font-family:-apple-system,sans-serif;font-weight:600;font-size:.88rem;color:var(--800)}
-  .test-card .role{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--400)}
+  .bento-card.span-2{grid-column:span 2}
+  .bento-card .icon{
+    width:44px;height:44px;border-radius:.625rem;margin-bottom:1.25rem;
+    display:flex;align-items:center;justify-content:center;font-size:1.25rem;
+    background:hsla(var(--h),60%,30%,.25);color:var(--300);
+  }
+  .bento-card h3{font-size:1.05rem;font-weight:700;color:var(--100);margin-bottom:.5rem}
+  .bento-card p{font-size:.88rem;color:var(--400);line-height:1.6}
 
-  /* CTA */
-  .cta{padding:5rem 0;text-align:center}
-  .cta h2{font-size:2rem;font-weight:700;color:var(--800);margin-bottom:.75rem}
+  /* inline mini viz in bento cards */
+  .bento-heatmap{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-top:1rem;
+  }
+  .hm-cell{
+    aspect-ratio:1;border-radius:3px;
+  }
+
+  /* ---------- HOW IT WORKS (SMS DEMO) ---------- */
+  .how-section{padding:5rem 0}
+  .how-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .steps{display:flex;flex-direction:column;gap:1.5rem}
+  .step{display:flex;gap:1.25rem;align-items:flex-start}
+  .step-num{
+    flex-shrink:0;width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:.9rem;color:var(--300);
+    background:hsla(var(--h),60%,30%,.2);border:1px solid hsla(var(--h),60%,40%,.3);
+  }
+  .step h4{font-size:1rem;font-weight:700;color:var(--100);margin-bottom:.25rem}
+  .step p{font-size:.88rem;color:var(--400);line-height:1.55}
+
+  /* SMS mock */
+  .sms-mock{
+    background:hsl(var(--h),70%,7%);border:1px solid hsla(var(--h),50%,25%,.4);
+    border-radius:1.25rem;padding:1.5rem;max-width:340px;margin:0 auto;
+    box-shadow:0 0 50px hsla(var(--h),60%,15%,.2);
+  }
+  .sms-header{
+    text-align:center;font-size:.7rem;color:var(--400);padding-bottom:1rem;
+    border-bottom:1px solid hsla(var(--h),50%,25%,.3);margin-bottom:1rem;
+    font-weight:600;letter-spacing:.05em;
+  }
+  .sms-bubble{
+    max-width:85%;padding:.65rem 1rem;border-radius:1rem;font-size:.82rem;
+    line-height:1.5;margin-bottom:.6rem;
+  }
+  .sms-incoming{
+    background:hsla(var(--h),50%,25%,.3);color:var(--200);
+    border-bottom-left-radius:.25rem;margin-right:auto;
+  }
+  .sms-outgoing{
+    background:hsl(var(--h),60%,32%);color:hsl(var(--h),60%,92%);
+    border-bottom-right-radius:.25rem;margin-left:auto;
+  }
+  .sms-time{font-size:.6rem;color:var(--500);text-align:center;margin:1rem 0 .5rem}
+
+  /* ---------- METRICS ---------- */
+  .metrics{padding:5rem 0}
+  .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem}
+  .metric-card{
+    text-align:center;padding:2rem 1rem;
+    background:hsla(var(--h),50%,15%,.2);
+    border:1px solid hsla(var(--h),50%,25%,.3);border-radius:.75rem;
+    position:relative;overflow:hidden;
+    transition:border-color .3s,box-shadow .3s;
+  }
+  .metric-card:hover{
+    border-color:hsla(var(--h),60%,50%,.4);
+    box-shadow:0 0 25px hsla(var(--h),60%,40%,.15);
+  }
+  .metric-card .big{
+    font-size:2.5rem;font-weight:800;color:var(--200);
+  }
+  .metric-card .label{
+    font-size:.7rem;color:var(--400);text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem;
+  }
+
+  /* ---------- MARQUEE TESTIMONIALS ---------- */
+  .testimonials{padding:5rem 0;overflow:hidden}
+  .marquee-track{
+    display:flex;gap:1.5rem;width:max-content;
+    animation:marqueeScroll 35s linear infinite;
+  }
+  .marquee-track:hover{animation-play-state:paused}
+  @keyframes marqueeScroll{
+    0%{transform:translateX(0)}
+    100%{transform:translateX(-50%)}
+  }
+  .marquee-wrapper{
+    position:relative;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  }
+  .test-card{
+    flex-shrink:0;width:380px;padding:2rem;
+    background:hsl(var(--h),70%,7%);
+    border:1px solid hsla(var(--h),50%,25%,.3);border-radius:.75rem;
+  }
+  .test-card blockquote{
+    font-size:.92rem;color:var(--300);line-height:1.65;margin-bottom:1.25rem;
+    font-style:italic;
+  }
+  .test-card .name{font-weight:700;font-size:.88rem;color:var(--200)}
+  .test-card .role{font-size:.78rem;color:var(--500);margin-top:.15rem}
+
+  /* ---------- CTA ---------- */
+  .cta{padding:6rem 0;text-align:center}
+  .cta-inner{
+    max-width:640px;margin:0 auto;padding:4rem 2rem;
+    background:hsla(var(--h),50%,15%,.15);
+    border:1px solid hsla(var(--h),50%,25%,.3);border-radius:1rem;
+    position:relative;overflow:hidden;
+  }
+  /* neon glow card */
+  .cta-inner::before{
+    content:'';position:absolute;inset:-2px;border-radius:1rem;
+    background:conic-gradient(from 0deg,
+      hsla(var(--h),60%,40%,.3),transparent,
+      hsla(var(--h),70%,50%,.2),transparent,
+      hsla(var(--h),60%,40%,.3));
+    animation:ctaGlow 5s linear infinite;
+    z-index:-1;
+  }
+  @keyframes ctaGlow{to{filter:hue-rotate(15deg)}}
+  .cta h2{font-size:2rem;font-weight:800;color:var(--100);margin-bottom:.75rem;letter-spacing:-.02em}
   .cta p{color:var(--400);margin-bottom:2rem;font-size:1.05rem}
 
-  footer{border-top:1px solid var(--200);padding:2rem 0;text-align:center;color:var(--400);font-size:.85rem;font-family:-apple-system,sans-serif}
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid hsla(var(--h),40%,20%,.3);
+    padding:2rem 0;text-align:center;color:var(--500);font-size:.82rem;
+  }
+  footer a{color:var(--400)}
 
+  /* ---------- RESPONSIVE ---------- */
   @media(max-width:900px){
-    .feat-grid{grid-template-columns:1fr 1fr}
-    .steps,.show-grid{grid-template-columns:1fr 1fr}
-    .test-grid{grid-template-columns:1fr}
-    .vis-layout{grid-template-columns:1fr}
+    .bento{grid-template-columns:1fr 1fr}
+    .bento-card.span-2{grid-column:span 1}
+    .how-layout{grid-template-columns:1fr}
+    .metric-grid{grid-template-columns:1fr 1fr}
+    .dash-body{grid-template-columns:1fr}
+    .dash-sidebar{display:none}
+    .test-card{width:320px}
   }
   @media(max-width:600px){
     .hero h1{font-size:2.25rem}
-    .feat-grid,.steps,.show-grid{grid-template-columns:1fr}
+    .bento{grid-template-columns:1fr}
+    .metric-grid{grid-template-columns:1fr}
     nav ul{display:none}
+    .sms-mock{max-width:100%}
   }
 </style>
 </head>
@@ -128,7 +362,7 @@
   <div class="logo">Reflect</div>
   <ul>
     <li><a href="#features">Features</a></li>
-    <li><a href="#how">Process</a></li>
+    <li><a href="#how">How It Works</a></li>
     <li><a href="#testimonials">Testimonials</a></li>
     <li><a href="https://reflectsalus.app/">Sign Up</a></li>
   </ul>
@@ -137,203 +371,279 @@
 <!-- HERO -->
 <section class="hero">
   <div class="container">
-    <h1>Clarity for every coach, every athlete</h1>
-    <p class="sub">Reflect automates post-practice check-ins via SMS and WhatsApp, delivering real-time wellness data so you can focus on what matters.</p>
+    <div class="hero-label">Athlete Wellness Platform</div>
+    <h1><span class="gradient-text">Clarity for every coach, every athlete</span></h1>
+    <p class="sub">Reflect automates post-practice check-ins via SMS and WhatsApp, delivering real-time wellness data&mdash;so you can coach with confidence, not guesswork.</p>
     <div class="hero-actions">
-      <a href="https://reflectsalus.app/" class="btn btn-solid">Start Free Trial</a>
-      <a href="#how" class="btn btn-ghost">Learn More</a>
+      <a href="https://reflectsalus.app/" class="btn-shimmer">Start Free Trial</a>
+      <a href="#how" class="btn-ghost">See How It Works</a>
     </div>
   </div>
 </section>
-
-<div class="divider"></div>
 
 <!-- INTRO -->
 <section class="intro">
   <div class="container">
-    <h2>The always-on assistant coach</h2>
-    <p>Athletes respond to 60-second surveys about readiness, energy, effort, and pain. You get a live dashboard with trends, alerts, and AI-powered insights&mdash;all without asking anyone to download an app.</p>
+    <div class="section-tag">The Platform</div>
+    <h2 class="section-title"><span class="gradient-text">The always-on assistant coach</span></h2>
+    <p class="section-sub">Athletes respond to 60-second surveys about readiness, energy, effort, and pain. You get a live dashboard with trends, alerts, and AI-powered insights&mdash;all without asking anyone to download an app.</p>
   </div>
 </section>
 
-<!-- FEATURES -->
+<!-- MOCK DASHBOARD -->
+<section class="dashboard-section">
+  <div class="container">
+    <div class="dash-frame">
+      <div class="dash-topbar">
+        <div class="dash-dot"></div>
+        <div class="dash-dot" style="background:var(--800)"></div>
+        <div class="dash-dot" style="background:var(--800)"></div>
+        <span class="dash-title">Reflect Dashboard &mdash; Team Overview</span>
+      </div>
+      <div class="dash-body">
+        <div class="dash-sidebar">
+          <div class="dash-nav-item active">Dashboard</div>
+          <div class="dash-nav-item">Athletes</div>
+          <div class="dash-nav-item">Heatmap</div>
+          <div class="dash-nav-item">Trends</div>
+          <div class="dash-nav-item">Alerts</div>
+          <div class="dash-nav-item">AI Assistant</div>
+          <div class="dash-nav-item">Settings</div>
+        </div>
+        <div class="dash-main">
+          <h3>Team Readiness &mdash; Last 14 Days</h3>
+          <div class="mini-chart">
+            <div class="mini-bar" style="height:62%;background:var(--600)"></div>
+            <div class="mini-bar" style="height:58%;background:var(--600)"></div>
+            <div class="mini-bar" style="height:71%;background:var(--500)"></div>
+            <div class="mini-bar" style="height:68%;background:var(--500)"></div>
+            <div class="mini-bar" style="height:75%;background:var(--500)"></div>
+            <div class="mini-bar" style="height:64%;background:var(--600)"></div>
+            <div class="mini-bar" style="height:55%;background:var(--600)"></div>
+            <div class="mini-bar" style="height:72%;background:var(--500)"></div>
+            <div class="mini-bar" style="height:78%;background:var(--400)"></div>
+            <div class="mini-bar" style="height:82%;background:var(--400)"></div>
+            <div class="mini-bar" style="height:76%;background:var(--400)"></div>
+            <div class="mini-bar" style="height:80%;background:var(--400)"></div>
+            <div class="mini-bar" style="height:85%;background:var(--300)"></div>
+            <div class="mini-bar" style="height:83%;background:var(--300)"></div>
+          </div>
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <div class="val">7.8</div>
+              <div class="lbl">Avg Readiness</div>
+            </div>
+            <div class="dash-stat">
+              <div class="val">94%</div>
+              <div class="lbl">Response Rate</div>
+            </div>
+            <div class="dash-stat">
+              <div class="val">2</div>
+              <div class="lbl">Active Flags</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENTO FEATURES -->
 <section class="features" id="features">
   <div class="container">
     <div style="text-align:center">
-      <h2 style="font-size:1.75rem;font-weight:700;color:var(--800)">Designed around what coaches actually need</h2>
+      <div class="section-tag">Features</div>
+      <h2 class="section-title">Everything a coach needs,<br>nothing they don't</h2>
     </div>
-
-    <div class="feat-grid">
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9888;</span>
-        </div>
+    <div class="bento">
+      <div class="bento-card span-2">
+        <div class="icon">&#9888;</div>
         <h3>Automatic Flag Alerts</h3>
-        <p>Instant notifications for low readiness, injury concerns, and high pain scores. Catch problems early.</p>
+        <p>Instant notifications for low readiness, injury concerns, and elevated pain scores. Configurable thresholds per athlete and per team. Catch problems before they become injuries.</p>
       </div>
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9673;</span>
-        </div>
-        <h3>Injury Body Heatmap</h3>
+      <div class="bento-card">
+        <div class="icon">&#9673;</div>
+        <h3>Injury Heatmap</h3>
         <p>Pain reports mapped across 18 anatomical regions. See where your team hurts at a glance.</p>
-      </div>
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9636;</span>
+        <div class="bento-heatmap">
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.15)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.25)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.4)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.3)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.15)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.2)"></div>
+          <div class="hm-cell" style="background:hsla(var(--h),50%,50%,.1)"></div>
         </div>
+      </div>
+      <div class="bento-card">
+        <div class="icon">&#9636;</div>
         <h3>Team Trends</h3>
-        <p>Readiness, energy, and effort tracked over time. Understand how training load affects your athletes.</p>
+        <p>Readiness, energy, and effort tracked over time. Understand how training load affects your roster.</p>
       </div>
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9733;</span>
-        </div>
+      <div class="bento-card">
+        <div class="icon">&#9733;</div>
         <h3>AI Assistant</h3>
         <p>Ask natural language questions and get instant, data-backed answers. No spreadsheets required.</p>
       </div>
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9881;</span>
-        </div>
+      <div class="bento-card">
+        <div class="icon">&#9881;</div>
         <h3>Workout Logging</h3>
-        <p>Athletes log workouts and rehab sessions. Coaches track compliance and volume effortlessly.</p>
+        <p>Athletes log workouts and rehab sessions. Track compliance and volume effortlessly.</p>
       </div>
-      <div class="feat">
-        <div class="feat-dot" style="background:var(--200)">
-          <span style="font-size:1.5rem;color:var(--600)">&#9998;</span>
+      <div class="bento-card span-2">
+        <div class="icon">&#9998;</div>
+        <h3>Custom Survey Templates</h3>
+        <p>Build bespoke survey flows for any scenario&mdash;pre-game, post-practice, weekly wellness, rehab updates. Fully configurable question types with Likert scales, numeric inputs, and free text.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS + SMS DEMO -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3.5rem">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title"><span class="gradient-text">Four steps. Five minutes. Done.</span></h2>
+      <p class="section-sub" style="margin:0 auto">No app installs. No training sessions. Works where athletes already are.</p>
+    </div>
+    <div class="how-layout">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Import Your Roster</h4>
+            <p>Add athlete names and phone numbers. That is the only setup you will ever need.</p>
+          </div>
         </div>
-        <h3>Custom Templates</h3>
-        <p>Build bespoke survey flows for any scenario&mdash;pre-game, post-practice, weekly wellness, rehab updates.</p>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Set Your Schedule</h4>
+            <p>Choose when check-ins go out&mdash;after practice, after games, or on a custom cadence.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Athletes Reply via SMS</h4>
+            <p>60-second surveys arrive on their phone. No apps, no friction, no excuses.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Insights Arrive Instantly</h4>
+            <p>Dashboard updates in real time with trends, alerts, heatmaps, and AI-powered answers.</p>
+          </div>
+        </div>
+      </div>
+      <!-- SMS MOCK CONVERSATION -->
+      <div class="sms-mock">
+        <div class="sms-header">Reflect Check-In &mdash; Today 4:32 PM</div>
+        <div class="sms-bubble sms-incoming">Hey Sarah! Quick post-practice check-in. How would you rate your overall readiness today? (1-10)</div>
+        <div class="sms-bubble sms-outgoing">8</div>
+        <div class="sms-bubble sms-incoming">Great. How about your energy level? (1-10)</div>
+        <div class="sms-bubble sms-outgoing">7</div>
+        <div class="sms-bubble sms-incoming">Any pain or discomfort today? If yes, where?</div>
+        <div class="sms-bubble sms-outgoing">Mild soreness in left knee</div>
+        <div class="sms-bubble sms-incoming">Got it. Logged and flagged for Coach Davis. Take care of that knee! See you tomorrow.</div>
+        <div class="sms-time">Read 4:33 PM</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="container">
-    <div class="how-header">
-      <h2>Four steps. Five minutes. Done.</h2>
-      <p>No app installs. No training sessions. Works where athletes already are.</p>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="step-n">01</div>
-        <h4>Import Roster</h4>
-        <p>Add athlete names and phone numbers. That is the only setup.</p>
-      </div>
-      <div class="step">
-        <div class="step-n">02</div>
-        <h4>Set Schedule</h4>
-        <p>Choose when check-ins go out. After practice, after games, or custom.</p>
-      </div>
-      <div class="step">
-        <div class="step-n">03</div>
-        <h4>Athletes Reply</h4>
-        <p>60-second surveys via SMS or WhatsApp. No friction, no excuses.</p>
-      </div>
-      <div class="step">
-        <div class="step-n">04</div>
-        <h4>Insights Arrive</h4>
-        <p>Dashboard, alerts, trends, AI answers. Everything in real time.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SHOWCASE METRICS -->
-<section class="showcase">
-  <div class="container">
-    <h2>The numbers speak</h2>
-    <p class="sub">Check-ins that take 60 seconds. Insights that last a season.</p>
-    <div class="show-grid">
-      <div class="show-card">
-        <div class="big">12k+</div>
+<!-- METRICS -->
+<section class="metrics">
+  <div class="container" style="text-align:center">
+    <div class="section-tag">By the Numbers</div>
+    <h2 class="section-title">Trusted across 180+ programs</h2>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="big gradient-text">12k+</div>
         <div class="label">Check-ins completed</div>
       </div>
-      <div class="show-card">
-        <div class="big">94%</div>
+      <div class="metric-card">
+        <div class="big gradient-text">94%</div>
         <div class="label">Response rate</div>
       </div>
-      <div class="show-card">
-        <div class="big">60s</div>
+      <div class="metric-card">
+        <div class="big gradient-text">60s</div>
         <div class="label">Avg check-in time</div>
       </div>
-      <div class="show-card">
-        <div class="big">180+</div>
-        <div class="label">Programs active</div>
+      <div class="metric-card">
+        <div class="big gradient-text">180+</div>
+        <div class="label">Active programs</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DATA VIS -->
-<section class="vis">
-  <div class="container vis-layout">
-    <div class="vis-text">
-      <h2>Watch your team's readiness evolve</h2>
-      <p>Reflect tracks readiness scores across your roster week over week, revealing how athletes respond to training loads, travel, and competition cycles.</p>
-      <a href="https://reflectsalus.app/" class="btn btn-solid" style="font-size:.9rem;padding:.7rem 1.75rem">See It In Action</a>
-    </div>
-    <div>
-      <div class="bar-chart">
-        <div class="bc-row">
-          <span class="bc-label">Week 1</span>
-          <div class="bc-track"><div class="bc-fill" style="width:68%;background:var(--400)"></div></div>
-          <span class="bc-val">6.8</span>
-        </div>
-        <div class="bc-row">
-          <span class="bc-label">Week 2</span>
-          <div class="bc-track"><div class="bc-fill" style="width:72%;background:var(--400)"></div></div>
-          <span class="bc-val">7.2</span>
-        </div>
-        <div class="bc-row">
-          <span class="bc-label">Week 3</span>
-          <div class="bc-track"><div class="bc-fill" style="width:65%;background:var(--500)"></div></div>
-          <span class="bc-val">6.5</span>
-        </div>
-        <div class="bc-row">
-          <span class="bc-label">Week 4</span>
-          <div class="bc-track"><div class="bc-fill" style="width:78%;background:var(--500)"></div></div>
-          <span class="bc-val">7.8</span>
-        </div>
-        <div class="bc-row">
-          <span class="bc-label">Week 5</span>
-          <div class="bc-track"><div class="bc-fill" style="width:82%;background:var(--600)"></div></div>
-          <span class="bc-val">8.2</span>
-        </div>
-        <div class="bc-row">
-          <span class="bc-label">Week 6</span>
-          <div class="bc-track"><div class="bc-fill" style="width:80%;background:var(--600)"></div></div>
-          <span class="bc-val">8.0</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
+<!-- MARQUEE TESTIMONIALS -->
 <section class="testimonials" id="testimonials">
-  <div class="container">
-    <div class="test-header">
-      <h2>Trusted by coaches who care about their athletes</h2>
-    </div>
-    <div class="test-grid">
+  <div class="container" style="text-align:center;margin-bottom:2.5rem">
+    <div class="section-tag">Testimonials</div>
+    <h2 class="section-title">Coaches trust Reflect</h2>
+  </div>
+  <div class="marquee-wrapper">
+    <div class="marquee-track">
+      <!-- first set -->
       <div class="test-card">
-        <blockquote>&ldquo;The simplicity is what sold me. My athletes respond because it takes less time than tying their shoes. I get the data I need without the hassle of spreadsheets.&rdquo;</blockquote>
+        <blockquote>&ldquo;The simplicity is what sold me. My athletes respond because it takes less time than tying their shoes. I get the data I need without the hassle.&rdquo;</blockquote>
         <div class="name">Rachel Whitfield</div>
         <div class="role">Head Coach, D3 Women's Volleyball</div>
       </div>
       <div class="test-card">
-        <blockquote>&ldquo;We identified a concerning fatigue pattern across our midfielders two weeks before conference play. Adjusted our training and went undefeated.&rdquo;</blockquote>
+        <blockquote>&ldquo;We identified a fatigue pattern across our midfielders two weeks before conference play. Adjusted training and went undefeated.&rdquo;</blockquote>
         <div class="name">Andre Mitchell</div>
         <div class="role">Director of Performance, Club Soccer</div>
       </div>
       <div class="test-card">
-        <blockquote>&ldquo;I have 52 athletes across three teams. Before Reflect, I had no system. Now I have a real-time picture of every single one. This is a necessity.&rdquo;</blockquote>
+        <blockquote>&ldquo;I have 52 athletes across three teams. Before Reflect, I had no system. Now I have a real-time picture of every single one.&rdquo;</blockquote>
         <div class="name">Kim Tanaka</div>
         <div class="role">Athletic Director, Lincoln Prep Academy</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;The injury heatmap alone justified adoption. We caught a systemic ankle issue across our defensive unit that traditional check-ins completely missed.&rdquo;</blockquote>
+        <div class="name">Naomi Blackwell</div>
+        <div class="role">Athletic Trainer, Women's Basketball</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;Zero friction for athletes. If it took more than 60 seconds, compliance would drop. Reflect nailed the interface.&rdquo;</blockquote>
+        <div class="name">Tom Rearden</div>
+        <div class="role">Head of Performance, Collegiate Swimming</div>
+      </div>
+      <!-- duplicate set for seamless loop -->
+      <div class="test-card">
+        <blockquote>&ldquo;The simplicity is what sold me. My athletes respond because it takes less time than tying their shoes. I get the data I need without the hassle.&rdquo;</blockquote>
+        <div class="name">Rachel Whitfield</div>
+        <div class="role">Head Coach, D3 Women's Volleyball</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;We identified a fatigue pattern across our midfielders two weeks before conference play. Adjusted training and went undefeated.&rdquo;</blockquote>
+        <div class="name">Andre Mitchell</div>
+        <div class="role">Director of Performance, Club Soccer</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;I have 52 athletes across three teams. Before Reflect, I had no system. Now I have a real-time picture of every single one.&rdquo;</blockquote>
+        <div class="name">Kim Tanaka</div>
+        <div class="role">Athletic Director, Lincoln Prep Academy</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;The injury heatmap alone justified adoption. We caught a systemic ankle issue across our defensive unit that traditional check-ins completely missed.&rdquo;</blockquote>
+        <div class="name">Naomi Blackwell</div>
+        <div class="role">Athletic Trainer, Women's Basketball</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;Zero friction for athletes. If it took more than 60 seconds, compliance would drop. Reflect nailed the interface.&rdquo;</blockquote>
+        <div class="name">Tom Rearden</div>
+        <div class="role">Head of Performance, Collegiate Swimming</div>
       </div>
     </div>
   </div>
@@ -342,9 +652,11 @@
 <!-- CTA -->
 <section class="cta">
   <div class="container">
-    <h2>Start coaching with clarity</h2>
-    <p>Check-ins that take 60 seconds. Insights that last a season.</p>
-    <a href="https://reflectsalus.app/" class="btn btn-solid" style="font-size:1.05rem;padding:1rem 2.5rem">Get Started Free</a>
+    <div class="cta-inner">
+      <h2><span class="gradient-text">Start coaching with clarity</span></h2>
+      <p>Check-ins that take 60 seconds. Insights that last a season.</p>
+      <a href="https://reflectsalus.app/" class="btn-shimmer" style="font-size:1.05rem;padding:1.1rem 2.75rem">Get Started Free</a>
+    </div>
   </div>
 </section>
 

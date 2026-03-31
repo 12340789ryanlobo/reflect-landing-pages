@@ -12,6 +12,7 @@
       --white: #FFFFFF;
       --accent: #FF3300;
       --gray: #888888;
+      --dark-gray: #1a1a1a;
       --border: 2px solid var(--black);
     }
 
@@ -20,6 +21,7 @@
       background: var(--white);
       color: var(--black);
       line-height: 1.5;
+      overflow-x: hidden;
     }
 
     /* GRID OVERLAY */
@@ -27,11 +29,65 @@
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
       background-size: 40px 40px;
       pointer-events: none;
       z-index: -1;
+    }
+
+    /* ANIMATED GRADIENT TEXT */
+    @keyframes gradient-shift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #FF3300, #FF6600, #FF0066, #FF3300);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradient-shift 4s ease infinite;
+    }
+
+    /* SHIMMER BUTTON */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .shimmer-btn {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      text-decoration: none;
+      text-transform: uppercase;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      padding: 16px 40px;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 2.5s ease-in-out infinite;
+    }
+    .shimmer-btn:hover {
+      background: var(--accent);
+    }
+
+    /* NEON GLOW CARD */
+    @keyframes neon-pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,51,0,0.3), 0 0 20px rgba(255,51,0,0.1); }
+      50% { box-shadow: 0 0 16px rgba(255,51,0,0.5), 0 0 40px rgba(255,51,0,0.2); }
     }
 
     /* NAV */
@@ -48,7 +104,7 @@
       text-transform: uppercase;
       letter-spacing: 0.15em;
     }
-    nav a {
+    nav a.nav-link {
       color: var(--black);
       text-decoration: none;
       text-transform: uppercase;
@@ -57,7 +113,7 @@
       border: var(--border);
       padding: 8px 16px;
     }
-    nav a:hover {
+    nav a.nav-link:hover {
       background: var(--black);
       color: var(--white);
     }
@@ -65,21 +121,20 @@
     /* HERO */
     .hero {
       border-bottom: var(--border);
-      padding: 80px 24px;
+      padding: 100px 24px;
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 48px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
     .hero h1 {
-      font-size: clamp(3rem, 8vw, 6rem);
+      font-size: clamp(3rem, 8vw, 7rem);
       font-weight: 900;
       text-transform: uppercase;
-      line-height: 0.95;
+      line-height: 0.92;
       letter-spacing: -0.04em;
       font-family: Arial, Helvetica, sans-serif;
-    }
-    .hero h1 span {
-      color: var(--accent);
     }
     .hero-meta {
       display: flex;
@@ -93,34 +148,34 @@
       line-height: 1.7;
       max-width: 280px;
     }
-    .hero-cta {
-      display: inline-block;
-      background: var(--black);
-      color: var(--white);
-      text-decoration: none;
+    .hero-label {
+      font-size: 0.65rem;
       text-transform: uppercase;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      letter-spacing: 0.15em;
-      padding: 16px 32px;
-      border: none;
-      margin-top: 24px;
-    }
-    .hero-cta:hover {
-      background: var(--accent);
+      letter-spacing: 0.2em;
+      color: var(--gray);
+      margin-bottom: 8px;
     }
 
     /* TICKER */
     .ticker {
       border-bottom: var(--border);
-      padding: 12px 24px;
+      padding: 12px 0;
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.2em;
       color: var(--gray);
+      overflow: hidden;
+      position: relative;
+    }
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
       display: flex;
       gap: 40px;
-      overflow: hidden;
+      animation: ticker-scroll 20s linear infinite;
+      width: max-content;
     }
     .ticker span { white-space: nowrap; }
     .ticker span::before { content: '[ '; }
@@ -129,13 +184,13 @@
     /* SECTION */
     section {
       border-bottom: var(--border);
-      padding: 64px 24px;
+      padding: 80px 24px;
     }
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 48px;
+      margin-bottom: 56px;
       flex-wrap: wrap;
       gap: 16px;
     }
@@ -153,68 +208,166 @@
       letter-spacing: -0.02em;
     }
 
-    /* WHAT IT DOES */
-    .product-grid {
+    /* SMS DEMO SECTION */
+    .sms-demo {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .sms-demo-text h3 {
+      font-family: Arial, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .sms-demo-text p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .phone-frame {
+      background: var(--dark-gray);
+      border: var(--border);
+      padding: 16px;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+    .phone-header {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      padding-bottom: 12px;
+      border-bottom: 1px solid #333;
+      margin-bottom: 16px;
+      color: #666;
+    }
+    .sms-bubble {
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      max-width: 85%;
+    }
+    .sms-incoming {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #333;
+    }
+    .sms-outgoing {
+      background: var(--accent);
+      color: var(--white);
+      margin-left: auto;
+    }
+    .sms-time {
+      font-size: 0.6rem;
+      color: #555;
+      text-align: right;
+      margin-top: -4px;
+      margin-bottom: 10px;
+    }
+
+    /* NOTIFICATION CARDS */
+    .notif-card {
+      background: var(--dark-gray);
+      border: 1px solid #333;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: neon-pulse 3s ease-in-out infinite;
+    }
+    .notif-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .notif-dot.red { background: var(--accent); }
+    .notif-dot.yellow { background: #FFaa00; }
+    .notif-dot.green { background: #00CC66; }
+    .notif-content {
+      flex: 1;
+    }
+    .notif-title {
+      font-size: 0.75rem;
+      color: #e0e0e0;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .notif-body {
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    /* BENTO GRID */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 0;
       border: var(--border);
     }
-    .product-cell {
-      padding: 32px;
+    .bento-item {
+      padding: 36px 28px;
       border-right: var(--border);
       border-bottom: var(--border);
+      position: relative;
+      overflow: hidden;
     }
-    .product-cell:nth-child(2n) { border-right: none; }
-    .product-cell:nth-last-child(-n+2) { border-bottom: none; }
-    .product-cell h3 {
+    .bento-item:nth-child(3n) { border-right: none; }
+    .bento-item:nth-child(n+4) { border-bottom: none; }
+    .bento-item.span-2 {
+      grid-column: span 2;
+    }
+    .bento-item:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+    .bento-item:hover .bento-desc { color: #aaa; }
+    .bento-item:hover .bento-num { color: var(--accent); }
+    .bento-num {
       font-family: Arial, sans-serif;
-      font-size: 1.1rem;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .bento-item h3 {
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
       font-weight: 900;
       text-transform: uppercase;
       margin-bottom: 8px;
+      letter-spacing: 0.02em;
     }
-    .product-cell p {
-      font-size: 0.8rem;
+    .bento-desc {
+      font-size: 0.78rem;
       color: var(--gray);
       line-height: 1.6;
     }
-    .product-num {
-      font-size: 2.5rem;
-      font-weight: 900;
-      font-family: Arial, sans-serif;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    /* FEATURES */
-    .features-list {
-      list-style: none;
-    }
-    .features-list li {
-      display: grid;
-      grid-template-columns: 60px 1fr 2fr;
-      gap: 24px;
-      padding: 24px 0;
-      border-bottom: 1px solid #ccc;
-      align-items: baseline;
-    }
-    .features-list li:last-child { border-bottom: none; }
-    .feat-num {
-      font-family: Arial, sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--accent);
-    }
-    .feat-name {
-      font-size: 0.85rem;
+    .bento-tag {
+      display: inline-block;
+      font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-    .feat-desc {
-      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      border: 1px solid var(--gray);
+      padding: 3px 8px;
+      margin-top: 12px;
       color: var(--gray);
-      line-height: 1.6;
+    }
+    .bento-item:hover .bento-tag {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     /* HOW IT WORKS */
@@ -224,18 +377,26 @@
       border: var(--border);
     }
     .step-brutal {
-      padding: 32px 20px;
+      padding: 36px 20px;
       border-right: var(--border);
       position: relative;
     }
     .step-brutal:last-child { border-right: none; }
+    .step-brutal:hover {
+      background: var(--black);
+      color: var(--white);
+    }
+    .step-brutal:hover p { color: #aaa; }
     .step-brutal-num {
       font-family: Arial, sans-serif;
-      font-size: 4rem;
+      font-size: 4.5rem;
       font-weight: 900;
       line-height: 1;
       margin-bottom: 16px;
       color: var(--black);
+    }
+    .step-brutal:hover .step-brutal-num {
+      color: var(--accent);
     }
     .step-brutal h3 {
       font-size: 0.8rem;
@@ -260,6 +421,10 @@
       padding: 4px 0;
     }
     .step-brutal:last-child::after { display: none; }
+    .step-brutal:hover::after {
+      background: var(--black);
+      color: var(--white);
+    }
 
     /* TESTIMONIALS */
     .test-brutal-grid {
@@ -271,8 +436,13 @@
     .test-brutal {
       padding: 32px;
       border-right: var(--border);
+      position: relative;
+      overflow: hidden;
     }
     .test-brutal:last-child { border-right: none; }
+    .test-brutal:hover {
+      background: #fafafa;
+    }
     .test-brutal blockquote {
       font-size: 0.85rem;
       line-height: 1.7;
@@ -285,6 +455,7 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
+      font-weight: 700;
     }
     .test-brutal .role {
       font-size: 0.65rem;
@@ -292,44 +463,62 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
+    .test-brutal .stat-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: var(--black);
+      color: var(--white);
+      padding: 4px 10px;
+      margin-top: 12px;
+    }
 
     /* FINAL CTA */
     .final-brutal {
       text-align: center;
-      padding: 100px 24px;
+      padding: 120px 24px;
       background: var(--black);
       color: var(--white);
+      position: relative;
+      overflow: hidden;
+      border-bottom: none;
+    }
+    .final-brutal::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
     }
     .final-brutal h2 {
       font-family: Arial, sans-serif;
-      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
       font-weight: 900;
       text-transform: uppercase;
-      line-height: 1;
+      line-height: 0.95;
       letter-spacing: -0.03em;
       margin-bottom: 24px;
+      position: relative;
     }
-    .final-brutal h2 span { color: var(--accent); }
     .final-brutal p {
       font-size: 0.85rem;
       color: var(--gray);
       margin-bottom: 40px;
-      max-width: 400px;
+      max-width: 420px;
       margin-left: auto;
       margin-right: auto;
+      position: relative;
     }
-    .final-brutal a {
-      display: inline-block;
+    .final-brutal .shimmer-btn {
       border: 2px solid var(--white);
-      color: var(--white);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      font-family: 'Courier New', monospace;
-      font-size: 0.8rem;
-      padding: 16px 40px;
+      background: transparent;
+      position: relative;
     }
-    .final-brutal a:hover {
+    .final-brutal .shimmer-btn:hover {
       background: var(--accent);
       border-color: var(--accent);
     }
@@ -342,19 +531,20 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--gray);
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
     }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
       .hero { grid-template-columns: 1fr; }
       .hero-meta { border-left: none; padding-left: 0; border-top: var(--border); padding-top: 24px; }
-      .product-grid { grid-template-columns: 1fr; }
-      .product-cell { border-right: none; }
-      .product-cell:nth-last-child(-n+2) { border-bottom: var(--border); }
-      .product-cell:last-child { border-bottom: none; }
-      .features-list li { grid-template-columns: 40px 1fr; }
-      .feat-desc { grid-column: 1 / -1; }
+      .sms-demo { grid-template-columns: 1fr; }
+      .bento-grid { grid-template-columns: 1fr; }
+      .bento-item { border-right: none; border-bottom: var(--border); }
+      .bento-item:nth-child(n+4) { border-bottom: var(--border); }
+      .bento-item:last-child { border-bottom: none; }
+      .bento-item.span-2 { grid-column: span 1; }
       .steps-brutal { grid-template-columns: 1fr 1fr; }
       .step-brutal { border-bottom: var(--border); }
       .step-brutal::after { display: none; }
@@ -371,102 +561,149 @@
   <!-- NAV -->
   <nav>
     <div class="logo">REFLECT</div>
-    <a href="https://reflectsalus.app/">Start Now &rarr;</a>
+    <a href="https://reflectsalus.app/" class="nav-link">Start Now &rarr;</a>
   </nav>
 
   <!-- HERO -->
-  <section class="hero" style="padding-top:100px;padding-bottom:100px;">
+  <section class="hero">
     <div>
-      <h1>Stop<br>guessing.<br><span>Start</span><br>knowing.</h1>
+      <h1>Stop<br>guessing.<br><span class="gradient-text">Start</span><br>knowing.</h1>
     </div>
     <div class="hero-meta">
-      <p>Reflect automates post-practice and post-competition athlete check-ins via SMS and WhatsApp. Real-time wellness data. Instant alerts. No app install.</p>
       <div>
-        <a href="https://reflectsalus.app/" class="hero-cta">Get Started &rarr;</a>
+        <div class="hero-label">Athlete wellness automation</div>
+        <p>Reflect automates post-practice and post-competition athlete check-ins via SMS and WhatsApp. Real-time wellness data. Instant alerts. No app install required.</p>
+      </div>
+      <div>
+        <a href="https://reflectsalus.app/" class="shimmer-btn">Get Started &rarr;</a>
       </div>
     </div>
   </section>
 
   <!-- TICKER -->
   <div class="ticker">
-    <span>SMS / WhatsApp</span>
-    <span>60-Second Check-Ins</span>
-    <span>Real-Time Alerts</span>
-    <span>No App Install</span>
-    <span>18-Region Heatmap</span>
-    <span>AI Assistant</span>
-    <span>Team Dashboards</span>
-    <span>Custom Templates</span>
+    <div class="ticker-track">
+      <span>SMS / WhatsApp</span>
+      <span>60-Second Check-Ins</span>
+      <span>Real-Time Alerts</span>
+      <span>No App Install</span>
+      <span>18-Region Heatmap</span>
+      <span>AI Assistant</span>
+      <span>Team Dashboards</span>
+      <span>Custom Templates</span>
+      <span>SMS / WhatsApp</span>
+      <span>60-Second Check-Ins</span>
+      <span>Real-Time Alerts</span>
+      <span>No App Install</span>
+      <span>18-Region Heatmap</span>
+      <span>AI Assistant</span>
+      <span>Team Dashboards</span>
+      <span>Custom Templates</span>
+    </div>
   </div>
 
-  <!-- WHAT IT DOES -->
+  <!-- SMS DEMO SECTION -->
   <section>
     <div class="section-header">
-      <span class="section-num">01 / Product</span>
-      <h2 class="section-title">What Reflect Does</h2>
+      <span class="section-num">01 / Demo</span>
+      <h2 class="section-title">See It Work</h2>
     </div>
-    <div class="product-grid">
-      <div class="product-cell">
-        <div class="product-num">01</div>
-        <h3>Automated Check-Ins</h3>
-        <p>Brief surveys go out automatically after practices and games via SMS or WhatsApp. Athletes respond in under 60 seconds. No app download. No friction.</p>
+    <div class="sms-demo">
+      <div class="sms-demo-text">
+        <h3>60 Seconds. That's It.</h3>
+        <p>Athletes reply to a text. No app. No login. No friction. Coaches get a living dashboard that updates in real time.</p>
+        <p>When something is wrong, you know immediately. Flag alerts fire for low readiness, injury concerns, and unusual patterns.</p>
+
+        <!-- Notification cards -->
+        <div class="notif-card">
+          <div class="notif-dot red"></div>
+          <div class="notif-content">
+            <div class="notif-title">Flag: Low Readiness</div>
+            <div class="notif-body">Jake Morrison reported readiness 2/10 &mdash; third consecutive low score</div>
+          </div>
+        </div>
+        <div class="notif-card" style="animation-delay: 1s;">
+          <div class="notif-dot yellow"></div>
+          <div class="notif-content">
+            <div class="notif-title">Flag: Injury Concern</div>
+            <div class="notif-body">Sarah Chen &mdash; left ankle pain severity 6/10 post-practice</div>
+          </div>
+        </div>
+        <div class="notif-card" style="animation-delay: 2s;">
+          <div class="notif-dot green"></div>
+          <div class="notif-content">
+            <div class="notif-title">Check-In Complete</div>
+            <div class="notif-body">Varsity Soccer &mdash; 23/24 athletes responded (96%)</div>
+          </div>
+        </div>
       </div>
-      <div class="product-cell">
-        <div class="product-num">02</div>
-        <h3>Real-Time Alerts</h3>
-        <p>When an athlete flags low readiness, injury pain, or high fatigue, you know instantly. Alerts arrive before problems compound.</p>
-      </div>
-      <div class="product-cell">
-        <div class="product-num">03</div>
-        <h3>Wellness Dashboards</h3>
-        <p>Every check-in populates your coaching dashboard. Readiness scores, energy levels, effort ratings, and injury reports in one place.</p>
-      </div>
-      <div class="product-cell">
-        <div class="product-num">04</div>
-        <h3>AI-Powered Insights</h3>
-        <p>Ask the AI assistant questions in plain language. "Which players flagged hamstring pain this week?" Get answers in seconds.</p>
+
+      <div class="phone-frame">
+        <div class="phone-header">Reflect &mdash; SMS Check-In</div>
+        <div class="sms-incoming">Hey Maria! Quick post-practice check-in for Varsity Soccer (03/29). How's your readiness today? (1-10)</div>
+        <div class="sms-time">6:15 PM</div>
+        <div class="sms-outgoing">7</div>
+        <div class="sms-time">6:15 PM</div>
+        <div class="sms-incoming">Thanks! Energy level? (1-10)</div>
+        <div class="sms-time">6:15 PM</div>
+        <div class="sms-outgoing">6</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-incoming">How hard was today's effort? (1-10)</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-outgoing">8</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-incoming">Any pain or injury to report? (yes/no)</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-outgoing">yes - right knee</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-incoming">Got it. Severity 1-10?</div>
+        <div class="sms-time">6:16 PM</div>
+        <div class="sms-outgoing">3</div>
+        <div class="sms-time">6:17 PM</div>
+        <div class="sms-incoming">All logged. Take care of that knee, Maria. See you tomorrow.</div>
+        <div class="sms-time">6:17 PM</div>
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
+  <!-- FEATURES — BENTO GRID -->
   <section>
     <div class="section-header">
       <span class="section-num">02 / Features</span>
       <h2 class="section-title">Capabilities</h2>
     </div>
-    <ul class="features-list">
-      <li>
-        <span class="feat-num">01</span>
-        <span class="feat-name">Automatic Flag Alerts</span>
-        <span class="feat-desc">Instant notifications for low readiness, injury concerns, high pain levels, and recovery issues. Never miss a warning sign.</span>
-      </li>
-      <li>
-        <span class="feat-num">02</span>
-        <span class="feat-name">Injury Body Heatmap</span>
-        <span class="feat-desc">Visual injury tracking across 18 anatomical regions. See which body areas are accumulating reports over time.</span>
-      </li>
-      <li>
-        <span class="feat-num">03</span>
-        <span class="feat-name">Team Trends</span>
-        <span class="feat-desc">Readiness, energy, and effort tracked over time. Understand how your team responds to training load across the season.</span>
-      </li>
-      <li>
-        <span class="feat-num">04</span>
-        <span class="feat-name">Per-Player Drill-Down</span>
-        <span class="feat-desc">Deep-dive into individual athlete data. View historical trends, injury logs, and wellness patterns per player.</span>
-      </li>
-      <li>
-        <span class="feat-num">05</span>
-        <span class="feat-name">Fitness Leaderboards</span>
-        <span class="feat-desc">Gamified fitness tracking to keep athletes engaged and motivated. Drive accountability through friendly competition.</span>
-      </li>
-      <li>
-        <span class="feat-num">06</span>
-        <span class="feat-name">Custom Templates</span>
-        <span class="feat-desc">Build your own check-in question sets tailored to your sport, program, and athlete needs.</span>
-      </li>
-    </ul>
+    <div class="bento-grid">
+      <div class="bento-item span-2">
+        <div class="bento-num">01</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p class="bento-desc">Instant notifications for low readiness, injury concerns, high pain, and abnormal patterns. The system watches every check-in so you don't have to. Get flagged before problems compound.</p>
+        <span class="bento-tag">Real-Time</span>
+      </div>
+      <div class="bento-item">
+        <div class="bento-num">02</div>
+        <h3>Injury Heatmap</h3>
+        <p class="bento-desc">Visual injury tracking across 18 anatomical regions. See patterns that spreadsheets can never reveal.</p>
+        <span class="bento-tag">Visual</span>
+      </div>
+      <div class="bento-item">
+        <div class="bento-num">03</div>
+        <h3>Team Trends</h3>
+        <p class="bento-desc">Readiness, energy, and effort tracked over time. Understand training load impact across the season.</p>
+        <span class="bento-tag">Analytics</span>
+      </div>
+      <div class="bento-item">
+        <div class="bento-num">04</div>
+        <h3>AI Assistant</h3>
+        <p class="bento-desc">Ask in plain language. "Who flagged hamstring pain this week?" Answers in seconds.</p>
+        <span class="bento-tag">AI</span>
+      </div>
+      <div class="bento-item span-2" style="border-bottom: none;">
+        <div class="bento-num">05</div>
+        <h3>Per-Player Drill-Down + Custom Templates</h3>
+        <p class="bento-desc">Deep-dive into individual athlete history with full wellness logs and trend analysis. Build your own check-in question sets tailored to your sport, program, and athlete needs. Leaderboards drive accountability through friendly competition.</p>
+        <span class="bento-tag">Personalization</span>
+      </div>
+    </div>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -479,17 +716,17 @@
       <div class="step-brutal">
         <div class="step-brutal-num">01</div>
         <h3>Configure</h3>
-        <p>Set up check-in schedules, choose SMS or WhatsApp, customize your questions.</p>
+        <p>Set up check-in schedules, choose SMS or WhatsApp, customize your questions. Under 5 minutes.</p>
       </div>
       <div class="step-brutal">
         <div class="step-brutal-num">02</div>
         <h3>Send</h3>
-        <p>Check-ins go out automatically after practice or competition. Zero manual work.</p>
+        <p>Check-ins go out automatically after practice or competition. Zero manual work from you.</p>
       </div>
       <div class="step-brutal">
         <div class="step-brutal-num">03</div>
         <h3>Collect</h3>
-        <p>Athletes respond in 60 seconds. Data populates your dashboard in real time.</p>
+        <p>Athletes respond in 60 seconds. Data populates your dashboard instantly in real time.</p>
       </div>
       <div class="step-brutal">
         <div class="step-brutal-num">04</div>
@@ -510,29 +747,33 @@
         <blockquote>"I manage 48 athletes. Before Reflect, I had no systematic way to check in on all of them. Now I do, and it takes me zero extra time."</blockquote>
         <div class="author">Coach Williams</div>
         <div class="role">Head Coach, D2 Men's Lacrosse</div>
+        <div class="stat-badge">48 Athletes / 0 Extra Minutes</div>
       </div>
       <div class="test-brutal">
         <blockquote>"The flag alerts are a game changer. We caught three potential overtraining situations early this season that would have become injuries."</blockquote>
         <div class="author">Dr. Priya Nair</div>
         <div class="role">Sports Medicine, University Program</div>
+        <div class="stat-badge">3 Injuries Prevented</div>
       </div>
       <div class="test-brutal">
         <blockquote>"Our response rate jumped from nothing to 92% because athletes just reply to a text. No login, no app, no friction. It just works."</blockquote>
         <div class="author">Tomasz Krol</div>
         <div class="role">Strength Coach, Club Volleyball</div>
+        <div class="stat-badge">0% &rarr; 92% Response Rate</div>
       </div>
     </div>
   </section>
 
   <!-- FINAL CTA -->
   <div class="final-brutal">
-    <h2>Start <span>now.</span></h2>
+    <h2>Start <span class="gradient-text">now.</span></h2>
     <p>Check-ins that take 60 seconds. Insights that last a season. No credit card required.</p>
-    <a href="https://reflectsalus.app/">Get Access &rarr;</a>
+    <a href="https://reflectsalus.app/" class="shimmer-btn">Get Access &rarr;</a>
   </div>
 
   <footer>
-    &copy; 2026 Reflect &mdash; Athlete Wellness Automation
+    <span>&copy; 2026 Reflect</span>
+    <span>Athlete Wellness Automation</span>
   </footer>
 
 </body>

@@ -11,11 +11,13 @@
       --cream: #F5F0E8;
       --warm-white: #FDFBF7;
       --terracotta: #C4644A;
+      --terracotta-dark: #a3503a;
       --deep-brown: #2C1810;
       --brown: #5C3D2E;
       --tan: #D4B896;
       --muted: #8C7A6B;
       --rule: #D4C8B8;
+      --gold: #B8860B;
     }
 
     body {
@@ -24,6 +26,54 @@
       color: var(--deep-brown);
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* SHINE BORDER */
+    @keyframes shine-rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .shine-border {
+      position: relative;
+      overflow: hidden;
+    }
+    .shine-border::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: conic-gradient(from 0deg, transparent, var(--terracotta), var(--gold), transparent);
+      animation: shine-rotate 4s linear infinite;
+      z-index: -1;
+      border-radius: inherit;
+    }
+    .shine-border::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--warm-white);
+      z-index: -1;
+      border-radius: inherit;
+    }
+
+    /* MARQUEE */
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ANIMATED GRADIENT TEXT */
+    @keyframes editorial-gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* SHIMMER BUTTON */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
     }
 
     /* NAV */
@@ -53,8 +103,20 @@
       color: var(--muted);
       font-size: 0.85rem;
       letter-spacing: 0.04em;
+      position: relative;
     }
-    header nav a:hover { color: var(--deep-brown); }
+    header nav a:not(.nav-cta-ed):hover { color: var(--deep-brown); }
+    header nav a:not(.nav-cta-ed)::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--terracotta);
+      transition: width 0.3s ease;
+    }
+    header nav a:not(.nav-cta-ed):hover::after { width: 100%; }
     .nav-cta-ed {
       background: var(--terracotta);
       color: var(--warm-white);
@@ -64,13 +126,23 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       font-family: -apple-system, sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-cta-ed::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
     }
 
     /* HERO */
     .hero-ed {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 32px 60px;
+      padding: 100px 32px 80px;
       display: grid;
       grid-template-columns: 1.3fr 1fr;
       gap: 64px;
@@ -78,7 +150,7 @@
       border-bottom: 1px solid var(--rule);
     }
     .hero-ed h1 {
-      font-size: clamp(3rem, 6vw, 5rem);
+      font-size: clamp(3rem, 6vw, 5.2rem);
       line-height: 1.05;
       font-weight: 400;
       letter-spacing: -0.02em;
@@ -86,7 +158,12 @@
     }
     .hero-ed h1 em {
       font-style: normal;
-      color: var(--terracotta);
+      background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--terracotta-dark), var(--terracotta));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: editorial-gradient 5s ease infinite;
     }
     .hero-right {
       padding-bottom: 8px;
@@ -112,11 +189,21 @@
     .btn-ed-primary {
       background: var(--deep-brown);
       color: var(--warm-white);
-      padding: 14px 32px;
+      padding: 14px 36px;
       text-decoration: none;
       font-family: -apple-system, sans-serif;
       font-size: 0.85rem;
       letter-spacing: 0.04em;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ed-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
     }
     .btn-ed-secondary {
       color: var(--deep-brown);
@@ -125,7 +212,9 @@
       font-size: 0.9rem;
       border-bottom: 1px solid var(--deep-brown);
       font-style: italic;
+      transition: color 0.3s ease;
     }
+    .btn-ed-secondary:hover { color: var(--terracotta); border-color: var(--terracotta); }
 
     /* DECORATIVE DIVIDER */
     .divider {
@@ -141,23 +230,105 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    /* PULL QUOTE */
+    /* MARQUEE TESTIMONIALS */
+    .marquee-section {
+      border-bottom: 1px solid var(--rule);
+      padding: 40px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .marquee-section::before,
+    .marquee-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee-section::before {
+      left: 0;
+      background: linear-gradient(to right, var(--warm-white), transparent);
+    }
+    .marquee-section::after {
+      right: 0;
+      background: linear-gradient(to left, var(--warm-white), transparent);
+    }
+    .marquee-track {
+      display: flex;
+      gap: 32px;
+      animation: marquee 35s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      flex-shrink: 0;
+      width: 380px;
+      padding: 28px 32px;
+      background: var(--warm-white);
+      border: 1px solid var(--rule);
+      position: relative;
+    }
+    .marquee-item blockquote {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      font-style: italic;
+      color: var(--brown);
+      margin-bottom: 16px;
+    }
+    .marquee-item .author {
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-style: normal;
+      letter-spacing: 0.04em;
+    }
+    .marquee-item .role {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* PULL QUOTE WITH SHINE BORDER */
     .pull-quote {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 72px 32px;
+      padding: 80px 32px;
       text-align: center;
       border-bottom: 1px solid var(--rule);
     }
-    .pull-quote blockquote {
+    .pull-quote-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      background: var(--warm-white);
+    }
+    .pull-quote-inner::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      background: conic-gradient(from 0deg, transparent 0%, var(--terracotta) 25%, var(--gold) 50%, transparent 75%);
+      animation: shine-rotate 5s linear infinite;
+      z-index: 0;
+    }
+    .pull-quote-inner::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--warm-white);
+      z-index: 0;
+    }
+    .pull-quote-inner blockquote {
+      position: relative;
+      z-index: 1;
       font-size: clamp(1.5rem, 3vw, 2.2rem);
       font-style: italic;
       line-height: 1.5;
-      max-width: 800px;
-      margin: 0 auto;
       color: var(--brown);
     }
-    .pull-quote cite {
+    .pull-quote-inner cite {
+      position: relative;
+      z-index: 1;
       display: block;
       margin-top: 20px;
       font-size: 0.8rem;
@@ -207,17 +378,160 @@
     .product-ed-columns article {
       padding: 24px 0;
       border-top: 1px solid var(--rule);
+      position: relative;
     }
     .product-ed-columns article h3 {
       font-size: 1rem;
       font-weight: 700;
       margin-bottom: 8px;
+      transition: color 0.3s ease;
     }
     .product-ed-columns article p {
       font-size: 0.9rem;
       color: var(--muted);
       line-height: 1.7;
     }
+    .product-ed-columns article .hover-detail {
+      font-size: 0.8rem;
+      color: var(--terracotta);
+      margin-top: 8px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+    .product-ed-columns article:hover .hover-detail {
+      max-height: 60px;
+      opacity: 1;
+    }
+    .product-ed-columns article:hover h3 {
+      color: var(--terracotta);
+    }
+
+    /* DASHBOARD DATA PREVIEW */
+    .dashboard-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    .dashboard-inner {
+      background: var(--deep-brown);
+      padding: 60px;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      color: var(--cream);
+      margin: 60px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-inner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(196,100,74,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dash-left h3 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .dash-left p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+    .dash-left .dash-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--terracotta);
+      margin-bottom: 8px;
+      font-family: -apple-system, sans-serif;
+    }
+
+    /* Dashboard mock cards */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .dash-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+      position: relative;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .dash-card:hover {
+      border-color: rgba(196,100,74,0.5);
+      background: rgba(255,255,255,0.1);
+    }
+    .dash-card .stat-num {
+      font-family: -apple-system, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .dash-card .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+      margin-top: 4px;
+      font-family: -apple-system, sans-serif;
+    }
+    .dash-card .stat-trend {
+      font-size: 0.65rem;
+      margin-top: 8px;
+      font-family: -apple-system, sans-serif;
+      color: var(--terracotta);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      opacity: 0;
+    }
+    .dash-card:hover .stat-trend {
+      max-height: 30px;
+      opacity: 1;
+    }
+
+    /* Bar chart mock */
+    .dash-chart {
+      grid-column: span 2;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px;
+    }
+    .dash-chart .chart-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+      margin-bottom: 16px;
+      font-family: -apple-system, sans-serif;
+    }
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 80px;
+    }
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--terracotta), var(--gold));
+      border-radius: 2px 2px 0 0;
+      min-height: 8px;
+      transition: opacity 0.3s ease;
+    }
+    .chart-bar:hover { opacity: 0.7; }
 
     /* FEATURES */
     .features-ed {
@@ -254,9 +568,10 @@
       padding: 32px 28px 32px 0;
       border-bottom: 1px solid var(--rule);
       border-right: 1px solid var(--rule);
+      position: relative;
+      cursor: default;
     }
     .feature-ed:nth-child(3n) { border-right: none; }
-    .feature-ed:nth-child(n+4) { }
     .feature-ed-num {
       font-family: -apple-system, sans-serif;
       font-size: 0.7rem;
@@ -270,11 +585,27 @@
       font-weight: 400;
       font-style: italic;
       margin-bottom: 10px;
+      transition: color 0.3s ease;
     }
     .feature-ed p {
       font-size: 0.85rem;
       color: var(--muted);
       line-height: 1.7;
+    }
+    .feature-ed .feature-hover-info {
+      font-size: 0.75rem;
+      color: var(--terracotta);
+      font-style: italic;
+      margin-top: 10px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+    }
+    .feature-ed:hover h3 { color: var(--terracotta); }
+    .feature-ed:hover .feature-hover-info {
+      max-height: 40px;
+      opacity: 1;
     }
 
     /* HOW IT WORKS */
@@ -298,6 +629,7 @@
     }
     .how-step {
       text-align: center;
+      position: relative;
     }
     .how-step-circle {
       width: 64px;
@@ -312,6 +644,11 @@
       font-weight: 700;
       color: var(--terracotta);
       margin-bottom: 20px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .how-step:hover .how-step-circle {
+      background: var(--terracotta);
+      color: var(--warm-white);
     }
     .how-step h3 {
       font-size: 1rem;
@@ -322,97 +659,6 @@
       font-size: 0.85rem;
       color: var(--muted);
       line-height: 1.6;
-    }
-
-    /* VISUAL PANEL */
-    .visual-panel {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 32px;
-    }
-    .visual-panel-inner {
-      background: linear-gradient(135deg, var(--deep-brown) 0%, #4A2E20 40%, var(--terracotta) 100%);
-      padding: 60px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      color: var(--cream);
-      margin: 60px 0;
-    }
-    .vp-left h3 {
-      font-size: 1.6rem;
-      font-weight: 400;
-      font-style: italic;
-      margin-bottom: 16px;
-      line-height: 1.3;
-    }
-    .vp-left p {
-      font-size: 0.95rem;
-      line-height: 1.8;
-      opacity: 0.8;
-    }
-    .vp-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-    .vp-stat {
-      padding: 20px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-    .vp-stat .num {
-      font-family: -apple-system, sans-serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-    }
-    .vp-stat .lbl {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-
-    /* TESTIMONIALS */
-    .test-ed {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 80px 32px;
-      border-bottom: 1px solid var(--rule);
-    }
-    .test-ed > h2 {
-      font-size: 2rem;
-      font-weight: 400;
-      font-style: italic;
-      margin-bottom: 48px;
-    }
-    .test-ed-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-    }
-    .test-ed-item {
-      border-top: 2px solid var(--deep-brown);
-      padding-top: 28px;
-    }
-    .test-ed-item blockquote {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      font-style: italic;
-      margin-bottom: 20px;
-      color: var(--brown);
-    }
-    .test-ed-item .author {
-      font-size: 0.8rem;
-      font-weight: 700;
-      font-style: normal;
-      letter-spacing: 0.04em;
-    }
-    .test-ed-item .role {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-style: normal;
     }
 
     /* FINAL CTA */
@@ -432,7 +678,12 @@
     }
     .final-ed h2 em {
       font-style: normal;
-      color: var(--terracotta);
+      background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--terracotta-dark), var(--terracotta));
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: editorial-gradient 5s ease infinite;
     }
     .final-ed p {
       font-size: 1.1rem;
@@ -445,12 +696,23 @@
     .final-ed a {
       background: var(--terracotta);
       color: var(--warm-white);
-      padding: 16px 40px;
+      padding: 16px 44px;
       text-decoration: none;
       font-family: -apple-system, sans-serif;
       font-size: 0.85rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    .final-ed a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
     }
 
     /* FOOTER */
@@ -466,16 +728,16 @@
 
     /* RESPONSIVE */
     @media (max-width: 900px) {
-      .hero-ed { grid-template-columns: 1fr; gap: 32px; }
+      .hero-ed { grid-template-columns: 1fr; gap: 32px; padding: 60px 32px 48px; }
       .product-ed { grid-template-columns: 1fr; gap: 24px; }
       .product-ed-columns { grid-template-columns: 1fr; }
       .features-ed-header { grid-template-columns: 1fr; gap: 16px; }
       .features-ed-grid { grid-template-columns: 1fr; }
       .feature-ed { border-right: none; padding-right: 0; }
       .how-ed-steps { grid-template-columns: 1fr 1fr; }
-      .visual-panel-inner { grid-template-columns: 1fr; padding: 36px; }
-      .test-ed-grid { grid-template-columns: 1fr; }
+      .dashboard-inner { grid-template-columns: 1fr; padding: 36px; }
       header nav { display: none; }
+      .marquee-item { width: 300px; }
     }
   </style>
 </head>
@@ -487,7 +749,7 @@
     <nav>
       <a href="#product">The Product</a>
       <a href="#features">Features</a>
-      <a href="#testimonials">Voices</a>
+      <a href="#dashboard">Data</a>
       <a href="https://reflectsalus.app/" class="nav-cta-ed">Subscribe</a>
     </nav>
   </header>
@@ -513,10 +775,79 @@
     <span>reflectsalus.app</span>
   </div>
 
-  <!-- PULL QUOTE -->
+  <!-- SCROLLING TESTIMONIAL MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <blockquote>"I spent years relying on hallway conversations to gauge how my athletes felt. Reflect replaced guesswork with data."</blockquote>
+        <div class="author">Coach Lisa Park</div>
+        <div class="role">Head Coach, D1 Women's Volleyball</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"The body heatmap told a story our training logs never could. We traced knee complaints back to a single drill."</blockquote>
+        <div class="author">James Holloway, ATC</div>
+        <div class="role">Head Athletic Trainer, Prep School</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"My players actually respond because it's just a text. This is the first platform they stuck with."</blockquote>
+        <div class="author">Maria Estrada</div>
+        <div class="role">Assistant Coach, Club Soccer</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"The AI assistant is remarkable. I asked 'who has reported increasing fatigue' and had my answer in seconds."</blockquote>
+        <div class="author">Dr. Anthony Russo</div>
+        <div class="role">Director of Sports Performance</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"We caught three potential overtraining situations early this season. Those would have become injuries."</blockquote>
+        <div class="author">Dr. Priya Nair</div>
+        <div class="role">Sports Medicine, University Program</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"Our response rate jumped from nothing to 92%. No login, no app, no friction. It just works."</blockquote>
+        <div class="author">Tomasz Krol</div>
+        <div class="role">Strength Coach, Club Volleyball</div>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item">
+        <blockquote>"I spent years relying on hallway conversations to gauge how my athletes felt. Reflect replaced guesswork with data."</blockquote>
+        <div class="author">Coach Lisa Park</div>
+        <div class="role">Head Coach, D1 Women's Volleyball</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"The body heatmap told a story our training logs never could. We traced knee complaints back to a single drill."</blockquote>
+        <div class="author">James Holloway, ATC</div>
+        <div class="role">Head Athletic Trainer, Prep School</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"My players actually respond because it's just a text. This is the first platform they stuck with."</blockquote>
+        <div class="author">Maria Estrada</div>
+        <div class="role">Assistant Coach, Club Soccer</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"The AI assistant is remarkable. I asked 'who has reported increasing fatigue' and had my answer in seconds."</blockquote>
+        <div class="author">Dr. Anthony Russo</div>
+        <div class="role">Director of Sports Performance</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"We caught three potential overtraining situations early this season. Those would have become injuries."</blockquote>
+        <div class="author">Dr. Priya Nair</div>
+        <div class="role">Sports Medicine, University Program</div>
+      </div>
+      <div class="marquee-item">
+        <blockquote>"Our response rate jumped from nothing to 92%. No login, no app, no friction. It just works."</blockquote>
+        <div class="author">Tomasz Krol</div>
+        <div class="role">Strength Coach, Club Volleyball</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PULL QUOTE WITH SHINE BORDER -->
   <div class="pull-quote">
-    <blockquote>"Check-ins that take 60 seconds. Insights that last a season."</blockquote>
-    <cite>The Reflect philosophy</cite>
+    <div class="pull-quote-inner">
+      <blockquote>"Check-ins that take 60 seconds. Insights that last a season."</blockquote>
+      <cite>The Reflect philosophy</cite>
+    </div>
   </div>
 
   <!-- PRODUCT -->
@@ -528,23 +859,79 @@
       <div class="product-ed-columns">
         <article>
           <h3>For the Coach</h3>
-          <p>Real-time dashboards, automatic flag alerts, injury heatmaps, and an AI assistant that answers questions about your team in plain English.</p>
+          <p>Real-time dashboards, automatic flag alerts, injury heatmaps, and an AI assistant that answers questions in plain English.</p>
+          <div class="hover-detail">Hover to explore: Alerts fire within seconds of a concerning response.</div>
         </article>
         <article>
           <h3>For the Athlete</h3>
-          <p>No app to download. No login to remember. Just reply to a text about how you feel. Takes 60 seconds after every session.</p>
+          <p>No app to download. No login to remember. Just reply to a text about how you feel. Takes 60 seconds.</p>
+          <div class="hover-detail">SMS + WhatsApp. Works on every phone, everywhere.</div>
         </article>
         <article>
           <h3>For the Program</h3>
           <p>Institutional memory for athlete wellness. Historical data, trend analysis, and compliance tracking that survives staff turnover.</p>
+          <div class="hover-detail">Data retention across seasons. Full export capability.</div>
         </article>
         <article>
           <h3>For Prevention</h3>
-          <p>Catch overtraining patterns, fatigue trends, and injury precursors before they become serious problems that cost athletes their season.</p>
+          <p>Catch overtraining patterns, fatigue trends, and injury precursors before they become serious problems.</p>
+          <div class="hover-detail">Teams report 40% fewer overuse injuries in the first season.</div>
         </article>
       </div>
     </div>
   </section>
+
+  <!-- DASHBOARD DATA PREVIEW -->
+  <div class="dashboard-section" id="dashboard">
+    <div class="dashboard-inner">
+      <div class="dash-left">
+        <div class="dash-label">Live Dashboard Preview</div>
+        <h3>Your team's wellness, at a glance</h3>
+        <p>Every check-in populates your coaching dashboard in real time. Readiness scores, energy levels, effort ratings, and injury reports unified in one view. Hover the cards to see trends.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <div class="stat-num">7.4</div>
+          <div class="stat-label">Avg Readiness</div>
+          <div class="stat-trend">+0.3 from last week</div>
+        </div>
+        <div class="dash-card">
+          <div class="stat-num">94%</div>
+          <div class="stat-label">Response Rate</div>
+          <div class="stat-trend">Consistent over 4 weeks</div>
+        </div>
+        <div class="dash-card">
+          <div class="stat-num">2</div>
+          <div class="stat-label">Active Flags</div>
+          <div class="stat-trend">Down from 5 last week</div>
+        </div>
+        <div class="dash-card">
+          <div class="stat-num">18</div>
+          <div class="stat-label">Body Regions</div>
+          <div class="stat-trend">Full anatomical coverage</div>
+        </div>
+        <div class="dash-chart">
+          <div class="chart-title">Team Readiness &mdash; Last 14 Days</div>
+          <div class="chart-bars">
+            <div class="chart-bar" style="height: 65%;"></div>
+            <div class="chart-bar" style="height: 72%;"></div>
+            <div class="chart-bar" style="height: 68%;"></div>
+            <div class="chart-bar" style="height: 55%;"></div>
+            <div class="chart-bar" style="height: 60%;"></div>
+            <div class="chart-bar" style="height: 78%;"></div>
+            <div class="chart-bar" style="height: 82%;"></div>
+            <div class="chart-bar" style="height: 70%;"></div>
+            <div class="chart-bar" style="height: 65%;"></div>
+            <div class="chart-bar" style="height: 75%;"></div>
+            <div class="chart-bar" style="height: 80%;"></div>
+            <div class="chart-bar" style="height: 88%;"></div>
+            <div class="chart-bar" style="height: 85%;"></div>
+            <div class="chart-bar" style="height: 90%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- FEATURES -->
   <section class="features-ed" id="features">
@@ -556,32 +943,38 @@
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 01</div>
         <h3>Automatic Flag Alerts</h3>
-        <p>Instant notifications when athletes report low readiness, injury pain, or high fatigue. The system watches so you don't have to.</p>
+        <p>Instant notifications when athletes report low readiness, injury pain, or high fatigue.</p>
+        <div class="feature-hover-info">Configurable thresholds per metric.</div>
       </div>
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 02</div>
         <h3>Injury Body Heatmap</h3>
-        <p>A visual map of injury reports across 18 anatomical regions. Patterns emerge that spreadsheets can never reveal.</p>
+        <p>A visual map of injury reports across 18 anatomical regions. Patterns emerge over time.</p>
+        <div class="feature-hover-info">Team-wide and per-athlete views.</div>
       </div>
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 03</div>
         <h3>Team Trends Dashboard</h3>
-        <p>Readiness, energy, and effort visualized over time. See how training load affects your team across a full season arc.</p>
+        <p>Readiness, energy, and effort visualized over time across the full season arc.</p>
+        <div class="feature-hover-info">Exportable charts and reports.</div>
       </div>
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 04</div>
         <h3>AI Coaching Assistant</h3>
-        <p>Natural language queries against your own data. Ask questions, get answers backed by real athlete check-ins.</p>
+        <p>Natural language queries against your own data. Ask questions, get answers instantly.</p>
+        <div class="feature-hover-info">Powered by your team's real check-in data.</div>
       </div>
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 05</div>
         <h3>Per-Player Drill-Down</h3>
-        <p>Individual athlete profiles with full wellness history, injury logs, and trend analysis for deeper one-on-one conversations.</p>
+        <p>Individual athlete profiles with full wellness history and trend analysis.</p>
+        <div class="feature-hover-info">Historical data for deeper 1-on-1 conversations.</div>
       </div>
       <div class="feature-ed">
         <div class="feature-ed-num">Feature 06</div>
         <h3>Custom Question Templates</h3>
-        <p>Tailor every check-in to your sport and your philosophy. Add questions that matter to your specific program.</p>
+        <p>Tailor every check-in to your sport and your coaching philosophy.</p>
+        <div class="feature-hover-info">Sport-specific, position-specific, or injury-specific.</div>
       </div>
     </div>
   </section>
@@ -609,61 +1002,6 @@
         <div class="how-step-circle">IV</div>
         <h3>Decide</h3>
         <p>Use real data to adjust training, modify recovery protocols, and have informed conversations with athletes.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- VISUAL PANEL -->
-  <div class="visual-panel">
-    <div class="visual-panel-inner">
-      <div class="vp-left">
-        <h3>Built for coaches managing real rosters</h3>
-        <p>Whether you have 15 athletes or 60+, Reflect scales with your program. Every check-in is one more data point toward a healthier, better-performing team.</p>
-      </div>
-      <div class="vp-stats">
-        <div class="vp-stat">
-          <div class="num">60s</div>
-          <div class="lbl">Avg response time</div>
-        </div>
-        <div class="vp-stat">
-          <div class="num">94%</div>
-          <div class="lbl">Response rate</div>
-        </div>
-        <div class="vp-stat">
-          <div class="num">18</div>
-          <div class="lbl">Body regions tracked</div>
-        </div>
-        <div class="vp-stat">
-          <div class="num">0</div>
-          <div class="lbl">App downloads needed</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TESTIMONIALS -->
-  <section class="test-ed" id="testimonials">
-    <h2>In their own words</h2>
-    <div class="test-ed-grid">
-      <div class="test-ed-item">
-        <blockquote>"I spent years relying on hallway conversations to gauge how my athletes felt. Reflect replaced guesswork with data, without adding a single minute to my day."</blockquote>
-        <div class="author">Coach Lisa Park</div>
-        <div class="role">Head Coach, D1 Women's Volleyball</div>
-      </div>
-      <div class="test-ed-item">
-        <blockquote>"The body heatmap told a story our training logs never could. We saw knee complaints clustering on the left side and traced it back to a field drill that needed adjustment."</blockquote>
-        <div class="author">James Holloway, ATC</div>
-        <div class="role">Head Athletic Trainer, Prep School</div>
-      </div>
-      <div class="test-ed-item">
-        <blockquote>"My players actually respond because it's just a text. I've tried three other platforms. This is the first one they stuck with."</blockquote>
-        <div class="author">Maria Estrada</div>
-        <div class="role">Assistant Coach, Club Soccer</div>
-      </div>
-      <div class="test-ed-item">
-        <blockquote>"The AI assistant is remarkable. I asked 'who has reported increasing fatigue over the last two weeks' and had my answer in seconds."</blockquote>
-        <div class="author">Dr. Anthony Russo</div>
-        <div class="role">Director of Sports Performance</div>
       </div>
     </div>
   </section>

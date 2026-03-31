@@ -6,19 +6,23 @@
 <title>Reflect — Documentation</title>
 <style>
   :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #161b22;
-    --bg-tertiary: #21262d;
-    --border: #30363d;
-    --text-primary: #e6edf3;
-    --text-secondary: #8b949e;
-    --text-muted: #6e7681;
-    --accent-blue: #58a6ff;
-    --accent-green: #3fb950;
-    --accent-purple: #bc8cff;
-    --accent-orange: #d29922;
-    --accent-red: #f85149;
-    --accent-cyan: #39d2c0;
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-tertiary: #1a1a26;
+    --bg-card: #14141e;
+    --border: #2a2a3a;
+    --border-bright: #3a3a4f;
+    --text-primary: #e8eaf0;
+    --text-secondary: #8b8fa4;
+    --text-muted: #5a5e73;
+    --accent-blue: #6ea1ff;
+    --accent-green: #4ade80;
+    --accent-purple: #a78bfa;
+    --accent-orange: #f59e0b;
+    --accent-red: #f87171;
+    --accent-cyan: #22d3ee;
+    --gradient-start: #6ea1ff;
+    --gradient-end: #a78bfa;
     --mono: 'Courier New', 'Consolas', 'Monaco', monospace;
   }
 
@@ -30,6 +34,79 @@
     color: var(--text-primary);
     line-height: 1.6;
     font-size: 14px;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED GRADIENT TEXT */
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .gradient-text {
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-cyan), var(--accent-blue));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flow 4s ease infinite;
+  }
+
+  /* BORDER BEAM */
+  @keyframes border-beam {
+    0% { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+  }
+
+  @keyframes beam-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .border-beam-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+  .border-beam-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, var(--accent-blue) 80%, var(--accent-purple) 90%, transparent 100%);
+    animation: beam-rotate 4s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* SHIMMER BUTTON */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* NEON GLOW */
+  @keyframes neon-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(110,161,255,0.3), 0 0 24px rgba(110,161,255,0.1); }
+    50% { box-shadow: 0 0 16px rgba(167,139,250,0.4), 0 0 40px rgba(167,139,250,0.15); }
+  }
+
+  /* TERMINAL BLINK */
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* PULSE DOT */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
   }
 
   /* Top Nav */
@@ -37,7 +114,9 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--bg-secondary);
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0.75rem 2rem;
     display: flex;
@@ -61,7 +140,7 @@
     width: 24px;
     height: 24px;
     background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-    border-radius: 4px;
+    border-radius: 6px;
     display: inline-block;
   }
 
@@ -111,7 +190,7 @@
   }
 
   .sidebar-section h4 {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -123,10 +202,11 @@
     display: block;
     color: var(--text-secondary);
     text-decoration: none;
-    padding: 0.3rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     font-size: 0.8rem;
-    border-radius: 4px;
+    border-radius: 6px;
     border-left: 2px solid transparent;
+    transition: all 0.2s ease;
   }
 
   .sidebar-section a:hover {
@@ -143,7 +223,7 @@
   .main-content {
     flex: 1;
     padding: 3rem 4rem;
-    max-width: 900px;
+    max-width: 960px;
     min-width: 0;
   }
 
@@ -152,45 +232,59 @@
     display: inline-block;
     padding: 0.2rem 0.6rem;
     font-size: 0.7rem;
-    border-radius: 3px;
+    border-radius: 999px;
     margin-right: 0.4rem;
     margin-bottom: 1rem;
     font-weight: bold;
+    border: 1px solid transparent;
   }
 
-  .badge-green { background: #238636; color: #fff; }
-  .badge-blue { background: #1f6feb; color: #fff; }
-  .badge-purple { background: #8957e5; color: #fff; }
-  .badge-orange { background: #9e6a03; color: #fff; }
+  .badge-green { background: rgba(74,222,128,0.12); color: var(--accent-green); border-color: rgba(74,222,128,0.2); }
+  .badge-blue { background: rgba(110,161,255,0.12); color: var(--accent-blue); border-color: rgba(110,161,255,0.2); }
+  .badge-purple { background: rgba(167,139,250,0.12); color: var(--accent-purple); border-color: rgba(167,139,250,0.2); }
+  .badge-orange { background: rgba(245,158,11,0.12); color: var(--accent-orange); border-color: rgba(245,158,11,0.2); }
 
   h1 {
-    font-size: 2.2rem;
+    font-size: 2.6rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
-
-  h1 .accent { color: var(--accent-green); }
 
   .hero-sub {
     color: var(--text-secondary);
     font-size: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
     max-width: 600px;
+    line-height: 1.7;
   }
 
   .hero-cta {
     display: inline-block;
-    background: var(--accent-green);
-    color: var(--bg-primary);
-    padding: 0.6rem 1.5rem;
+    padding: 0.7rem 1.75rem;
     text-decoration: none;
     font-family: var(--mono);
     font-weight: bold;
     font-size: 0.85rem;
-    border-radius: 6px;
+    border-radius: 8px;
     margin-right: 0.75rem;
     margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-cta.primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: var(--bg-primary);
+  }
+  .hero-cta.primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
   }
 
   .hero-cta.secondary {
@@ -198,8 +292,10 @@
     color: var(--text-primary);
     border: 1px solid var(--border);
   }
-
-  .hero-cta:hover { opacity: 0.9; }
+  .hero-cta.secondary:hover {
+    border-color: var(--border-bright);
+    background: var(--bg-card);
+  }
 
   hr.section-divider {
     border: none;
@@ -218,6 +314,7 @@
   h2 .hash {
     color: var(--accent-blue);
     margin-right: 0.3rem;
+    opacity: 0.6;
   }
 
   h3 {
@@ -235,7 +332,7 @@
   .code-block {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 10px;
     overflow: hidden;
     margin: 1.5rem 0;
   }
@@ -291,40 +388,167 @@
   .syn-var { color: var(--accent-cyan); }
   .syn-prop { color: var(--accent-blue); }
 
-  /* Feature cards */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
+  /* Border beam hero card */
+  .hero-card {
+    padding: 2rem;
+    margin-top: 2rem;
   }
 
-  .feature-card {
+  /* TERMINAL MOCK — Flag Alerts */
+  .terminal {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1.25rem;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    animation: neon-glow 4s ease-in-out infinite;
+  }
+  .terminal-header {
+    background: var(--bg-tertiary);
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .terminal-body {
+    padding: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.9;
+  }
+  .terminal-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .terminal-prompt {
+    color: var(--accent-green);
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: var(--accent-green);
+    animation: blink 1.2s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  .flag-line {
+    padding: 6px 12px;
+    margin: 4px 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flag-line.critical {
+    background: rgba(248,113,113,0.08);
+    border-left: 3px solid var(--accent-red);
+  }
+  .flag-line.warning {
+    background: rgba(245,158,11,0.08);
+    border-left: 3px solid var(--accent-orange);
+  }
+  .flag-line.info {
+    background: rgba(110,161,255,0.08);
+    border-left: 3px solid var(--accent-blue);
+  }
+  .flag-line.success {
+    background: rgba(74,222,128,0.08);
+    border-left: 3px solid var(--accent-green);
+  }
+  .flag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .flag-dot.red { background: var(--accent-red); }
+  .flag-dot.orange { background: var(--accent-orange); }
+  .flag-dot.blue { background: var(--accent-blue); }
+  .flag-dot.green { background: var(--accent-green); }
+  .flag-text {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+  }
+  .flag-text strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .flag-time {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    margin-left: auto;
+    flex-shrink: 0;
   }
 
-  .feature-card h3 {
+  /* BENTO GRID FEATURES */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 12px;
+    margin: 1.5rem 0;
+  }
+  .bento-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .bento-card:hover {
+    border-color: var(--border-bright);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  .bento-card.span-2 {
+    grid-column: span 2;
+  }
+  .bento-card h3 {
     font-size: 0.9rem;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
-
-  .feature-card .icon-dot {
+  .bento-card .icon-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: inline-block;
     flex-shrink: 0;
   }
-
-  .feature-card p {
+  .bento-card p {
     font-size: 0.8rem;
     margin-bottom: 0;
+  }
+  .bento-card code {
+    background: var(--bg-tertiary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.78em;
+    color: var(--accent-cyan);
+  }
+  .bento-card .bento-detail {
+    font-size: 0.7rem;
+    color: var(--accent-purple);
+    margin-top: 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+  }
+  .bento-card:hover .bento-detail {
+    max-height: 30px;
+    opacity: 1;
   }
 
   /* Steps */
@@ -379,31 +603,43 @@
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 0.8rem;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
   }
 
   .doc-table th, .doc-table td {
     text-align: left;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--border);
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .doc-table th {
     background: var(--bg-tertiary);
     color: var(--text-primary);
     font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .doc-table td {
     color: var(--text-secondary);
   }
+  .doc-table tr:last-child td { border-bottom: none; }
+  .doc-table tr:hover td { background: rgba(255,255,255,0.02); }
 
   /* Testimonials as "issues" */
   .issue-card {
-    background: var(--bg-secondary);
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
     margin-bottom: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  .issue-card:hover {
+    border-color: var(--border-bright);
   }
 
   .issue-card .issue-header {
@@ -436,9 +672,43 @@
   .issue-card .issue-body {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    padding-left: 0;
     border-left: 3px solid var(--border);
     padding-left: 1rem;
+  }
+
+  /* Final CTA */
+  .final-cta {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from 180deg, transparent 0%, transparent 60%, var(--accent-blue) 75%, var(--accent-purple) 85%, transparent 100%);
+    animation: beam-rotate 5s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .final-cta h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .final-cta p {
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
   }
 
   /* Footer */
@@ -456,30 +726,12 @@
     text-decoration: none;
   }
 
-  /* Final CTA */
-  .final-cta {
-    background: var(--bg-secondary);
-    border: 1px solid var(--accent-green);
-    border-radius: 6px;
-    padding: 2rem;
-    text-align: center;
-    margin: 2rem 0;
-  }
-
-  .final-cta h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .final-cta p {
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
   /* Responsive */
   @media (max-width: 900px) {
     .sidebar { display: none; }
     .main-content { padding: 2rem 1.5rem; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-card.span-2 { grid-column: span 1; }
   }
 
   @media (max-width: 600px) {
@@ -487,7 +739,6 @@
     h1 { font-size: 1.5rem; }
     .topnav { padding: 0.75rem 1rem; }
     .topnav-links { display: none; }
-    .features-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -502,7 +753,7 @@
     <a href="#overview">Overview</a>
     <a href="#features">Features</a>
     <a href="#how-it-works">How It Works</a>
-    <a href="#api">API Reference</a>
+    <a href="#alerts">Live Alerts</a>
     <a href="https://reflectsalus.app/">Get Started <span class="badge">v2.1</span></a>
   </div>
 </nav>
@@ -546,22 +797,23 @@
       <span class="hero-badge badge-purple">SMS + WhatsApp</span>
       <span class="hero-badge badge-orange">HIPAA ready</span>
 
-      <h1>reflect<span class="accent">.salus</span></h1>
+      <h1>reflect<span class="gradient-text">.salus</span></h1>
       <p class="hero-sub">The always-on assistant coach. Automated post-practice check-ins via SMS and WhatsApp. Real-time athlete wellness data delivered to your dashboard.</p>
 
-      <a href="https://reflectsalus.app/" class="hero-cta">$ npm install reflect</a>
+      <a href="https://reflectsalus.app/" class="hero-cta primary">$ npm install reflect</a>
       <a href="#quickstart" class="hero-cta secondary">Read the docs</a>
 
-      <div class="code-block" style="margin-top: 2rem;">
-        <div class="code-block-header">
-          <div class="dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
+      <div class="border-beam-card hero-card">
+        <div class="code-block" style="margin: 0; border: none; background: transparent;">
+          <div class="code-block-header" style="background: var(--bg-tertiary);">
+            <div class="dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <span>quickstart.sh</span>
           </div>
-          <span>quickstart.sh</span>
-        </div>
-        <pre><span class="line-num">1</span><span class="syn-comment"># Check-ins that take 60 seconds.</span>
+          <pre><span class="line-num">1</span><span class="syn-comment"># Check-ins that take 60 seconds.</span>
 <span class="line-num">2</span><span class="syn-comment"># Insights that last a season.</span>
 <span class="line-num">3</span>
 <span class="line-num">4</span><span class="syn-keyword">reflect</span> init --team <span class="syn-string">"Varsity Soccer"</span>
@@ -571,6 +823,7 @@
 <span class="line-num">8</span><span class="syn-comment"># Athletes get a 60-second SMS survey</span>
 <span class="line-num">9</span><span class="syn-comment"># Coaches get real-time alerts + dashboard</span>
 <span class="line-num">10</span><span class="syn-keyword">reflect</span> dashboard open</pre>
+        </div>
       </div>
     </section>
 
@@ -601,41 +854,102 @@
 <span class="line-num">8</span>    <span class="syn-prop">"region"</span>: <span class="syn-string">"right_knee"</span>,
 <span class="line-num">9</span>    <span class="syn-prop">"severity"</span>: <span class="syn-type">3</span>,
 <span class="line-num">10</span>    <span class="syn-prop">"flag"</span>: <span class="syn-string">"injury_concern"</span>
-<span class="line-num">11</span>  }
-<span class="line-num">12</span>}</pre>
+<span class="line-num">11</span>  },
+<span class="line-num">12</span>  <span class="syn-prop">"response_time"</span>: <span class="syn-string">"47s"</span>
+<span class="line-num">13</span>}</pre>
+      </div>
+    </section>
+
+    <hr class="section-divider" id="alerts">
+
+    <!-- LIVE FLAG ALERTS TERMINAL -->
+    <section>
+      <h2><span class="hash">#</span> Live Flag Alerts</h2>
+      <p>Reflect monitors every check-in response in real time. When an athlete flags a concern, the system alerts you immediately. Here is what a typical post-practice alert stream looks like:</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span>reflect alerts --team "Varsity Soccer" --live</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="syn-keyword">reflect</span> alerts <span class="syn-var">--live</span> <span class="syn-var">--after</span> <span class="syn-string">"2026-03-29 practice"</span>
+          </div>
+          <div class="terminal-line" style="margin-bottom: 8px;">
+            <span style="color: var(--text-muted);">Watching for flags... 24 athletes checked in</span>
+          </div>
+
+          <div class="flag-line critical">
+            <div class="flag-dot red"></div>
+            <div class="flag-text"><strong>CRITICAL</strong> &mdash; Jake Morrison: readiness 2/10 (3rd consecutive low score)</div>
+            <div class="flag-time">6:18 PM</div>
+          </div>
+          <div class="flag-line warning">
+            <div class="flag-dot orange"></div>
+            <div class="flag-text"><strong>WARNING</strong> &mdash; Sarah Chen: left ankle pain severity 6/10</div>
+            <div class="flag-time">6:19 PM</div>
+          </div>
+          <div class="flag-line warning">
+            <div class="flag-dot orange"></div>
+            <div class="flag-text"><strong>WARNING</strong> &mdash; Marcus Davis: energy 3/10, effort 9/10 (mismatch flag)</div>
+            <div class="flag-time">6:21 PM</div>
+          </div>
+          <div class="flag-line info">
+            <div class="flag-dot blue"></div>
+            <div class="flag-text"><strong>INFO</strong> &mdash; Team avg readiness 6.8 (down 0.4 from last session)</div>
+            <div class="flag-time">6:22 PM</div>
+          </div>
+          <div class="flag-line success">
+            <div class="flag-dot green"></div>
+            <div class="flag-text"><strong>OK</strong> &mdash; 21/24 athletes within normal ranges</div>
+            <div class="flag-time">6:22 PM</div>
+          </div>
+
+          <div class="terminal-line" style="margin-top: 12px;">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-cursor"></span>
+          </div>
+        </div>
       </div>
     </section>
 
     <hr class="section-divider" id="features">
 
-    <!-- Features -->
+    <!-- Features — Bento Grid -->
     <section>
       <h2><span class="hash">#</span> Features</h2>
 
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3><span class="icon-dot" style="background: var(--accent-red);"></span> Flag Alerts</h3>
-          <p>Automatic notifications for low readiness, injury concerns, high pain, and abnormal patterns. Never miss a warning sign.</p>
+      <div class="bento-grid">
+        <div class="bento-card span-2">
+          <h3><span class="icon-dot" style="background: var(--accent-red);"></span> Automatic Flag Alerts</h3>
+          <p>Real-time notifications for low readiness, injury concerns, high pain, energy-effort mismatches, and abnormal patterns. Configurable severity thresholds per metric. The system watches every check-in so you don't have to.</p>
+          <div class="bento-detail">Integrates with Slack, email, and push notifications.</div>
         </div>
-        <div class="feature-card">
+        <div class="bento-card">
           <h3><span class="icon-dot" style="background: var(--accent-orange);"></span> Body Heatmap</h3>
-          <p>18 anatomical regions tracked per athlete. Visual overlay shows team-wide injury density at a glance.</p>
+          <p>18 anatomical regions tracked per athlete. Visual overlay shows team-wide injury density.</p>
+          <div class="bento-detail">Supports per-athlete and team-wide views.</div>
         </div>
-        <div class="feature-card">
+        <div class="bento-card">
           <h3><span class="icon-dot" style="background: var(--accent-blue);"></span> Team Trends</h3>
           <p>Readiness, energy, and effort graphed over time. Spot fatigue cycles before they become injuries.</p>
+          <div class="bento-detail">Exportable as CSV or PDF reports.</div>
         </div>
-        <div class="feature-card">
+        <div class="bento-card">
           <h3><span class="icon-dot" style="background: var(--accent-purple);"></span> AI Assistant</h3>
-          <p>Ask natural language questions: <code>Who had low energy this week?</code> Get instant data-backed answers.</p>
+          <p>Ask natural language questions: <code>Who had low energy this week?</code> Get data-backed answers instantly.</p>
+          <div class="bento-detail">Powered by your team's real check-in data.</div>
         </div>
-        <div class="feature-card">
-          <h3><span class="icon-dot" style="background: var(--accent-green);"></span> Workout Logging</h3>
-          <p>Athletes log workouts and rehab exercises. Track recovery timelines and return-to-play milestones.</p>
-        </div>
-        <div class="feature-card">
-          <h3><span class="icon-dot" style="background: var(--accent-cyan);"></span> Custom Templates</h3>
-          <p>Build your own question sets. Sport-specific, position-specific, or injury-specific check-ins.</p>
+        <div class="bento-card span-2">
+          <h3><span class="icon-dot" style="background: var(--accent-green);"></span> Custom Templates + Leaderboards</h3>
+          <p>Build sport-specific, position-specific, or injury-specific check-in question sets. Gamified fitness tracking with leaderboards drives athlete engagement and accountability through friendly competition.</p>
+          <div class="bento-detail">Templates support branching logic and conditional questions.</div>
         </div>
       </div>
 
@@ -744,8 +1058,9 @@
 <span class="line-num">13</span>    <span class="syn-func">print</span>(<span class="syn-string">f"</span><span class="syn-var">{flag.athlete}</span><span class="syn-string">: </span><span class="syn-var">{flag.type}</span><span class="syn-string">"</span>)
 <span class="line-num">14</span>
 <span class="line-num">15</span><span class="syn-comment"># Output:</span>
-<span class="line-num">16</span><span class="syn-comment"># Jake Morrison: low_readiness</span>
-<span class="line-num">17</span><span class="syn-comment"># Sarah Chen: injury_concern (left_ankle)</span></pre>
+<span class="line-num">16</span><span class="syn-comment"># Jake Morrison: low_readiness (critical)</span>
+<span class="line-num">17</span><span class="syn-comment"># Sarah Chen: injury_concern (left_ankle)</span>
+<span class="line-num">18</span><span class="syn-comment"># Marcus Davis: energy_effort_mismatch</span></pre>
       </div>
     </section>
 
@@ -794,9 +1109,9 @@
     <!-- Final CTA -->
     <section>
       <div class="final-cta">
-        <h3>Ready to get started?</h3>
+        <h3 class="gradient-text" style="display: inline-block;">Ready to get started?</h3>
         <p>Set up your team in under 5 minutes. No app installs for your athletes.</p>
-        <a href="https://reflectsalus.app/" class="hero-cta">Start Free Trial</a>
+        <a href="https://reflectsalus.app/" class="hero-cta primary">Start Free Trial</a>
         <a href="https://reflectsalus.app/" class="hero-cta secondary">Schedule Demo</a>
       </div>
     </section>

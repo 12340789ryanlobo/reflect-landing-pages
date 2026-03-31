@@ -15,6 +15,7 @@
     --white: #fff;
     --gray: #f2f2f2;
     --dark-gray: #555;
+    --light-gray: #e0e0e0;
   }
 
   body {
@@ -22,41 +23,120 @@
     background: var(--white);
     color: var(--black);
     line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated gradient text ── */
+  @keyframes primaryGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .gradient-text {
+    background: linear-gradient(90deg, var(--red), var(--blue), var(--yellow), var(--red));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: primaryGradient 6s ease infinite;
+  }
+
+  /* ── Border beam ── */
+  @keyframes borderBeam {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .border-beam {
+    position: relative;
+    overflow: hidden;
+  }
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 70%, var(--red) 75%, var(--blue) 85%, var(--yellow) 95%, transparent 100%);
+    animation: borderBeam 4s linear infinite;
+    z-index: -1;
+  }
+  .border-beam::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    background: var(--white);
+    z-index: -1;
+  }
+
+  .border-beam-dark::after {
+    background: var(--black);
+  }
+
+  /* ── Retro grid ── */
+  .retro-grid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    perspective: 300px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .retro-grid::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -50%;
+    right: -50%;
+    height: 100%;
+    background-image:
+      linear-gradient(to right, rgba(17,17,17,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(17,17,17,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: rotateX(60deg);
+    transform-origin: bottom center;
+  }
+  .retro-grid::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--white) 0%, transparent 50%);
   }
 
   /* ── Grid system ── */
-  .grid {
-    display: grid;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-  .grid-12 { grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
-
+  .grid { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
   section { padding: 5rem 0; position: relative; }
 
   /* ── Typography ── */
   h1 {
-    font-size: clamp(3rem, 7vw, 6rem);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+  }
+  h2 {
+    font-size: clamp(2.2rem, 4.5vw, 4rem);
     font-weight: 900;
     line-height: 0.95;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-  }
-  h2 {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
   }
   h3 {
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
   }
   .label {
     font-size: 0.65rem;
@@ -66,11 +146,7 @@
     margin-bottom: 0.8rem;
     display: block;
   }
-  p {
-    font-size: 0.95rem;
-    line-height: 1.65;
-    max-width: 500px;
-  }
+  p { font-size: 0.95rem; line-height: 1.65; max-width: 500px; }
 
   /* ── Buttons ── */
   .btn {
@@ -87,25 +163,15 @@
     transition: all 0.15s;
     margin-top: 1.5rem;
   }
-  .btn:hover {
-    background: var(--white);
-    color: var(--black);
-  }
+  .btn:hover { background: var(--white); color: var(--black); }
   .btn--red { background: var(--red); border-color: var(--red); color: var(--white); }
   .btn--red:hover { background: var(--white); color: var(--red); }
   .btn--blue { background: var(--blue); border-color: var(--blue); color: var(--white); }
   .btn--blue:hover { background: var(--white); color: var(--blue); }
   .btn--outline { background: transparent; color: var(--black); }
   .btn--outline:hover { background: var(--black); color: var(--white); }
-
-  /* ── Bauhaus shapes ── */
-  .shape {
-    display: block;
-    position: absolute;
-  }
-  .circle {
-    border-radius: 50%;
-  }
+  .btn--white { background: var(--white); color: var(--black); border-color: var(--white); }
+  .btn--white:hover { background: transparent; color: var(--white); }
 
   /* ── Top bar ── */
   .topbar {
@@ -116,7 +182,7 @@
     border-bottom: 3px solid var(--black);
   }
   .topbar .logo {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.15em;
@@ -131,8 +197,13 @@
     text-decoration: none;
     color: var(--black);
     margin-left: 2rem;
+    transition: color 0.15s;
   }
   .topbar nav a:hover { color: var(--red); }
+
+  /* ── Divider ── */
+  .divider { height: 6px; display: flex; }
+  .divider > * { flex: 1; }
 
   /* ── Hero ── */
   .hero {
@@ -143,57 +214,81 @@
     overflow: hidden;
     border-bottom: 3px solid var(--black);
   }
-  .hero-shape-1 {
-    position: absolute;
-    top: -80px;
-    right: -80px;
-    width: 400px;
-    height: 400px;
-    background: var(--red);
-    border-radius: 50%;
-    opacity: 0.9;
-  }
-  .hero-shape-2 {
-    position: absolute;
-    bottom: 40px;
-    right: 200px;
-    width: 150px;
-    height: 150px;
-    background: var(--yellow);
-  }
-  .hero-shape-3 {
-    position: absolute;
-    bottom: -60px;
-    right: 80px;
-    width: 200px;
-    height: 200px;
-    background: var(--blue);
-    border-radius: 50%;
-    opacity: 0.85;
-  }
-  .hero-shape-4 {
-    position: absolute;
-    top: 50%;
-    right: 350px;
-    width: 60px;
-    height: 300px;
-    background: var(--black);
-    transform: translateY(-50%);
-  }
-  .hero-content {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
     position: relative;
     z-index: 1;
-    max-width: 600px;
-    padding: 4rem 3rem;
   }
   .hero-content .label { color: var(--red); }
-
-  /* ── Divider ── */
-  .divider {
-    height: 6px;
-    display: flex;
+  .hero-shapes {
+    position: relative;
+    height: 450px;
   }
-  .divider > * { flex: 1; }
+  .hero-shape {
+    position: absolute;
+  }
+  .hs-circle-red {
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+  .hs-rect-yellow {
+    top: 140px;
+    right: 160px;
+    width: 120px;
+    height: 120px;
+    background: var(--yellow);
+  }
+  .hs-circle-blue {
+    bottom: 40px;
+    right: 40px;
+    width: 160px;
+    height: 160px;
+    background: var(--blue);
+    border-radius: 50%;
+  }
+  .hs-line {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--black);
+  }
+  /* Dashboard data overlay on hero shapes */
+  .hero-data-overlay {
+    position: absolute;
+    top: 60px;
+    right: 30px;
+    width: 180px;
+    z-index: 2;
+  }
+  .hdo-card {
+    background: var(--white);
+    border: 2px solid var(--black);
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .hdo-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--dark-gray);
+  }
+  .hdo-val {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1.1;
+  }
 
   /* ── Product section ── */
   .product-section {
@@ -202,69 +297,70 @@
     position: relative;
     overflow: hidden;
   }
-  .product-shape {
-    position: absolute;
-    bottom: -50px;
-    left: -50px;
-    width: 250px;
-    height: 250px;
-    background: var(--yellow);
-    border-radius: 50%;
-    opacity: 0.3;
-  }
   .product-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
     position: relative;
     z-index: 1;
   }
-  .product-visual {
-    position: relative;
-    height: 300px;
+  /* Product demo: strict grid SMS */
+  .product-demo {
+    border: 3px solid var(--black);
+    background: var(--white);
   }
-  .pv-rect {
-    position: absolute;
-    width: 200px;
-    height: 250px;
-    background: var(--blue);
-    top: 25px;
-    left: 20%;
+  .pd-header {
+    padding: 0.8rem 1.2rem;
+    border-bottom: 3px solid var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
-  .pv-circle {
-    position: absolute;
-    width: 160px;
-    height: 160px;
-    background: var(--red);
-    border-radius: 50%;
-    bottom: 10px;
-    right: 15%;
-    z-index: 1;
+  .pd-header-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
   }
-  .pv-line {
-    position: absolute;
-    width: 120%;
-    height: 4px;
-    background: var(--black);
-    top: 50%;
-    left: -10%;
+  .pd-body { padding: 1.2rem; }
+  .pd-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    align-items: start;
   }
+  .pd-sender {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    padding-top: 0.3rem;
+    min-width: 60px;
+  }
+  .pd-msg {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    padding: 0.6rem 0.8rem;
+    border: 2px solid var(--light-gray);
+  }
+  .pd-msg-bot { border-color: var(--blue); background: rgba(26,90,163,0.04); }
+  .pd-msg-user { border-color: var(--black); }
 
-  /* ── Features ── */
+  /* ── Features: border-beam cards in strict grid ── */
   .features-section {
     border-bottom: 3px solid var(--black);
-    position: relative;
   }
   .features-header {
     display: flex;
     align-items: baseline;
     gap: 2rem;
     margin-bottom: 2.5rem;
-    max-width: 1100px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
     padding: 0 2rem;
@@ -281,15 +377,40 @@
     padding: 2rem;
     border-right: 3px solid var(--black);
     position: relative;
-    min-height: 220px;
+    min-height: 240px;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+  .feature-cell:hover {
+    background: var(--gray);
   }
   .feature-cell:nth-child(4) { border-right: none; }
   .feature-cell:nth-child(n+5) { border-top: 3px solid var(--black); }
   .feature-cell:nth-child(8) { border-right: none; }
 
+  /* Border beam on hover for feature cells */
+  .feature-cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--blue), var(--yellow), transparent);
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    animation: featureBeamSlide 3s linear infinite;
+  }
+  @keyframes featureBeamSlide {
+    0% { background-position: -100% 0; }
+    100% { background-position: 100% 0; }
+  }
+  .feature-cell:hover::before { opacity: 1; }
+
   .feature-cell .dot {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     display: inline-block;
     margin-bottom: 0.8rem;
@@ -298,6 +419,14 @@
     font-size: 0.85rem;
     color: var(--dark-gray);
     line-height: 1.6;
+  }
+  /* Data woven into feature cells */
+  .feature-data {
+    margin-top: 1rem;
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0.12;
   }
 
   /* ── How it works ── */
@@ -308,72 +437,150 @@
     position: relative;
     overflow: hidden;
   }
-  .how-shape-1 {
-    position: absolute;
-    top: -40px;
-    right: 10%;
-    width: 200px;
-    height: 200px;
-    border: 6px solid var(--red);
-    border-radius: 50%;
-  }
-  .how-shape-2 {
-    position: absolute;
-    bottom: -30px;
-    left: 5%;
-    width: 120px;
-    height: 120px;
-    background: var(--blue);
-    opacity: 0.4;
-  }
-  .how-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-    max-width: 1100px;
-    margin: 2.5rem auto 0;
+  .how-header {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 2rem;
     position: relative;
     z-index: 1;
   }
-  .how-card {
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    max-width: 1200px;
+    margin: 2.5rem auto 0;
     border: 2px solid rgba(255,255,255,0.2);
-    padding: 2rem 1.5rem;
     position: relative;
+    z-index: 1;
   }
+  .how-card {
+    padding: 2.5rem 2rem;
+    border-right: 2px solid rgba(255,255,255,0.2);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .how-card:last-child { border-right: none; }
+  .how-card:hover { background: rgba(255,255,255,0.04); }
   .how-num {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 900;
     line-height: 1;
     margin-bottom: 1rem;
   }
   .how-card h3 { color: var(--white); }
-  .how-card p {
-    font-size: 0.85rem;
-    opacity: 0.65;
-    line-height: 1.6;
-    max-width: none;
+  .how-card p { font-size: 0.85rem; opacity: 0.6; line-height: 1.6; max-width: none; }
+
+  /* Geometric shapes in how section */
+  .how-geo-1 {
+    position: absolute;
+    top: -30px;
+    right: 8%;
+    width: 160px;
+    height: 160px;
+    border: 5px solid var(--red);
+    border-radius: 50%;
+    opacity: 0.3;
+  }
+  .how-geo-2 {
+    position: absolute;
+    bottom: -20px;
+    left: 4%;
+    width: 100px;
+    height: 100px;
+    background: var(--yellow);
+    opacity: 0.15;
+  }
+
+  /* ── Dashboard data strip ── */
+  .data-strip {
+    border-bottom: 3px solid var(--black);
+    background: var(--gray);
+    padding: 3rem 0;
+  }
+  .data-strip-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 3px solid var(--black);
+  }
+  .data-strip-cell {
+    padding: 2rem;
+    border-right: 3px solid var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .data-strip-cell:last-child { border-right: none; }
+  /* Border beam on data cells */
+  .data-strip-cell::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: conic-gradient(from 90deg, var(--red), var(--blue), var(--yellow), var(--red));
+    background-size: 200%;
+    animation: featureBeamSlide 4s linear infinite;
+  }
+  .ds-num {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .ds-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-top: 0.5rem;
   }
 
   /* ── Testimonials ── */
   .test-section {
     border-bottom: 3px solid var(--black);
-    background: var(--gray);
+  }
+  .test-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    margin-bottom: 2.5rem;
   }
   .test-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 0;
     max-width: 1200px;
-    margin: 2.5rem auto 0;
+    margin: 0 auto;
     border: 3px solid var(--black);
   }
   .test-card {
     padding: 2.5rem 2rem;
     border-right: 3px solid var(--black);
     position: relative;
+    overflow: hidden;
   }
   .test-card:last-child { border-right: none; }
+  /* Border beam on testimonial cards */
+  .test-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--red), var(--blue), var(--yellow), transparent);
+    background-size: 100% 300%;
+    animation: testBeamSlide 3s linear infinite;
+  }
+  @keyframes testBeamSlide {
+    0% { background-position: 0 -100%; }
+    100% { background-position: 0 100%; }
+  }
   .test-card .accent-bar {
     width: 40px;
     height: 6px;
@@ -398,46 +605,54 @@
   /* ── CTA ── */
   .cta-section {
     text-align: center;
-    padding: 6rem 2rem;
+    padding: 7rem 2rem;
     position: relative;
     overflow: hidden;
+    background: var(--white);
   }
-  .cta-shape-1 {
+  .cta-shapes {
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+  .cta-shape {
+    position: absolute;
+  }
+  .cta-s1 {
     top: 50%;
-    left: 5%;
+    left: 4%;
     transform: translateY(-50%);
     width: 100px;
     height: 100px;
     background: var(--yellow);
     border-radius: 50%;
+    opacity: 0.7;
   }
-  .cta-shape-2 {
-    position: absolute;
-    bottom: 20px;
-    right: 8%;
+  .cta-s2 {
+    bottom: 15%;
+    right: 6%;
     width: 80px;
     height: 80px;
     background: var(--blue);
+    opacity: 0.7;
   }
-  .cta-shape-3 {
-    position: absolute;
-    top: 30px;
-    right: 15%;
+  .cta-s3 {
+    top: 15%;
+    right: 12%;
     width: 60px;
     height: 60px;
     background: var(--red);
     border-radius: 50%;
+    opacity: 0.7;
   }
-  .cta-section .inner {
+  .cta-inner {
     position: relative;
     z-index: 1;
   }
-  .cta-section p {
-    margin: 0.5rem auto 0;
-    max-width: 450px;
-    color: var(--dark-gray);
-  }
+  .cta-section p { margin: 0.5rem auto 0; max-width: 480px; color: var(--dark-gray); }
 
   /* ── Footer ── */
   footer {
@@ -453,31 +668,42 @@
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-shapes { display: none; }
     .features-grid { grid-template-columns: 1fr 1fr; }
     .feature-cell:nth-child(2), .feature-cell:nth-child(4),
     .feature-cell:nth-child(6), .feature-cell:nth-child(8) { border-right: none; }
     .feature-cell:nth-child(3), .feature-cell:nth-child(4) { border-top: 3px solid var(--black); }
     .how-grid { grid-template-columns: 1fr 1fr; }
+    .how-card:nth-child(2) { border-right: none; }
+    .how-card:nth-child(3), .how-card:nth-child(4) { border-top: 2px solid rgba(255,255,255,0.2); }
+    .how-card:nth-child(4) { border-right: none; }
     .test-grid { grid-template-columns: 1fr; }
     .test-card { border-right: none; border-bottom: 3px solid var(--black); }
     .test-card:last-child { border-bottom: none; }
     .product-grid { grid-template-columns: 1fr; }
-    .product-visual { display: none; }
-    .hero-shape-1, .hero-shape-2, .hero-shape-3, .hero-shape-4 { opacity: 0.2; }
+    .data-strip-grid { grid-template-columns: 1fr 1fr; }
+    .data-strip-cell:nth-child(2) { border-right: none; }
+    .data-strip-cell:nth-child(3), .data-strip-cell:nth-child(4) { border-top: 3px solid var(--black); }
+    .data-strip-cell:nth-child(4) { border-right: none; }
   }
   @media (max-width: 600px) {
     .features-grid { grid-template-columns: 1fr; }
     .feature-cell { border-right: none !important; border-bottom: 3px solid var(--black); }
     .feature-cell:last-child { border-bottom: none; }
     .how-grid { grid-template-columns: 1fr; }
+    .how-card { border-right: none !important; border-bottom: 2px solid rgba(255,255,255,0.2); }
+    .how-card:last-child { border-bottom: none; }
     .topbar nav { display: none; }
-    .hero-content { padding: 3rem 1.5rem; }
+    .data-strip-grid { grid-template-columns: 1fr; }
+    .data-strip-cell { border-right: none !important; border-bottom: 3px solid var(--black); }
+    .data-strip-cell:last-child { border-bottom: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════ TOP BAR ═══════════ -->
+<!-- TOP BAR -->
 <header class="topbar">
   <a href="https://reflectsalus.app/" class="logo">Reflect</a>
   <nav>
@@ -488,7 +714,7 @@
   </nav>
 </header>
 
-<!-- ═══════════ DIVIDER ═══════════ -->
+<!-- DIVIDER -->
 <div class="divider">
   <div style="background: var(--red);"></div>
   <div style="background: var(--blue);"></div>
@@ -496,41 +722,91 @@
   <div style="background: var(--black);"></div>
 </div>
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- HERO -->
 <section class="hero">
-  <div class="hero-shape-1"></div>
-  <div class="hero-shape-2"></div>
-  <div class="hero-shape-3"></div>
-  <div class="hero-shape-4"></div>
-  <div class="hero-content">
-    <span class="label">Athlete Wellness Platform</span>
-    <h1>Reflect</h1>
-    <p style="font-size: 1.2rem; font-weight: 500; margin-top: 0.5rem;">Check-ins that take 60 seconds.<br>Insights that last a season.</p>
-    <p style="margin-top: 1rem; color: var(--dark-gray);">Automated SMS and WhatsApp wellness surveys for coaches managing 15 to 60+ athletes. Real-time alerts. Team dashboards. AI analytics. No app install required.</p>
-    <a href="https://reflectsalus.app/" class="btn btn--red">Start Free Trial</a>
-    <a href="https://reflectsalus.app/" class="btn btn--outline" style="margin-left: 0.5rem;">Book Demo</a>
+  <div class="retro-grid"></div>
+  <div class="hero-grid">
+    <div class="hero-content">
+      <span class="label" style="color: var(--red);">Athlete Wellness Platform</span>
+      <h1><span class="gradient-text">Reflect</span></h1>
+      <p style="font-size: 1.3rem; font-weight: 600; margin-top: 0.5rem;">Check-ins that take 60 seconds.<br>Insights that last a season.</p>
+      <p style="margin-top: 1rem; color: var(--dark-gray);">Automated SMS and WhatsApp wellness surveys for coaches managing 15 to 60+ athletes. Real-time alerts. Team dashboards. AI analytics. No app install required.</p>
+      <a href="https://reflectsalus.app/" class="btn btn--red">Start Free Trial</a>
+      <a href="https://reflectsalus.app/" class="btn btn--outline" style="margin-left: 0.5rem;">Book Demo</a>
+    </div>
+    <div class="hero-shapes">
+      <div class="hero-shape hs-circle-red"></div>
+      <div class="hero-shape hs-rect-yellow"></div>
+      <div class="hero-shape hs-circle-blue"></div>
+      <div class="hero-shape hs-line"></div>
+      <div class="hero-data-overlay">
+        <div class="hdo-card">
+          <div class="hdo-label">Team Readiness</div>
+          <div class="hdo-val" style="color: var(--blue);">8.2</div>
+        </div>
+        <div class="hdo-card">
+          <div class="hdo-label">Flags Today</div>
+          <div class="hdo-val" style="color: var(--red);">3</div>
+        </div>
+        <div class="hdo-card">
+          <div class="hdo-label">Response Rate</div>
+          <div class="hdo-val" style="color: var(--black);">94%</div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ═══════════ PRODUCT ═══════════ -->
+<!-- PRODUCT -->
 <section id="product" class="product-section">
-  <div class="product-shape"></div>
   <div class="product-grid">
     <div>
       <span class="label" style="color: var(--blue);">What Is Reflect?</span>
-      <h2>The Always-On Assistant Coach</h2>
-      <p>Reflect automates post-practice and post-competition check-ins. Athletes respond to brief conversational surveys covering readiness, energy, effort, and injuries via SMS or WhatsApp. Coaches receive instant alerts and dashboards tracking team patterns.</p>
+      <h2>The <span class="gradient-text">Always-On</span> Assistant Coach</h2>
+      <p>Reflect automates post-practice and post-competition check-ins. Athletes respond to brief conversational surveys covering readiness, energy, effort, and injuries via SMS or WhatsApp.</p>
       <p style="margin-top: 1rem; color: var(--dark-gray);">No app downloads. No onboarding friction. No more athletes hiding injuries until it is too late. Just data you can act on, delivered where athletes already are.</p>
     </div>
-    <div class="product-visual">
-      <div class="pv-rect"></div>
-      <div class="pv-circle"></div>
-      <div class="pv-line"></div>
+    <!-- Product demo in strict grid -->
+    <div class="product-demo">
+      <div class="pd-header">
+        <span class="pd-header-label" style="color: var(--blue);">SMS Check-in</span>
+        <span class="pd-header-label" style="color: var(--dark-gray);">Post-Practice</span>
+      </div>
+      <div class="pd-body">
+        <div class="pd-row">
+          <div class="pd-sender" style="color: var(--blue);">Reflect</div>
+          <div class="pd-msg pd-msg-bot">Hey Jordan! Post-practice check-in. Readiness? (1-10)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender">Athlete</div>
+          <div class="pd-msg pd-msg-user">8</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender" style="color: var(--blue);">Reflect</div>
+          <div class="pd-msg pd-msg-bot">Energy level? (1-10)</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender">Athlete</div>
+          <div class="pd-msg pd-msg-user">7</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender" style="color: var(--blue);">Reflect</div>
+          <div class="pd-msg pd-msg-bot">Any pain or soreness today?</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender">Athlete</div>
+          <div class="pd-msg pd-msg-user">Left knee, 4/10</div>
+        </div>
+        <div class="pd-row">
+          <div class="pd-sender" style="color: var(--blue);">Reflect</div>
+          <div class="pd-msg pd-msg-bot">Logged. Coach has been notified. Streak: 12 days.</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ DIVIDER ═══════════ -->
+<!-- DIVIDER -->
 <div class="divider">
   <div style="background: var(--yellow);"></div>
   <div style="background: var(--red);"></div>
@@ -538,10 +814,32 @@
   <div style="background: var(--blue);"></div>
 </div>
 
-<!-- ═══════════ FEATURES ═══════════ -->
+<!-- DATA STRIP -->
+<section class="data-strip">
+  <div class="data-strip-grid">
+    <div class="data-strip-cell">
+      <div class="ds-num" style="color: var(--red);">12,400+</div>
+      <div class="ds-label">Check-ins Completed</div>
+    </div>
+    <div class="data-strip-cell">
+      <div class="ds-num" style="color: var(--blue);">94%</div>
+      <div class="ds-label">Average Response Rate</div>
+    </div>
+    <div class="data-strip-cell">
+      <div class="ds-num" style="color: var(--black);">60s</div>
+      <div class="ds-label">Average Check-in Time</div>
+    </div>
+    <div class="data-strip-cell">
+      <div class="ds-num" style="color: var(--yellow); -webkit-text-stroke: 2px var(--black);">180+</div>
+      <div class="ds-label">Teams Using Reflect</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
 <section id="features" class="features-section">
   <div class="features-header">
-    <h2 style="margin-bottom: 0;">Features</h2>
+    <h2 style="margin-bottom: 0;"><span class="gradient-text">Features</span></h2>
     <span class="label" style="margin-bottom: 0; color: var(--dark-gray);">Core Platform Capabilities</span>
   </div>
   <div class="features-grid">
@@ -549,52 +847,60 @@
       <div class="dot" style="background: var(--red);"></div>
       <h3>Flag Alerts</h3>
       <p>Automatic notifications when athletes report low readiness, injury concerns, or high pain. Configurable thresholds.</p>
+      <div class="feature-data" style="color: var(--red);">!</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--blue);"></div>
       <h3>Body Heatmap</h3>
       <p>18 anatomical regions visualized across your roster. Track where injuries cluster and how patterns shift.</p>
+      <div class="feature-data" style="color: var(--blue);">18</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--yellow);"></div>
       <h3>Team Trends</h3>
-      <p>Readiness, energy, and effort plotted over time. Identify peaks, valleys, and inflection points across a season.</p>
+      <p>Readiness, energy, and effort plotted over time. Identify peaks, valleys, and inflection points.</p>
+      <div class="feature-data" style="color: var(--yellow); -webkit-text-stroke: 1px var(--black);">/\/\</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--red);"></div>
       <h3>AI Assistant</h3>
-      <p>Natural language queries. "Who reported knee pain this week?" Get precise, data-backed answers in seconds.</p>
+      <p>Natural language queries. "Who reported knee pain this week?" Precise, data-backed answers in seconds.</p>
+      <div class="feature-data" style="color: var(--red);">AI</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--blue);"></div>
       <h3>Workout Log</h3>
       <p>Athletes log workouts and rehab via SMS/WhatsApp. Coaches track compliance without extra admin.</p>
+      <div class="feature-data" style="color: var(--blue);">+</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--yellow);"></div>
       <h3>Leaderboards</h3>
-      <p>Gamified fitness rankings drive engagement. Customizable metrics and display keep athletes accountable.</p>
+      <p>Gamified fitness rankings drive engagement. Customizable metrics keep athletes accountable.</p>
+      <div class="feature-data" style="color: var(--yellow); -webkit-text-stroke: 1px var(--black);">#1</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--red);"></div>
-      <h3>Player Drill-Down</h3>
+      <h3>Player Profiles</h3>
       <p>Complete individual histories: readiness, injuries, workouts, and every survey response over time.</p>
+      <div class="feature-data" style="color: var(--red);">ID</div>
     </div>
     <div class="feature-cell">
       <div class="dot" style="background: var(--blue);"></div>
       <h3>Custom Templates</h3>
       <p>Build sport-specific check-in surveys. Your questions, your scales, your coaching philosophy.</p>
+      <div class="feature-data" style="color: var(--blue);">[&middot;]</div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<!-- HOW IT WORKS -->
 <section id="how" class="how-section">
-  <div class="how-shape-1"></div>
-  <div class="how-shape-2"></div>
-  <div style="max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1;">
+  <div class="how-geo-1"></div>
+  <div class="how-geo-2"></div>
+  <div class="how-header">
     <span class="label" style="color: var(--yellow);">Process</span>
-    <h2 style="color: var(--white);">How It Works</h2>
+    <h2 style="color: var(--white);"><span class="gradient-text">How It Works</span></h2>
   </div>
   <div class="how-grid">
     <div class="how-card">
@@ -620,7 +926,7 @@
   </div>
 </section>
 
-<!-- ═══════════ DIVIDER ═══════════ -->
+<!-- DIVIDER -->
 <div class="divider">
   <div style="background: var(--black);"></div>
   <div style="background: var(--yellow);"></div>
@@ -628,45 +934,48 @@
   <div style="background: var(--red);"></div>
 </div>
 
-<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<!-- TESTIMONIALS -->
 <section class="test-section">
-  <div style="max-width: 1100px; margin: 0 auto; padding: 0 2rem;">
+  <div class="test-header">
     <span class="label" style="color: var(--red);">Testimonials</span>
-    <h2>From the Field</h2>
+    <h2>From the <span class="gradient-text">Field</span></h2>
   </div>
   <div class="test-grid">
     <div class="test-card">
       <div class="accent-bar" style="background: var(--red);"></div>
       <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have missed. That single alert justified the entire investment."</blockquote>
-      <cite>Marcus T. — D-II Women's Basketball, Head Coach</cite>
+      <cite>Marcus T. -- D-II Women's Basketball, Head Coach</cite>
     </div>
     <div class="test-card">
       <div class="accent-bar" style="background: var(--blue);"></div>
       <blockquote>"We went from 30% survey completion to over 90% in one week. It is just a text message. There is nothing to download. Athletes actually respond."</blockquote>
-      <cite>Sarah K. — Club Soccer Director, 48 Athletes</cite>
+      <cite>Sarah K. -- Club Soccer Director, 48 Athletes</cite>
     </div>
     <div class="test-card">
       <div class="accent-bar" style="background: var(--yellow);"></div>
       <blockquote>"The AI assistant is a game-changer. I ask 'who has been fatigued this week?' and get an instant answer. No more spreadsheets."</blockquote>
-      <cite>James R. — HS Football, Athletic Trainer</cite>
+      <cite>James R. -- HS Football, Athletic Trainer</cite>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ CTA ═══════════ -->
+<!-- CTA -->
 <section class="cta-section">
-  <div class="cta-shape-1"></div>
-  <div class="cta-shape-2"></div>
-  <div class="cta-shape-3"></div>
-  <div class="inner">
-    <h2>Start Today</h2>
+  <div class="retro-grid"></div>
+  <div class="cta-shapes">
+    <div class="cta-shape cta-s1"></div>
+    <div class="cta-shape cta-s2"></div>
+    <div class="cta-shape cta-s3"></div>
+  </div>
+  <div class="cta-inner">
+    <h2><span class="gradient-text">Start Today</span></h2>
     <p>Free trial. Setup in under 10 minutes. No credit card required. Any sport. Any team size.</p>
     <a href="https://reflectsalus.app/" class="btn btn--red">Start Free Trial</a>
     <a href="https://reflectsalus.app/" class="btn btn--blue" style="margin-left: 0.5rem;">Book a Demo</a>
   </div>
 </section>
 
-<!-- ═══════════ DIVIDER ═══════════ -->
+<!-- DIVIDER -->
 <div class="divider">
   <div style="background: var(--red);"></div>
   <div style="background: var(--yellow);"></div>

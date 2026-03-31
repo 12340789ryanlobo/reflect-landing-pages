@@ -5,375 +5,280 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Reflect Chronicle — Athlete Wellness Intelligence</title>
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --ink:#1a1a1a;--paper:#f8f5f0;--rule:#c8c0b4;
+    --accent:#8b0000;--accent-light:#b91c1c;
+    --accent-glow:rgba(139,0,0,.5);--mid:#555;
+    --card-bg:#f0ebe3;
+  }
+  body{font-family:Georgia,'Times New Roman',Times,serif;background:var(--paper);color:var(--ink);line-height:1.65;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
 
-  :root {
-    --ink: #1a1a1a;
-    --paper: #f8f5f0;
-    --rule: #c8c0b4;
-    --accent: #8b0000;
-    --mid: #555;
+  /* ── Breaking News Marquee ── */
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .marquee-strip{
+    background:var(--accent);color:#fff;padding:8px 0;overflow:hidden;
+    position:relative;white-space:nowrap;
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  }
+  .marquee-strip::before,.marquee-strip::after{
+    content:'';position:absolute;top:0;width:60px;height:100%;z-index:2;
+  }
+  .marquee-strip::before{left:0;background:linear-gradient(90deg,var(--accent),transparent)}
+  .marquee-strip::after{right:0;background:linear-gradient(-90deg,var(--accent),transparent)}
+  .marquee-track{display:inline-block;animation:marquee 30s linear infinite}
+  .marquee-track span{margin:0 40px}
+
+  /* ── Animated gradient text ── */
+  @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .grad-text{
+    background:linear-gradient(90deg,var(--accent),#d44,var(--accent),var(--ink),var(--accent));
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:gradShift 6s ease infinite;
   }
 
-  body {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    background: var(--paper);
-    color: var(--ink);
-    line-height: 1.65;
+  /* ── Shine border ── */
+  @keyframes shineBorder{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  .shine-wrap{position:relative;border-radius:0;overflow:hidden;padding:2px}
+  .shine-wrap::before{
+    content:'';position:absolute;inset:-50%;
+    background:conic-gradient(from 0deg,transparent 0%,transparent 65%,var(--accent) 75%,var(--accent-light) 80%,transparent 90%);
+    animation:shineBorder 5s linear infinite;
   }
+  .shine-inner{position:relative;z-index:1;background:var(--paper)}
+
+  /* ── Neon gradient card for pull quotes ── */
+  @keyframes neonGlow{
+    0%,100%{box-shadow:0 0 8px rgba(139,0,0,.15),0 0 20px rgba(139,0,0,.08)}
+    50%{box-shadow:0 0 16px rgba(139,0,0,.3),0 0 40px rgba(139,0,0,.15)}
+  }
+  .neon-quote{
+    border:2px solid var(--accent);padding:1.5rem 2rem;margin:1.5rem 0;
+    text-align:center;font-size:1.3rem;font-style:italic;line-height:1.4;
+    font-family:Georgia,serif;animation:neonGlow 4s ease-in-out infinite;
+    position:relative;background:var(--paper);
+  }
+  .neon-quote cite{
+    display:block;font-size:.7rem;font-style:normal;text-transform:uppercase;
+    letter-spacing:.12em;margin-top:.7rem;color:var(--mid);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+
+  /* ── Shimmer CTA button ── */
+  @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+  .cta-btn{
+    display:inline-block;padding:.9rem 2.5rem;font-weight:700;font-size:.85rem;
+    text-transform:uppercase;letter-spacing:.12em;border:none;cursor:pointer;
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    color:#fff;border-radius:0;
+    background:linear-gradient(90deg,var(--accent) 0%,var(--accent-light) 25%,var(--accent) 50%,var(--accent-light) 75%,var(--accent) 100%);
+    background-size:200% 100%;animation:shimmer 3s linear infinite;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 0 24px var(--accent-glow)}
+  .cta-btn-outline{
+    display:inline-block;padding:.9rem 2.5rem;font-weight:700;font-size:.85rem;
+    text-transform:uppercase;letter-spacing:.12em;border:2px solid var(--ink);
+    cursor:pointer;background:transparent;color:var(--ink);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    transition:all .2s;
+  }
+  .cta-btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 
   /* ── Masthead ── */
-  .masthead {
-    text-align: center;
-    padding: 1.2rem 1rem 0.8rem;
-    border-bottom: 4px double var(--ink);
-  }
-  .masthead-date {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--mid);
-  }
-  .masthead-title {
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 900;
-    font-family: Georgia, serif;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin: 0.3rem 0 0.2rem;
-  }
-  .masthead-subtitle {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--mid);
-    letter-spacing: 0.05em;
-  }
-  .masthead-rule {
-    width: 100%;
-    border: none;
-    border-top: 1px solid var(--ink);
-    margin-top: 0.8rem;
-  }
+  .masthead{text-align:center;padding:1.2rem 1rem .8rem;border-bottom:4px double var(--ink)}
+  .masthead-date{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--mid);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
+  .masthead-title{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;font-family:Georgia,serif;letter-spacing:-.02em;line-height:1;margin:.3rem 0 .2rem}
+  .masthead-subtitle{font-size:.85rem;font-style:italic;color:var(--mid);letter-spacing:.05em}
+  .masthead-rule{width:100%;border:none;border-top:1px solid var(--ink);margin-top:.8rem}
 
   /* ── Wrapper ── */
-  .wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+  .wrapper{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+
+  /* ── Labels ── */
+  .section-label{
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;
+    color:var(--accent);font-weight:700;margin-bottom:.5rem;
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
   }
+  .byline{font-size:.8rem;font-style:italic;color:var(--mid);margin-bottom:1rem}
+  .body-text{font-size:.95rem;line-height:1.7;margin-bottom:1rem;text-align:justify;hyphens:auto}
+  .drop-cap::first-letter{float:left;font-size:3.5rem;line-height:.8;font-weight:700;margin-right:.1rem;margin-top:.1rem;color:var(--accent)}
+  .headline{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;line-height:1.15;margin-bottom:.8rem;font-family:Georgia,serif}
+  .subheadline{font-size:clamp(1.2rem,2vw,1.6rem);font-weight:700;line-height:1.25;margin-bottom:.7rem}
 
   /* ── Column layouts ── */
-  .cols-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cols-3 > * {
-    padding: 1.5rem 1.5rem;
-    border-right: 1px solid var(--rule);
-  }
-  .cols-3 > *:last-child { border-right: none; }
+  .cols-2{display:grid;grid-template-columns:2fr 1fr;gap:0;border-bottom:1px solid var(--rule)}
+  .cols-2>*{padding:1.5rem}
+  .cols-2>*:first-child{border-right:1px solid var(--rule)}
 
-  .cols-2 {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cols-2 > * {
-    padding: 1.5rem 1.5rem;
-  }
-  .cols-2 > *:first-child {
-    border-right: 1px solid var(--rule);
-  }
+  .cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-bottom:1px solid var(--rule)}
+  .cols-3>*{padding:1.5rem;border-right:1px solid var(--rule)}
+  .cols-3>*:last-child{border-right:none}
 
-  .cols-2-even {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cols-2-even > * {
-    padding: 1.5rem 1.5rem;
-  }
-  .cols-2-even > *:first-child {
-    border-right: 1px solid var(--rule);
-  }
-
-  /* ── Typography ── */
-  .headline {
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 0.8rem;
-    font-family: Georgia, serif;
-  }
-  .subheadline {
-    font-size: clamp(1.2rem, 2vw, 1.6rem);
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 0.7rem;
-  }
-  .section-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  .byline {
-    font-size: 0.8rem;
-    font-style: italic;
-    color: var(--mid);
-    margin-bottom: 1rem;
-  }
-  .body-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    margin-bottom: 1rem;
-    text-align: justify;
-    hyphens: auto;
-  }
-  .drop-cap::first-letter {
-    float: left;
-    font-size: 3.5rem;
-    line-height: 0.8;
-    font-weight: 700;
-    margin-right: 0.1rem;
-    margin-top: 0.1rem;
-    color: var(--accent);
-  }
-
-  /* ── Pull quote ── */
-  .pull-quote {
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
-    padding: 1.2rem 0;
-    margin: 1.5rem 0;
-    font-size: 1.3rem;
-    font-style: italic;
-    line-height: 1.4;
-    text-align: center;
-    font-family: Georgia, serif;
-  }
-  .pull-quote cite {
-    display: block;
-    font-size: 0.75rem;
-    font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 0.5rem;
-    color: var(--mid);
-  }
+  .cols-2-even{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--rule)}
+  .cols-2-even>*{padding:1.5rem}
+  .cols-2-even>*:first-child{border-right:1px solid var(--rule)}
 
   /* ── Sidebar box ── */
-  .sidebar-box {
-    border: 1px solid var(--ink);
-    padding: 1.2rem;
-    margin-bottom: 1.5rem;
-    background: #f0ebe3;
-  }
-  .sidebar-box h3 {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 0.4rem;
-    margin-bottom: 0.8rem;
-  }
-  .sidebar-box p {
-    font-size: 0.85rem;
-    line-height: 1.55;
-  }
+  .sidebar-box{border:1px solid var(--ink);padding:1.2rem;margin-bottom:1.5rem;background:var(--card-bg)}
+  .sidebar-box h3{font-size:.9rem;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--ink);padding-bottom:.4rem;margin-bottom:.8rem}
+  .sidebar-box p{font-size:.85rem;line-height:1.55}
 
-  /* ── Numbered list ── */
-  .how-list {
-    list-style: none;
-    counter-reset: steps;
-  }
-  .how-list li {
-    counter-increment: steps;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid var(--rule);
-    font-size: 0.92rem;
-    padding-left: 2rem;
-    position: relative;
-  }
-  .how-list li::before {
-    content: counter(steps);
-    position: absolute;
-    left: 0;
-    top: 0.8rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  .how-list li strong {
-    display: block;
-    font-size: 0.95rem;
-  }
+  /* ── Mini data viz ── */
+  .viz-bar-group{display:flex;flex-direction:column;gap:10px;margin:12px 0}
+  .viz-row{display:flex;align-items:center;gap:8px}
+  .viz-label{font-size:.7rem;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;width:70px;flex-shrink:0;color:var(--mid)}
+  .viz-track{flex:1;height:14px;background:rgba(0,0,0,.06);position:relative;overflow:hidden}
+  .viz-fill{height:100%;background:var(--accent);transition:width .3s}
+  .viz-val{font-size:.7rem;font-weight:700;width:35px;text-align:right;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
+
+  /* Mini chart */
+  .mini-chart{display:flex;align-items:flex-end;gap:3px;height:60px;margin:12px 0}
+  .mini-bar{flex:1;background:var(--accent);min-width:6px;transition:opacity .2s;opacity:.7}
+  .mini-bar:hover{opacity:1}
+
+  /* ── SMS Mock in editorial ── */
+  .editorial-sms{background:#fff;border:1px solid var(--rule);padding:16px;margin:1rem 0}
+  .editorial-sms-header{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:var(--accent);margin-bottom:12px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;border-bottom:1px solid var(--rule);padding-bottom:8px}
+  .ed-msg{padding:8px 12px;border-radius:12px;font-size:.82rem;line-height:1.5;max-width:85%;margin-bottom:6px}
+  .ed-msg-in{background:var(--card-bg);align-self:flex-start;border-bottom-left-radius:2px}
+  .ed-msg-out{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:2px}
+  .ed-msgs{display:flex;flex-direction:column}
+
+  /* ── How-It-Works list ── */
+  .how-list{list-style:none;counter-reset:steps}
+  .how-list li{counter-increment:steps;padding:.8rem 0;border-bottom:1px solid var(--rule);font-size:.92rem;padding-left:2rem;position:relative}
+  .how-list li::before{content:counter(steps);position:absolute;left:0;top:.8rem;font-size:1.1rem;font-weight:700;color:var(--accent)}
+  .how-list li strong{display:block;font-size:.95rem}
 
   /* ── Stat strip ── */
-  .stat-strip {
-    display: flex;
-    justify-content: space-around;
-    padding: 1.2rem 0;
-    border-top: 2px solid var(--ink);
-    border-bottom: 2px solid var(--ink);
-    margin: 1.5rem 0;
-    text-align: center;
-  }
-  .stat-strip .stat-num {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--accent);
-  }
-  .stat-strip .stat-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--mid);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
+  .stat-strip{display:flex;justify-content:space-around;padding:1.2rem 0;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);margin:1.5rem 0;text-align:center}
+  .stat-strip .stat-num{font-size:2rem;font-weight:700;line-height:1}
+  .stat-strip .stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mid);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif}
 
-  /* ── Testimonials as classifieds ── */
-  .classified {
-    border-bottom: 1px solid var(--rule);
-    padding: 1rem 0;
-  }
-  .classified:last-child { border-bottom: none; }
-  .classified blockquote {
-    font-size: 0.88rem;
-    font-style: italic;
-    line-height: 1.55;
-    margin-bottom: 0.3rem;
-  }
-  .classified cite {
-    font-size: 0.75rem;
-    font-style: normal;
-    color: var(--mid);
-  }
+  /* ── Classifieds / Testimonials ── */
+  .classified{border-bottom:1px solid var(--rule);padding:1rem 0}
+  .classified:last-child{border-bottom:none}
+  .classified blockquote{font-size:.88rem;font-style:italic;line-height:1.55;margin-bottom:.3rem}
+  .classified cite{font-size:.75rem;font-style:normal;color:var(--mid)}
+
+  /* ── Feature article card with shine border ── */
+  .feature-article{margin-bottom:0}
+  .feature-article .shine-inner{padding:1.5rem}
+  .feature-article h4{font-size:1rem;font-weight:700;margin-bottom:.3rem}
+  .feature-article p{font-size:.88rem;line-height:1.55}
 
   /* ── CTA banner ── */
-  .cta-banner {
-    text-align: center;
-    padding: 3rem 2rem;
-    background: var(--ink);
-    color: var(--paper);
-    margin-top: 0;
-  }
-  .cta-banner h2 {
-    font-size: clamp(1.6rem, 3vw, 2.4rem);
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-  }
-  .cta-banner p {
-    font-style: italic;
-    margin-bottom: 1.5rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    opacity: 0.8;
-  }
-  .cta-btn {
-    display: inline-block;
-    padding: 0.9rem 2.5rem;
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    border: none;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  .cta-btn:hover { background: #a10000; }
-
-  /* ── Feature columns ── */
-  .feature-col h4 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-  }
-  .feature-col p {
-    font-size: 0.88rem;
-    line-height: 1.55;
-  }
-  .feature-col + .feature-col {
-    margin-top: 1.2rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--rule);
-  }
+  .cta-banner{text-align:center;padding:3.5rem 2rem;background:var(--ink);color:var(--paper)}
+  .cta-banner h2{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:.8rem}
+  .cta-banner p{font-style:italic;margin-bottom:1.5rem;max-width:500px;margin-left:auto;margin-right:auto;opacity:.8}
+  .cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
 
   /* ── Footer ── */
-  .footer {
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.7rem;
-    color: var(--mid);
-    border-top: 4px double var(--ink);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
+  .footer{text-align:center;padding:1rem;font-size:.7rem;color:var(--mid);border-top:4px double var(--ink);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em}
 
   /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .cols-3, .cols-2, .cols-2-even {
-      grid-template-columns: 1fr;
-    }
-    .cols-3 > *, .cols-2 > *:first-child, .cols-2-even > *:first-child {
-      border-right: none;
-      border-bottom: 1px solid var(--rule);
-    }
-    .stat-strip { flex-direction: column; gap: 1rem; }
+  @media(max-width:768px){
+    .cols-3,.cols-2,.cols-2-even{grid-template-columns:1fr}
+    .cols-3>*,.cols-2>*:first-child,.cols-2-even>*:first-child{border-right:none;border-bottom:1px solid var(--rule)}
+    .stat-strip{flex-direction:column;gap:1rem}
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════ MASTHEAD ═══════════ -->
+<!-- ═══ Breaking News Marquee ═══ -->
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span>BREAKING: 94% average athlete response rate reported across programs</span>
+    <span>NEW: AI coaching assistant now answers plain-language queries in seconds</span>
+    <span>STUDY: Teams using automated check-ins detect injuries 3x faster</span>
+    <span>UPDATE: 500+ athletes now tracked on the Reflect platform</span>
+    <span>FEATURE: 18-region injury body heatmap now available for all teams</span>
+    <span>BREAKING: 94% average athlete response rate reported across programs</span>
+    <span>NEW: AI coaching assistant now answers plain-language queries in seconds</span>
+    <span>STUDY: Teams using automated check-ins detect injuries 3x faster</span>
+    <span>UPDATE: 500+ athletes now tracked on the Reflect platform</span>
+    <span>FEATURE: 18-region injury body heatmap now available for all teams</span>
+  </div>
+</div>
+
+<!-- ═══ Masthead ═══ -->
 <header class="masthead">
-  <div class="masthead-date">Sunday, March 30, 2026 &middot; Vol. I, No. 1 &middot; reflectsalus.app</div>
-  <h1 class="masthead-title">The Reflect Chronicle</h1>
+  <div class="masthead-date">Monday, March 31, 2026 &middot; Vol. I, No. 1 &middot; reflectsalus.app</div>
+  <h1 class="masthead-title">The Reflect <span class="grad-text">Chronicle</span></h1>
   <div class="masthead-subtitle">"All the wellness data that's fit to track"</div>
   <hr class="masthead-rule">
 </header>
 
 <div class="wrapper">
 
-  <!-- ═══════════ HERO: LEAD STORY ═══════════ -->
+  <!-- ═══ Hero: Lead Story ═══ -->
   <section class="cols-2">
     <div>
       <span class="section-label">Lead Story</span>
-      <h2 class="headline">Check-Ins That Take 60 Seconds. Insights That Last&nbsp;a&nbsp;Season.</h2>
-      <p class="byline">By the Reflect Editorial Board</p>
+      <h2 class="headline">Check-Ins That Take 60 Seconds. <span class="grad-text">Insights That Last a Season.</span></h2>
+      <p class="byline">By the Reflect Editorial Board &middot; March 31, 2026</p>
       <p class="body-text drop-cap">Coaches managing 15 to 60 or more athletes face an impossible challenge: knowing how every player truly feels after each practice and competition. Traditional methods — clipboard surveys, casual check-ins, gut instinct — leave dangerous gaps. Injuries go unreported. Fatigue compounds silently. By the time a problem surfaces, it's often too late for prevention.</p>
       <p class="body-text">Enter Reflect, the athlete wellness platform that works where athletes already are. Through automated SMS and WhatsApp check-ins, Reflect delivers brief conversational surveys to every athlete on your roster, then translates their responses into real-time alerts, dashboards, and actionable coaching intelligence.</p>
-      <p class="body-text">No app installation required. No training sessions. No onboarding friction. Athletes simply reply to a text message, and coaches receive a comprehensive view of team wellness within minutes.</p>
-      <div class="pull-quote">
-        "The always-on assistant coach — that's what Reflect is. It never forgets to check in, never misses a pattern, never takes a day off."
+
+      <div class="neon-quote">
+        "The always-on assistant coach — it never forgets to check in, never misses a pattern, never takes a day off."
         <cite>Product Mission Statement, Reflect</cite>
       </div>
-      <p class="body-text">The platform's suite of tools includes automatic flag alerts for concerning responses, an injury body heatmap spanning 18 anatomical regions, a team trends dashboard, AI-powered coaching queries, and comprehensive workout and rehab logging — all unified under a single, intuitive interface.</p>
+
+      <p class="body-text">No app installation required. No training sessions. No onboarding friction. Athletes simply reply to a text message, and coaches receive a comprehensive view of team wellness within minutes. The platform's suite of tools includes automatic flag alerts, an injury body heatmap spanning 18 anatomical regions, a team trends dashboard, AI-powered coaching queries, and comprehensive workout and rehab logging.</p>
+
+      <!-- SMS Demo woven into editorial -->
+      <div class="editorial-sms">
+        <div class="editorial-sms-header">Exhibit A: A Typical Reflect Check-In</div>
+        <div class="ed-msgs">
+          <div class="ed-msg ed-msg-in">Hey Jordan! Quick post-practice check-in. How's your readiness today? (1-10)</div>
+          <div class="ed-msg ed-msg-out">7</div>
+          <div class="ed-msg ed-msg-in">Got it. Any pain or soreness to report?</div>
+          <div class="ed-msg ed-msg-out">Left knee — mild</div>
+          <div class="ed-msg ed-msg-in">Noted — flagging for Coach Davis. Rate your energy level? (1-10)</div>
+          <div class="ed-msg ed-msg-out">6</div>
+          <div class="ed-msg ed-msg-in">All done! Recovery tip: foam roll + hydrate tonight. See you tomorrow.</div>
+        </div>
+      </div>
+      <p class="body-text" style="margin-top:1rem">The entire exchange takes under 60 seconds. The athlete never leaves their messaging app. The coach receives the data instantly — including an automatic flag for the knee pain report.</p>
     </div>
+
     <div>
+      <!-- Data viz sidebar -->
+      <div class="sidebar-box">
+        <h3>Team Readiness — This Week</h3>
+        <div class="mini-chart">
+          <div class="mini-bar" style="height:72%"></div>
+          <div class="mini-bar" style="height:88%"></div>
+          <div class="mini-bar" style="height:65%"></div>
+          <div class="mini-bar" style="height:92%"></div>
+          <div class="mini-bar" style="height:78%"></div>
+          <div class="mini-bar" style="height:70%"></div>
+          <div class="mini-bar" style="height:85%"></div>
+        </div>
+        <p style="font-size:.7rem;color:var(--mid);text-align:center;font-family:'Helvetica Neue',sans-serif;margin-top:4px">Mon — Sun &middot; Avg readiness score across 24 athletes</p>
+      </div>
+
       <div class="sidebar-box">
         <h3>By the Numbers</h3>
-        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">60 seconds</p>
-        <p>Average time for an athlete to complete a Reflect check-in survey</p>
-        <hr style="border: none; border-top: 1px solid var(--rule); margin: 0.8rem 0;">
-        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">94%</p>
+        <p style="font-size:1.8rem;font-weight:700;margin-bottom:.3rem"><span class="grad-text">60 seconds</span></p>
+        <p>Average time for an athlete to complete a check-in survey</p>
+        <hr style="border:none;border-top:1px solid var(--rule);margin:.8rem 0">
+        <p style="font-size:1.8rem;font-weight:700;margin-bottom:.3rem"><span class="grad-text">94%</span></p>
         <p>Typical response rate across programs using SMS/WhatsApp delivery</p>
-        <hr style="border: none; border-top: 1px solid var(--rule); margin: 0.8rem 0;">
-        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">18</p>
+        <hr style="border:none;border-top:1px solid var(--rule);margin:.8rem 0">
+        <p style="font-size:1.8rem;font-weight:700;margin-bottom:.3rem"><span class="grad-text">18</span></p>
         <p>Anatomical regions tracked on the injury body heatmap</p>
+        <hr style="border:none;border-top:1px solid var(--rule);margin:.8rem 0">
+        <p style="font-size:1.8rem;font-weight:700;margin-bottom:.3rem"><span class="grad-text">500+</span></p>
+        <p>Athletes currently tracked across all programs</p>
       </div>
+
       <div class="sidebar-box">
         <h3>How It Works</h3>
         <ol class="how-list">
@@ -386,61 +291,147 @@
     </div>
   </section>
 
-  <!-- ═══════════ FEATURES: 3-COLUMN ═══════════ -->
+  <!-- ═══ Features: 3-Column with Shine Borders ═══ -->
   <section class="cols-3">
     <div>
       <span class="section-label">Monitoring</span>
-      <h3 class="subheadline">Automatic Flag Alerts</h3>
-      <p class="body-text">The system watches every incoming response for warning signs: low readiness scores, injury mentions, high pain ratings, or sudden drops in any metric. Coaches receive instant notifications when any athlete crosses a configurable threshold, ensuring no red flag goes unnoticed in a busy season.</p>
-      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
-        <h4>Injury Body Heatmap</h4>
-        <p>A visual overlay across 18 anatomical regions aggregates pain reports across your entire roster. See at a glance where your team hurts most, and track how injury patterns shift over weeks and months of training.</p>
+      <div class="feature-article">
+        <div class="shine-wrap">
+          <div class="shine-inner" style="padding:1.2rem">
+            <h4>Automatic Flag Alerts</h4>
+            <p>The system watches every incoming response for warning signs: low readiness scores, injury mentions, high pain ratings, or sudden drops in any metric. Coaches receive instant notifications when any athlete crosses a configurable threshold.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--rule)">
+        <h4 style="font-size:1rem;font-weight:700;margin-bottom:.3rem">Injury Body Heatmap</h4>
+        <p class="body-text">A visual overlay across 18 anatomical regions aggregates pain reports across your entire roster. See at a glance where your team hurts most, and track how injury patterns shift over time.</p>
+        <!-- Embedded data viz -->
+        <div class="viz-bar-group">
+          <div class="viz-row">
+            <span class="viz-label">Knees</span>
+            <div class="viz-track"><div class="viz-fill" style="width:78%"></div></div>
+            <span class="viz-val">78%</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Shoulders</span>
+            <div class="viz-track"><div class="viz-fill" style="width:54%"></div></div>
+            <span class="viz-val">54%</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Ankles</span>
+            <div class="viz-track"><div class="viz-fill" style="width:42%"></div></div>
+            <span class="viz-val">42%</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Hamstrings</span>
+            <div class="viz-track"><div class="viz-fill" style="width:65%"></div></div>
+            <span class="viz-val">65%</span>
+          </div>
+        </div>
+        <p style="font-size:.7rem;color:var(--mid);font-family:'Helvetica Neue',sans-serif">Injury report frequency by region — last 30 days</p>
       </div>
     </div>
     <div>
       <span class="section-label">Analytics</span>
-      <h3 class="subheadline">Team Trends Dashboard</h3>
-      <p class="body-text">Readiness, energy, and effort plotted over time for your entire team. Identify when your squad is peaking, when they're grinding, and when they need rest. The dashboard surfaces patterns that are invisible in daily noise but critical over the arc of a full season.</p>
-      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
-        <h4>Per-Player Drill-Down</h4>
-        <p>Select any athlete and access their complete history: readiness trends, injury timeline, workout logs, and survey responses. Build a comprehensive picture of each individual's trajectory.</p>
+      <div class="feature-article">
+        <div class="shine-wrap">
+          <div class="shine-inner" style="padding:1.2rem">
+            <h4>Team Trends Dashboard</h4>
+            <p>Readiness, energy, and effort plotted over time for your entire team. Identify when your squad is peaking, when they're grinding, and when they need rest. The dashboard surfaces patterns invisible in daily noise.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--rule)">
+        <h4 style="font-size:1rem;font-weight:700;margin-bottom:.3rem">Per-Player Drill-Down</h4>
+        <p class="body-text">Select any athlete and access their complete history: readiness trends, injury timeline, workout logs, and survey responses.</p>
+        <!-- Data viz: mini trend -->
+        <div class="viz-bar-group">
+          <div class="viz-row">
+            <span class="viz-label">Readiness</span>
+            <div class="viz-track"><div class="viz-fill" style="width:82%"></div></div>
+            <span class="viz-val">8.2</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Energy</span>
+            <div class="viz-track"><div class="viz-fill" style="width:71%"></div></div>
+            <span class="viz-val">7.1</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Effort</span>
+            <div class="viz-track"><div class="viz-fill" style="width:89%"></div></div>
+            <span class="viz-val">8.9</span>
+          </div>
+          <div class="viz-row">
+            <span class="viz-label">Recovery</span>
+            <div class="viz-track"><div class="viz-fill" style="width:65%"></div></div>
+            <span class="viz-val">6.5</span>
+          </div>
+        </div>
+        <p style="font-size:.7rem;color:var(--mid);font-family:'Helvetica Neue',sans-serif">Team averages — rolling 7-day window</p>
       </div>
     </div>
     <div>
       <span class="section-label">Intelligence</span>
-      <h3 class="subheadline">AI Coaching Assistant</h3>
-      <p class="body-text">Ask questions in natural language. "Which players have reported shoulder pain in the last two weeks?" "What's the team's average readiness after away games?" The AI assistant queries your entire data history and returns precise, actionable answers in seconds.</p>
-      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
-        <h4>Custom Question Templates</h4>
-        <p>Every sport is different. Build your own check-in surveys with sport-specific questions that matter to your program, your training philosophy, and your athletes.</p>
+      <div class="feature-article">
+        <div class="shine-wrap">
+          <div class="shine-inner" style="padding:1.2rem">
+            <h4>AI Coaching Assistant</h4>
+            <p>Ask questions in natural language. "Which players have reported shoulder pain in the last two weeks?" The AI queries your entire data history and returns precise, actionable answers in seconds.</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--rule)">
+        <h4 style="font-size:1rem;font-weight:700;margin-bottom:.3rem">Custom Question Templates</h4>
+        <p class="body-text">Every sport is different. Build your own check-in surveys with sport-specific questions that matter to your program and your athletes.</p>
+      </div>
+      <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--rule)">
+        <h4 style="font-size:1rem;font-weight:700;margin-bottom:.3rem">Fitness Leaderboards</h4>
+        <p class="body-text">Healthy competition drives engagement. Configurable leaderboards rank athletes by workout consistency, readiness scores, or custom metrics.</p>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ MORE FEATURES + TESTIMONIALS ═══════════ -->
+  <!-- ═══ Testimonials + Additional Features ═══ -->
   <section class="cols-2-even">
     <div>
       <span class="section-label">Additional Features</span>
       <h3 class="subheadline">Workout &amp; Rehab Logging</h3>
-      <p class="body-text">Athletes log completed workouts and rehab exercises directly through the same SMS/WhatsApp channel. Coaches track compliance rates and see exactly who's doing the work — without nagging, without spreadsheets, without guesswork.</p>
+      <p class="body-text">Athletes log completed workouts and rehab exercises directly through the same SMS/WhatsApp channel. Coaches track compliance rates and see exactly who's doing the work — without nagging, without spreadsheets.</p>
 
-      <div class="pull-quote" style="font-size: 1.1rem;">
+      <div class="neon-quote" style="font-size:1.1rem">
         "We went from 30% survey completion to over 90% in the first week. It's just a text — there's nothing to download."
         <cite>Sarah K., Club Soccer Director</cite>
       </div>
 
-      <h3 class="subheadline">Fitness Leaderboards</h3>
-      <p class="body-text">Healthy competition drives engagement. Configurable leaderboards rank athletes by workout consistency, readiness scores, or custom metrics. Players see where they stand; coaches see who's showing up.</p>
+      <div class="stat-strip">
+        <div>
+          <div class="stat-num grad-text">94%</div>
+          <div class="stat-label">Response</div>
+        </div>
+        <div>
+          <div class="stat-num grad-text">60s</div>
+          <div class="stat-label">Check-In</div>
+        </div>
+        <div>
+          <div class="stat-num grad-text">3x</div>
+          <div class="stat-label">Detection</div>
+        </div>
+        <div>
+          <div class="stat-num grad-text">500+</div>
+          <div class="stat-label">Athletes</div>
+        </div>
+      </div>
     </div>
     <div>
       <span class="section-label">Voices from the Field</span>
       <h3 class="subheadline">Coaches Report Results</h3>
       <div class="classified">
-        <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have completely missed. That single alert justified the entire investment for our program."</blockquote>
+        <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have completely missed. That single alert justified the entire investment."</blockquote>
         <cite>— Marcus T., D-II Women's Basketball Head Coach</cite>
       </div>
       <div class="classified">
-        <blockquote>"The AI assistant is a game-changer. Instead of scrolling through spreadsheets, I just ask 'who's been fatigued this week?' and get an answer in seconds. It's like having a sports science intern who never sleeps."</blockquote>
+        <blockquote>"The AI assistant is a game-changer. Instead of scrolling through spreadsheets, I just ask 'who's been fatigued this week?' and get an answer in seconds."</blockquote>
         <cite>— James R., High School Football Athletic Trainer</cite>
       </div>
       <div class="classified">
@@ -456,15 +447,18 @@
 
 </div>
 
-<!-- ═══════════ CTA BANNER ═══════════ -->
+<!-- ═══ CTA Banner ═══ -->
 <section class="cta-banner">
-  <h2>Start Your Free Trial Today</h2>
+  <h2>Start Your Free Trial <span class="grad-text" style="background:linear-gradient(90deg,#ff6b6b,#fff,#ff6b6b,#f8f5f0,#ff6b6b);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 6s ease infinite">Today</span></h2>
   <p>Set up in under 10 minutes. No credit card required. Works with any team size, any sport.</p>
-  <a href="https://reflectsalus.app/" class="cta-btn">Visit reflectsalus.app</a>
+  <div class="cta-btns">
+    <a href="https://reflectsalus.app/" class="cta-btn">Visit reflectsalus.app</a>
+    <a href="https://reflectsalus.app/" class="cta-btn-outline" style="color:var(--paper);border-color:rgba(255,255,255,.3)">Book a Demo</a>
+  </div>
 </section>
 
 <footer class="footer">
-  &copy; 2026 Reflect &middot; reflectsalus.app &middot; The always-on assistant coach
+  &copy; 2026 The Reflect Chronicle &middot; reflectsalus.app &middot; The always-on assistant coach
 </footer>
 
 </body>
