@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Elevate Every Athlete</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{--black:#0b0b0b;--dark:#141414;--card:#1a1a1a;--gold:#c9a96e;--gold-light:#e2c992;--gold-dim:rgba(201,169,110,.15);--cream:#f5f0e8;--text:#a8a8a8;--white:#fff;--serif:'Georgia','Times New Roman',serif;--sans:'Helvetica Neue',Arial,sans-serif}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--black);color:var(--text);line-height:1.7;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  .container{max-width:1100px;margin:0 auto;padding:0 32px}
+  .btn{display:inline-block;padding:16px 44px;font-size:.85rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--black)}
+  .btn-gold:hover{box-shadow:0 8px 32px rgba(201,169,110,.3);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+  .btn-ghost:hover{background:var(--gold-dim)}
+  .eyebrow{font-size:.7rem;text-transform:uppercase;letter-spacing:5px;color:var(--gold);font-weight:500;margin-bottom:16px}
+  .divider{width:60px;height:1px;background:var(--gold);margin:0 auto}
+  .divider-left{margin:0}
+
+  /* Subtle texture */
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 100px,rgba(201,169,110,.02) 100px,rgba(201,169,110,.02) 101px);pointer-events:none;z-index:0}
+
+  /* Nav */
+  nav{padding:28px 0;position:absolute;top:0;left:0;width:100%;z-index:10}
+  nav .container{display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{font-family:var(--serif);font-size:1.4rem;color:var(--cream);letter-spacing:2px}
+  .nav-cta{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--gold);padding-bottom:2px}
+
+  /* Hero */
+  .hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:120px 0 100px}
+  .hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 30% 40%,rgba(201,169,110,.06),transparent 60%);pointer-events:none}
+  .hero-inner{max-width:680px}
+  .hero h1{font-family:var(--serif);font-size:clamp(2.5rem,5vw,4.2rem);color:var(--cream);line-height:1.15;margin-bottom:24px;font-weight:400}
+  .hero h1 em{color:var(--gold);font-style:italic}
+  .hero p{font-size:1.1rem;color:var(--text);max-width:520px;margin-bottom:40px}
+  .hero-btns{display:flex;gap:16px;flex-wrap:wrap}
+  .hero-line{position:absolute;right:10%;top:15%;width:1px;height:70%;background:linear-gradient(to bottom,transparent,var(--gold-dim),transparent);display:none}
+  @media(min-width:1024px){.hero-line{display:block}}
+
+  /* About */
+  .about{padding:100px 0;border-top:1px solid rgba(201,169,110,.1)}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+  .about h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);color:var(--cream);font-weight:400;margin-bottom:20px;line-height:1.3}
+  .about p{font-size:1rem;line-height:1.8}
+  .about-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:300px}
+  .ring{position:absolute;border:1px solid var(--gold-dim);border-radius:50%}
+  .ring-1{width:200px;height:200px}
+  .ring-2{width:280px;height:280px}
+  .ring-3{width:360px;height:360px}
+  .ring-center{width:60px;height:60px;background:linear-gradient(135deg,var(--gold),var(--gold-light));border-radius:50%;position:relative;z-index:2}
+
+  /* Features */
+  .features{padding:100px 0}
+  .features-header{text-align:center;margin-bottom:60px}
+  .features h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);color:var(--cream);font-weight:400;margin-bottom:8px}
+  .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+  .feat-card{background:var(--card);border:1px solid rgba(201,169,110,.08);padding:40px 32px;position:relative;transition:border-color .3s}
+  .feat-card:hover{border-color:rgba(201,169,110,.25)}
+  .feat-num{font-family:var(--serif);font-size:2.5rem;color:var(--gold-dim);font-weight:400;line-height:1;margin-bottom:16px}
+  .feat-card h3{font-family:var(--serif);font-size:1.15rem;color:var(--cream);font-weight:400;margin-bottom:10px;letter-spacing:.5px}
+  .feat-card p{font-size:.9rem;line-height:1.7}
+
+  /* How */
+  .how{padding:100px 0;background:var(--dark);border-top:1px solid rgba(201,169,110,.08);border-bottom:1px solid rgba(201,169,110,.08)}
+  .how-header{text-align:center;margin-bottom:60px}
+  .how h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);color:var(--cream);font-weight:400}
+  .how-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:40px}
+  .how-step{text-align:center;position:relative;padding-top:40px}
+  .how-step::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:32px;border:1px solid var(--gold);border-radius:50%}
+  .how-step::after{content:'';position:absolute;top:14px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:var(--gold);border-radius:50%}
+  .how-step h3{font-family:var(--serif);font-size:1rem;color:var(--cream);font-weight:400;margin-bottom:8px;margin-top:12px}
+  .how-step p{font-size:.85rem;line-height:1.7}
+
+  /* Testimonials */
+  .social{padding:100px 0}
+  .social-header{text-align:center;margin-bottom:60px}
+  .social h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.6rem);color:var(--cream);font-weight:400}
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .test-card{border:1px solid rgba(201,169,110,.1);padding:36px;position:relative}
+  .test-card::before{content:'\201C';position:absolute;top:16px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--gold-dim);line-height:1}
+  .test-card blockquote{font-family:var(--serif);font-size:1rem;color:rgba(255,255,255,.75);line-height:1.8;margin-bottom:20px;padding-top:24px;font-style:italic}
+  .test-card cite{font-family:var(--sans);font-size:.75rem;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-style:normal}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px;margin-top:60px;text-align:center}
+  .stat{padding:28px}
+  .stat-num{font-family:var(--serif);font-size:2.5rem;color:var(--gold);font-weight:400}
+  .stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:3px;margin-top:4px;color:var(--text)}
+
+  /* CTA */
+  .final-cta{padding:120px 0;text-align:center;position:relative}
+  .final-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,169,110,.05),transparent 70%)}
+  .final-cta h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);color:var(--cream);font-weight:400;margin-bottom:16px;line-height:1.25}
+  .final-cta h2 em{color:var(--gold);font-style:italic}
+  .final-cta p{color:var(--text);margin-bottom:40px;font-size:1.05rem}
+  .final-cta .hero-btns{justify-content:center}
+
+  footer{border-top:1px solid rgba(201,169,110,.08);padding:40px 0;text-align:center;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.25)}
+
+  @media(max-width:768px){
+    .about-grid{grid-template-columns:1fr}
+    .about-visual{min-height:220px;margin-bottom:20px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="nav-logo">Reflect</div>
+    <a href="https://reflectsalus.app/" class="nav-cta">Begin</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-line"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <p class="eyebrow">Athlete Intelligence, Refined</p>
+      <h1>Elevate every athlete.<br>Protect every <em>season.</em></h1>
+      <p>Automated wellness check-ins via SMS and WhatsApp. Real-time readiness data, injury alerts, and AI-powered insights — delivered with the precision your program demands.</p>
+      <div class="hero-btns">
+        <a href="https://reflectsalus.app/" class="btn btn-gold">Begin Your Trial</a>
+        <a href="https://reflectsalus.app/" class="btn btn-ghost">Private Demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <p class="eyebrow">The Philosophy</p>
+        <div class="divider-left" style="margin-bottom:24px"></div>
+        <h2>The always-on assistant coach your program deserves</h2>
+        <p>Reflect works where athletes already are — SMS and WhatsApp. No app install, no friction. After every practice or competition, athletes complete a 60-second wellness survey. Coaches receive instant flag alerts and access an elegant dashboard tracking readiness, energy, effort, and injury patterns across the entire roster.</p>
+      </div>
+      <div class="about-visual">
+        <div class="ring ring-3"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-1"></div>
+        <div class="ring-center"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <div class="container">
+    <div class="features-header">
+      <p class="eyebrow">Capabilities</p>
+      <div class="divider" style="margin-bottom:24px"></div>
+      <h2>Precision tools for discerning coaches</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-num">01</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Immediate notification when an athlete reports concerning readiness, pain, or injury. Never miss a critical signal.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">02</div>
+        <h3>Injury Body Heatmap</h3>
+        <p>Eighteen anatomical regions rendered in a visual heatmap. Understand precisely where your team's stress concentrates.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">03</div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Longitudinal readiness, energy, and effort data. Elegant visualizations that reveal the narrative within your numbers.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">04</div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Converse with your data in natural language. Receive thoughtful, contextual answers drawn from your team's complete history.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">05</div>
+        <h3>Per-Player Drill-Down</h3>
+        <p>Individual athlete profiles with complete wellness histories, trend lines, and rehabilitation progress at a glance.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">06</div>
+        <h3>Custom Templates</h3>
+        <p>Craft bespoke check-in questionnaires tailored to your sport, your methodology, and your athletes' needs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how">
+  <div class="container">
+    <div class="how-header">
+      <p class="eyebrow">The Process</p>
+      <div class="divider" style="margin-bottom:24px"></div>
+      <h2>Effortlessly integrated</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <h3>Curate</h3>
+        <p>Import your roster and design your check-in protocol. Tailored to your program's standards.</p>
+      </div>
+      <div class="how-step">
+        <h3>Engage</h3>
+        <p>Athletes receive an elegant text message post-activity. Sixty seconds to complete. No barriers.</p>
+      </div>
+      <div class="how-step">
+        <h3>Illuminate</h3>
+        <p>Data flows to your dashboard in real time. Flag alerts surface what demands attention.</p>
+      </div>
+      <div class="how-step">
+        <h3>Excel</h3>
+        <p>Leverage trends, heatmaps, and AI to make the informed decisions that define championship programs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social Proof -->
+<section class="social">
+  <div class="container">
+    <div class="social-header">
+      <p class="eyebrow">Distinguished Clients</p>
+      <div class="divider" style="margin-bottom:24px"></div>
+      <h2>Voices from the field</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>Reflect brought a level of sophistication to our athlete monitoring that we simply didn't have before. The interface is as refined as the insights it delivers.</blockquote>
+        <cite>Victoria Ashworth &mdash; Director of Performance, Private Academy</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>Our compliance went from sporadic to near-universal overnight. Athletes respond because the experience respects their time. Coaches benefit because the data is immediately actionable.</blockquote>
+        <cite>Marcus Ellison &mdash; Head of S&amp;C, Elite Training Facility</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>The AI assistant understands nuance. I asked about fatigue correlations with travel schedules and received an analysis I would have paid a consultant for.</blockquote>
+        <cite>Dr. Naomi Chen &mdash; Sports Medicine, Professional Club</cite>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Response Rate</div></div>
+      <div class="stat"><div class="stat-num">60s</div><div class="stat-label">Check-In Duration</div></div>
+      <div class="stat"><div class="stat-num">3x</div><div class="stat-label">Faster Detection</div></div>
+      <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Athletes Served</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container">
+    <p class="eyebrow">Begin</p>
+    <div class="divider" style="margin-bottom:32px"></div>
+    <h2>Your athletes deserve<br><em>exceptional</em> care</h2>
+    <p>Experience Reflect with a complimentary trial. No commitments.</p>
+    <div class="hero-btns">
+      <a href="https://reflectsalus.app/" class="btn btn-gold">Start Your Trial</a>
+      <a href="https://reflectsalus.app/" class="btn btn-ghost">Request Private Demo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">&copy; 2026 Reflect &mdash; Athlete Intelligence, Refined</div>
+</footer>
+
+</body>
+</html>

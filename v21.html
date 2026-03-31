@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect &mdash; Athlete Wellness Dashboard</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b0e14;--surface:#131720;--surface2:#1a1f2e;--border:#252b3b;
+    --text:#e2e8f0;--muted:#8892a8;--accent:#6366f1;--accent2:#22d3ee;
+    --green:#22c55e;--yellow:#facc15;--red:#ef4444;--orange:#f97316;
+  }
+  html{font-size:16px;scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+  a{color:var(--accent);text-decoration:none}
+
+  /* Utility */
+  .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+  .btn{display:inline-block;padding:.85rem 2rem;border-radius:.5rem;font-weight:600;font-size:1rem;cursor:pointer;border:none;transition:opacity .2s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}
+  .section-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2);margin-bottom:.5rem;font-weight:600}
+  .section-title{font-size:2rem;font-weight:700;margin-bottom:.5rem}
+  .section-sub{color:var(--muted);max-width:600px}
+
+  /* ====== NAV ====== */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;max-width:1200px;margin:0 auto}
+  .logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+  .logo span{color:var(--accent)}
+  nav ul{list-style:none;display:flex;gap:1.5rem}
+  nav ul li a{color:var(--muted);font-size:.9rem;font-weight:500}
+
+  /* ====== HERO — looks like a dashboard ====== */
+  .hero{padding:3rem 0 2rem}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  .hero-text{padding:2rem 0}
+  .hero-text h1{font-size:2.75rem;font-weight:800;line-height:1.15;letter-spacing:-.03em}
+  .hero-text h1 em{font-style:normal;color:var(--accent)}
+  .hero-text p{color:var(--muted);font-size:1.1rem;margin:1.25rem 0 2rem;max-width:480px}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap}
+
+  /* Dashboard preview panel */
+  .dash-preview{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+  /* Stat cards */
+  .stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+  .stat-card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .stat-card .value{font-size:2rem;font-weight:800;margin:.25rem 0}
+  .stat-card .delta{font-size:.8rem;font-weight:600}
+  .delta.up{color:var(--green)}
+  .delta.down{color:var(--red)}
+
+  /* Progress ring via conic-gradient */
+  .ring-card{grid-column:1/-1;display:flex;align-items:center;gap:1.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+  .ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+  .ring::before{content:'';position:absolute;inset:6px;background:var(--surface2);border-radius:50%}
+  .ring .ring-val{position:relative;font-size:1.25rem;font-weight:800}
+  .ring-info .ring-label{font-size:.8rem;color:var(--muted)}
+  .ring-info .ring-title{font-size:1.1rem;font-weight:700}
+
+  /* Mini bar chart */
+  .bars-card{grid-column:1/-1;background:var(--surface2);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem}
+  .bars-card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem}
+  .bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+  .bar-row .bar-label{width:40px;font-size:.75rem;color:var(--muted);text-align:right;flex-shrink:0}
+  .bar-track{flex:1;height:18px;background:var(--bg);border-radius:4px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px}
+
+  /* ====== FEATURES GRID ====== */
+  .features{padding:5rem 0}
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+  .feat-card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1.75rem}
+  .feat-icon{width:48px;height:48px;border-radius:.75rem;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:1rem;font-weight:800}
+  .feat-card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+  .feat-card p{font-size:.9rem;color:var(--muted);line-height:1.55}
+
+  /* ====== HOW IT WORKS ====== */
+  .how{padding:5rem 0}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem}
+  .step{text-align:center;position:relative}
+  .step-num{width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;margin:0 auto .75rem}
+  .step h4{font-size:1rem;font-weight:700;margin-bottom:.35rem}
+  .step p{font-size:.85rem;color:var(--muted)}
+
+  /* ====== LIVE METRICS SECTION ====== */
+  .metrics{padding:5rem 0}
+  .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem}
+  .metric-tile{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;text-align:center}
+  .metric-tile .big{font-size:2.5rem;font-weight:800;line-height:1}
+  .metric-tile .desc{font-size:.8rem;color:var(--muted);margin-top:.5rem}
+
+  /* Sparkline rows (CSS only) */
+  .spark{display:flex;align-items:flex-end;gap:3px;height:32px;justify-content:center;margin-top:.75rem}
+  .spark span{width:6px;border-radius:2px;display:block}
+
+  /* ====== BODY HEATMAP (CSS) ====== */
+  .heatmap-section{padding:5rem 0}
+  .heatmap-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2.5rem}
+  .body-outline{width:200px;height:360px;margin:0 auto;position:relative}
+  .body-part{position:absolute;border-radius:50%;opacity:.7}
+  .body-outline::before{content:'';position:absolute;left:50%;top:30px;transform:translateX(-50%);width:4px;height:260px;background:linear-gradient(to bottom,var(--muted) 0%,var(--muted) 100%);opacity:.2;border-radius:2px}
+  /* head */
+  .bp-head{width:48px;height:48px;left:50%;top:0;transform:translateX(-50%);background:var(--green)}
+  /* shoulders */
+  .bp-lsh{width:30px;height:30px;left:28px;top:60px;background:var(--yellow)}
+  .bp-rsh{width:30px;height:30px;right:28px;top:60px;background:var(--green)}
+  /* torso */
+  .bp-torso{width:70px;height:80px;left:50%;top:80px;transform:translateX(-50%);border-radius:12px;background:var(--green)}
+  /* hips */
+  .bp-lhip{width:28px;height:28px;left:48px;top:165px;background:var(--orange)}
+  .bp-rhip{width:28px;height:28px;right:48px;top:165px;background:var(--green)}
+  /* knees */
+  .bp-lkn{width:24px;height:24px;left:52px;top:230px;background:var(--red)}
+  .bp-rkn{width:24px;height:24px;right:52px;top:230px;background:var(--green)}
+  /* ankles */
+  .bp-lank{width:20px;height:20px;left:56px;top:300px;background:var(--yellow)}
+  .bp-rank{width:20px;height:20px;right:56px;top:300px;background:var(--green)}
+  .legend{display:flex;gap:1.25rem;margin-top:1.5rem;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--muted)}
+  .legend-dot{width:10px;height:10px;border-radius:50%}
+
+  /* ====== TESTIMONIALS ====== */
+  .testimonials{padding:5rem 0}
+  .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+  .test-card{background:var(--surface);border:1px solid var(--border);border-radius:1rem;padding:1.75rem}
+  .test-card blockquote{font-size:.95rem;color:var(--text);line-height:1.6;margin-bottom:1rem;font-style:italic}
+  .test-author{font-size:.85rem;font-weight:600}
+  .test-role{font-size:.8rem;color:var(--muted)}
+
+  /* ====== FINAL CTA ====== */
+  .cta-section{padding:5rem 0;text-align:center}
+  .cta-box{background:linear-gradient(135deg,var(--accent) 0%,#7c3aed 100%);border-radius:1.5rem;padding:4rem 2rem;max-width:800px;margin:0 auto}
+  .cta-box h2{font-size:2.25rem;font-weight:800;margin-bottom:.75rem}
+  .cta-box p{color:rgba(255,255,255,.8);margin-bottom:2rem;font-size:1.1rem}
+  .cta-box .btn{background:#fff;color:var(--accent);font-weight:700}
+
+  /* ====== FOOTER ====== */
+  footer{border-top:1px solid var(--border);padding:2rem 0;text-align:center;color:var(--muted);font-size:.85rem}
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr}
+    .features-grid,.test-grid{grid-template-columns:1fr 1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .metrics-grid{grid-template-columns:1fr 1fr}
+    .heatmap-layout{grid-template-columns:1fr}
+  }
+  @media(max-width:600px){
+    .hero-text h1{font-size:2rem}
+    .features-grid,.test-grid,.metrics-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .dash-preview{grid-template-columns:1fr}
+    nav ul{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Reflect<span>.</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="https://reflectsalus.app/">Sign Up</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <h1>Your team's wellness, <em>in real time</em></h1>
+      <p>Reflect turns 60-second athlete check-ins into a live dashboard of readiness, pain, and performance&mdash;so you coach with data, not guesses.</p>
+      <div class="hero-actions">
+        <a href="https://reflectsalus.app/" class="btn btn-primary">Start Free Trial</a>
+        <a href="#how" class="btn btn-outline">See How It Works</a>
+      </div>
+    </div>
+
+    <!-- Dashboard Preview -->
+    <div class="dash-preview">
+      <div class="stat-card">
+        <div class="label">Team Readiness</div>
+        <div class="value">7.8</div>
+        <div class="delta up">+0.4 vs last week</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Avg Energy</div>
+        <div class="value">8.1</div>
+        <div class="delta up">+0.6 vs last week</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Open Flags</div>
+        <div class="value" style="color:var(--yellow)">3</div>
+        <div class="delta down">1 injury concern</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Response Rate</div>
+        <div class="value">94%</div>
+        <div class="delta up">+2% this week</div>
+      </div>
+
+      <!-- Progress Ring -->
+      <div class="ring-card">
+        <div class="ring" style="background:conic-gradient(var(--green) 0% 78%, var(--border) 78% 100%)">
+          <span class="ring-val">78%</span>
+        </div>
+        <div class="ring-info">
+          <div class="ring-title">Weekly Check-in Completion</div>
+          <div class="ring-label">37 of 47 athletes responded today</div>
+        </div>
+      </div>
+
+      <!-- Mini Bar Chart -->
+      <div class="bars-card">
+        <div class="label">Effort Distribution &mdash; Last Practice</div>
+        <div class="bar-row">
+          <span class="bar-label">9-10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--accent)"></div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">7-8</span>
+          <div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--accent2)"></div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">5-6</span>
+          <div class="bar-track"><div class="bar-fill" style="width:35%;background:var(--yellow)"></div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">1-4</span>
+          <div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--red)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to monitor your athletes</h2>
+    <p class="section-sub">From automated check-ins to AI-powered insights, Reflect gives you a complete picture of team wellness.</p>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(239,68,68,.15);color:var(--red)">!</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Get instant notifications when an athlete reports low readiness, high pain, or injury concerns. Never miss a warning sign again.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(34,211,238,.15);color:var(--accent2)">&#9673;</div>
+        <h3>Injury Body Heatmap</h3>
+        <p>Visualize pain and injury across 18 anatomical regions. Spot patterns before they become season-ending problems.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(99,102,241,.15);color:var(--accent)">&#9636;</div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Track readiness, energy, and effort over days, weeks, and months. See how your team responds to training loads.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(34,197,94,.15);color:var(--green)">&#9881;</div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Ask questions in plain English. &ldquo;Who had low energy this week?&rdquo; and get instant, data-backed answers.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(250,204,21,.15);color:var(--yellow)">&#9733;</div>
+        <h3>Fitness Leaderboards</h3>
+        <p>Motivate athletes with opt-in leaderboards for workouts, rehab compliance, and check-in streaks.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:rgba(249,115,22,.15);color:var(--orange)">&#9998;</div>
+        <h3>Custom Templates</h3>
+        <p>Build your own question sets for pre-game, post-practice, rehab, or any situation. Full flexibility.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Up and running in minutes</h2>
+    <p class="section-sub">No app downloads. No onboarding headaches. Athletes respond via SMS or WhatsApp.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Add Your Roster</h4>
+        <p>Import athletes by name and phone number. That's all Reflect needs.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Schedule Check-ins</h4>
+        <p>Pick post-practice or post-competition timing. Reflect sends messages automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Athletes Reply</h4>
+        <p>60-second surveys via SMS or WhatsApp. Readiness, energy, effort, pain&mdash;done.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>Coach Sees Data</h4>
+        <p>Real-time dashboard, alerts, trends, and AI insights. All in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE METRICS -->
+<section class="metrics">
+  <div class="container">
+    <div class="section-label">By the Numbers</div>
+    <h2 class="section-title">Trusted across programs</h2>
+
+    <div class="metrics-grid">
+      <div class="metric-tile">
+        <div class="big" style="color:var(--accent)">12k+</div>
+        <div class="desc">Check-ins completed</div>
+        <div class="spark">
+          <span style="height:40%;background:var(--accent)"></span>
+          <span style="height:55%;background:var(--accent)"></span>
+          <span style="height:45%;background:var(--accent)"></span>
+          <span style="height:70%;background:var(--accent)"></span>
+          <span style="height:60%;background:var(--accent)"></span>
+          <span style="height:85%;background:var(--accent)"></span>
+          <span style="height:75%;background:var(--accent)"></span>
+          <span style="height:100%;background:var(--accent)"></span>
+        </div>
+      </div>
+      <div class="metric-tile">
+        <div class="big" style="color:var(--green)">94%</div>
+        <div class="desc">Avg response rate</div>
+        <div class="spark">
+          <span style="height:80%;background:var(--green)"></span>
+          <span style="height:85%;background:var(--green)"></span>
+          <span style="height:78%;background:var(--green)"></span>
+          <span style="height:90%;background:var(--green)"></span>
+          <span style="height:88%;background:var(--green)"></span>
+          <span style="height:92%;background:var(--green)"></span>
+          <span style="height:94%;background:var(--green)"></span>
+          <span style="height:95%;background:var(--green)"></span>
+        </div>
+      </div>
+      <div class="metric-tile">
+        <div class="big" style="color:var(--accent2)">60s</div>
+        <div class="desc">Avg check-in time</div>
+        <div class="spark">
+          <span style="height:100%;background:var(--accent2)"></span>
+          <span style="height:90%;background:var(--accent2)"></span>
+          <span style="height:95%;background:var(--accent2)"></span>
+          <span style="height:85%;background:var(--accent2)"></span>
+          <span style="height:88%;background:var(--accent2)"></span>
+          <span style="height:82%;background:var(--accent2)"></span>
+          <span style="height:80%;background:var(--accent2)"></span>
+          <span style="height:78%;background:var(--accent2)"></span>
+        </div>
+      </div>
+      <div class="metric-tile">
+        <div class="big" style="color:var(--yellow)">47</div>
+        <div class="desc">Avg team size</div>
+        <div class="spark">
+          <span style="height:50%;background:var(--yellow)"></span>
+          <span style="height:60%;background:var(--yellow)"></span>
+          <span style="height:55%;background:var(--yellow)"></span>
+          <span style="height:70%;background:var(--yellow)"></span>
+          <span style="height:80%;background:var(--yellow)"></span>
+          <span style="height:75%;background:var(--yellow)"></span>
+          <span style="height:90%;background:var(--yellow)"></span>
+          <span style="height:100%;background:var(--yellow)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BODY HEATMAP -->
+<section class="heatmap-section">
+  <div class="container">
+    <div class="heatmap-layout">
+      <div>
+        <div class="section-label">Injury Intelligence</div>
+        <h2 class="section-title">See where it hurts&mdash;across the whole team</h2>
+        <p class="section-sub" style="margin-bottom:1.5rem">The Injury Body Heatmap aggregates pain reports across 18 anatomical regions. Spot emerging hot spots before they sideline your athletes.</p>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span> Healthy</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--yellow)"></span> Mild</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Moderate</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span> High Concern</div>
+        </div>
+      </div>
+      <div class="body-outline">
+        <div class="body-part bp-head"></div>
+        <div class="body-part bp-lsh"></div>
+        <div class="body-part bp-rsh"></div>
+        <div class="body-part bp-torso"></div>
+        <div class="body-part bp-lhip"></div>
+        <div class="body-part bp-rhip"></div>
+        <div class="body-part bp-lkn"></div>
+        <div class="body-part bp-rkn"></div>
+        <div class="body-part bp-lank"></div>
+        <div class="body-part bp-rank"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-label">What Coaches Say</div>
+    <h2 class="section-title">Built for coaches, loved by athletes</h2>
+
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>&ldquo;I used to rely on gut feelings about who was ready to play. Now I have real numbers. Reflect caught two potential overuse injuries before they became serious.&rdquo;</blockquote>
+        <div class="test-author">Marcus Chen</div>
+        <div class="test-role">Head Coach, D2 Women's Soccer</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;The fact that it's SMS means my athletes actually respond. We went from 40% survey completion to over 90% in the first week. Game changer.&rdquo;</blockquote>
+        <div class="test-author">Sarah Okonkwo</div>
+        <div class="test-role">Director of Sports Performance, Ridgewood HS</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;The AI assistant saves me 30 minutes of spreadsheet work every morning. I just ask it who needs rest and I get an answer with context.&rdquo;</blockquote>
+        <div class="test-author">James Paretti</div>
+        <div class="test-role">Athletic Trainer, Club Lacrosse</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <h2>Start seeing your team clearly</h2>
+      <p>Check-ins that take 60 seconds. Insights that last a season.</p>
+      <a href="https://reflectsalus.app/" class="btn">Get Started Free</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Reflect. The always-on assistant coach. <a href="https://reflectsalus.app/">reflectsalus.app</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

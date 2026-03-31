@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Wellness Rooted in Care</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #f7f3ec;
+    --sage: #7a9e7e;
+    --sage-dark: #4a6b4e;
+    --sage-light: #b5ceaa;
+    --brown: #8b6f47;
+    --brown-dark: #5c4a2f;
+    --brown-light: #c9a96e;
+    --terra: #c2704e;
+    --terra-light: #e09a7a;
+    --sand: #e8ddd0;
+    --text: #3a3228;
+    --text-light: #6b5e50;
+  }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* ── Organic blob shapes ── */
+  .blob-1 {
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+  }
+  .blob-2 {
+    border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  }
+  .blob-3 {
+    border-radius: 50% 50% 35% 65% / 40% 60% 40% 60%;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  section { padding: 5rem 0; position: relative; overflow: hidden; }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--sage-dark);
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--sage-dark);
+    margin-bottom: 1rem;
+  }
+  h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--brown-dark);
+    margin-bottom: 0.4rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .sans {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .tag {
+    display: inline-block;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--terra);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  p { max-width: 600px; }
+  .muted { color: var(--text-light); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1.5rem;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .btn--sage { background: var(--sage); color: #fff; }
+  .btn--terra { background: var(--terra); color: #fff; }
+  .btn--outline { background: transparent; color: var(--sage-dark); border: 2px solid var(--sage); }
+
+  /* ── Nav ── */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+  nav .logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--sage-dark);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+  }
+  nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 2rem;
+  }
+  nav a:hover { color: var(--sage-dark); }
+
+  /* ── Hero ── */
+  .hero {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(170deg, var(--cream) 0%, var(--sand) 100%);
+  }
+  .hero-deco {
+    position: absolute;
+    top: -10%;
+    right: -5%;
+    width: 55%;
+    height: 120%;
+    background: linear-gradient(150deg, var(--sage-light), var(--sage));
+    opacity: 0.12;
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+  }
+  .hero-deco-2 {
+    position: absolute;
+    bottom: -20%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    background: var(--terra-light);
+    opacity: 0.08;
+    border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero-content p { font-size: 1.1rem; margin-top: 1rem; color: var(--text-light); }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .num {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--sage-dark);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .hero-stat .label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-light);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Organic divider ── */
+  .wave-divider {
+    height: 80px;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .wave-divider::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -5%;
+    width: 110%;
+    height: 100%;
+    background: var(--sage);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    opacity: 0.06;
+  }
+
+  /* ── What section ── */
+  .what-section {
+    background: linear-gradient(180deg, var(--cream), #f0ebe1);
+    position: relative;
+  }
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 2rem;
+  }
+  .what-visual {
+    position: relative;
+    height: 350px;
+  }
+  .what-blob {
+    position: absolute;
+    background: linear-gradient(135deg, var(--sage), var(--sage-light));
+    opacity: 0.2;
+  }
+  .what-blob-1 {
+    width: 280px; height: 280px;
+    top: 0; left: 10%;
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+  }
+  .what-blob-2 {
+    width: 200px; height: 200px;
+    bottom: 0; right: 5%;
+    border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+    background: linear-gradient(135deg, var(--terra), var(--terra-light));
+    opacity: 0.15;
+  }
+  .what-blob-3 {
+    width: 120px; height: 120px;
+    top: 40%; left: 50%;
+    border-radius: 50%;
+    background: var(--brown-light);
+    opacity: 0.1;
+  }
+
+  /* ── Features ── */
+  .features-section {
+    background: var(--sage-dark);
+    color: var(--cream);
+    position: relative;
+  }
+  .features-section::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: var(--cream);
+    border-radius: 0 0 50% 50%;
+  }
+  .features-section h2 { color: var(--cream); }
+  .features-section .tag { color: var(--sage-light); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.08);
+    padding: 2rem;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .feature-card h3 { color: var(--sage-light); }
+  .feature-card p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.65;
+  }
+
+  /* ── How it works ── */
+  .how-section {
+    background: linear-gradient(180deg, #f0ebe1, var(--cream));
+  }
+  .how-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .how-step {
+    text-align: center;
+    position: relative;
+  }
+  .how-step-circle {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--cream);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .how-step:nth-child(1) .how-step-circle {
+    background: linear-gradient(135deg, var(--sage), var(--sage-light));
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+  }
+  .how-step:nth-child(2) .how-step-circle {
+    background: linear-gradient(135deg, var(--terra), var(--terra-light));
+    border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  }
+  .how-step:nth-child(3) .how-step-circle {
+    background: linear-gradient(135deg, var(--brown), var(--brown-light));
+    border-radius: 50% 50% 35% 65% / 40% 60% 40% 60%;
+  }
+  .how-step:nth-child(4) .how-step-circle {
+    background: linear-gradient(135deg, var(--sage-dark), var(--sage));
+    border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
+  }
+  .how-step p {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    max-width: none;
+    margin: 0 auto;
+  }
+
+  /* ── Testimonials ── */
+  .test-section {
+    background: var(--sand);
+    position: relative;
+  }
+  .test-section::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: 10%;
+    width: 300px;
+    height: 300px;
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+    background: var(--sage);
+    opacity: 0.05;
+  }
+  .test-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  .test-card {
+    background: var(--cream);
+    padding: 2rem;
+    border-radius: 20px;
+    position: relative;
+  }
+  .test-card::before {
+    content: '';
+    position: absolute;
+    top: 1.2rem;
+    left: 1.5rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    opacity: 0.15;
+  }
+  .test-card:nth-child(1)::before { background: var(--sage); }
+  .test-card:nth-child(2)::before { background: var(--terra); }
+  .test-card:nth-child(3)::before { background: var(--brown); }
+  .test-card blockquote {
+    font-size: 0.95rem;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .test-card cite {
+    font-style: normal;
+    font-size: 0.78rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-light);
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    text-align: center;
+    padding: 6rem 0;
+    background: linear-gradient(160deg, var(--sage-dark) 0%, var(--sage) 100%);
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -50px;
+    width: 400px;
+    height: 400px;
+    border-radius: 60% 40% 55% 45% / 50% 65% 35% 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    left: -30px;
+    width: 300px;
+    height: 300px;
+    border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+    background: rgba(255,255,255,0.04);
+  }
+  .cta-section h2 { color: #fff; }
+  .cta-section p { margin: 0.5rem auto 0; color: rgba(255,255,255,0.8); font-size: 1.05rem; }
+
+  .btn--white {
+    background: #fff;
+    color: var(--sage-dark);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text-light);
+    background: var(--cream);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .what-grid { grid-template-columns: 1fr; }
+    .what-visual { display: none; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .test-grid { grid-template-columns: 1fr; }
+    nav a:not(.logo) { display: none; }
+  }
+  @media (max-width: 480px) {
+    .how-steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <a href="https://reflectsalus.app/" class="logo">reflect</a>
+  <div>
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#stories">Stories</a>
+    <a href="https://reflectsalus.app/">Get Started</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-deco"></div>
+  <div class="hero-deco-2"></div>
+  <div class="container hero-content">
+    <span class="tag">Athlete Wellness, Naturally</span>
+    <h1>Care for your athletes<br>the way nature intended</h1>
+    <p>Automated post-practice check-ins via SMS and WhatsApp. Brief surveys that meet athletes where they are. Real-time insights that help you nurture every player on your roster.</p>
+    <a href="https://reflectsalus.app/" class="btn btn--sage">Begin Your Journey</a>
+    <a href="https://reflectsalus.app/" class="btn btn--outline" style="margin-left: 0.8rem;">See a Demo</a>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">60s</div>
+        <div class="label">Check-in time</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">94%</div>
+        <div class="label">Response rate</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">18</div>
+        <div class="label">Body regions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHAT IS REFLECT ═══════════ -->
+<section class="what-section">
+  <div class="container">
+    <div class="what-grid">
+      <div>
+        <span class="tag">What Is Reflect?</span>
+        <h2>The always-on assistant coach</h2>
+        <p style="margin-top: 1rem;">Reflect automates athlete wellness check-ins so you know how every player on your team feels — physically and mentally — after every practice and competition.</p>
+        <p class="muted" style="margin-top: 1rem;">Athletes respond to brief SMS or WhatsApp surveys. No app download required. No friction. Coaches receive real-time alerts, dashboards, and AI-powered insights that make invisible patterns visible.</p>
+        <p class="muted" style="margin-top: 1rem;">Works where athletes already are. Check-ins that take 60 seconds. Insights that last a season.</p>
+      </div>
+      <div class="what-visual">
+        <div class="what-blob what-blob-1"></div>
+        <div class="what-blob what-blob-2"></div>
+        <div class="what-blob what-blob-3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section id="features" class="features-section">
+  <div class="container" style="position: relative; z-index: 1; padding-top: 2rem;">
+    <span class="tag">Gentle Tools, Powerful Results</span>
+    <h2>Everything your team needs to thrive</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Flag Alerts</h3>
+        <p>Automatic notifications when athletes report low readiness, injury concerns, or high pain. Catch problems early, when they're still seeds.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Body Heatmap</h3>
+        <p>18 anatomical regions visualized across your entire roster. See where your team hurts and watch patterns shift with the seasons.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Team Trends</h3>
+        <p>Readiness, energy, and effort flowing over time. Understand the natural rhythms of your team through a full season.</p>
+      </div>
+      <div class="feature-card">
+        <h3>AI Assistant</h3>
+        <p>Ask questions in plain language. "Who's been fatigued this week?" Get answers rooted in your own data, delivered in seconds.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Workout Logging</h3>
+        <p>Athletes log workouts and rehab through the same channel. Track compliance organically, without extra burden on anyone.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Leaderboards</h3>
+        <p>Healthy, motivating competition. Customizable rankings that celebrate consistency and growth, not just raw output.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Player Profiles</h3>
+        <p>Deep individual histories: readiness trends, injury timelines, workout logs. See each athlete as a whole person, not just a number.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Custom Surveys</h3>
+        <p>Build check-ins that reflect your coaching philosophy. Sport-specific questions that matter to your unique program.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how" class="how-section">
+  <div class="container">
+    <div style="text-align: center;">
+      <span class="tag">A Simple, Natural Process</span>
+      <h2>How Reflect grows with your team</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-step-circle">1</div>
+        <h3>Plant the Seeds</h3>
+        <p>Add athlete names and phone numbers. Setup takes less than 10 minutes. Nothing to install on their end.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">2</div>
+        <h3>Set the Rhythm</h3>
+        <p>Schedule when check-ins go out. After practice, game day, rest days. Reflect handles the timing and delivery.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">3</div>
+        <h3>Athletes Respond</h3>
+        <p>60-second conversational surveys via SMS or WhatsApp. Readiness, energy, effort, injuries. Quick, natural, unforced.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">4</div>
+        <h3>Watch Growth</h3>
+        <p>Real-time alerts, visual dashboards, and AI insights arrive the moment responses come in. Patterns emerge naturally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section id="stories" class="test-section">
+  <div class="container">
+    <span class="tag">Stories from the Field</span>
+    <h2>Coaches who chose a better path</h2>
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have missed. That single alert changed how I think about athlete care."</blockquote>
+        <cite>Marcus T. — D-II Women's Basketball, Head Coach</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>"We went from 30% survey completion to over 90% in the first week. It's just a text. There's nothing to download, nothing to learn. Athletes actually respond because it feels natural."</blockquote>
+        <cite>Sarah K. — Club Soccer Director, 48 athletes</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>"The AI assistant lets me ask 'who's been fatigued this week?' and get an instant answer. I spend my time coaching now, not digging through spreadsheets."</blockquote>
+        <cite>James R. — HS Football, Athletic Trainer</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta-section">
+  <div class="container" style="position: relative; z-index: 1;">
+    <h2>Ready to nurture your team?</h2>
+    <p>Start your free trial today. Setup in under 10 minutes. No credit card required.</p>
+    <a href="https://reflectsalus.app/" class="btn btn--white">Start Free Trial</a>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 Reflect &middot; reflectsalus.app &middot; Wellness rooted in care
+</footer>
+
+</body>
+</html>

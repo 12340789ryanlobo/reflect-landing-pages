@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reflect Chronicle — Athlete Wellness Intelligence</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f8f5f0;
+    --rule: #c8c0b4;
+    --accent: #8b0000;
+    --mid: #555;
+  }
+
+  body {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  /* ── Masthead ── */
+  .masthead {
+    text-align: center;
+    padding: 1.2rem 1rem 0.8rem;
+    border-bottom: 4px double var(--ink);
+  }
+  .masthead-date {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mid);
+  }
+  .masthead-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    font-family: Georgia, serif;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 0.3rem 0 0.2rem;
+  }
+  .masthead-subtitle {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--mid);
+    letter-spacing: 0.05em;
+  }
+  .masthead-rule {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--ink);
+    margin-top: 0.8rem;
+  }
+
+  /* ── Wrapper ── */
+  .wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Column layouts ── */
+  .cols-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cols-3 > * {
+    padding: 1.5rem 1.5rem;
+    border-right: 1px solid var(--rule);
+  }
+  .cols-3 > *:last-child { border-right: none; }
+
+  .cols-2 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cols-2 > * {
+    padding: 1.5rem 1.5rem;
+  }
+  .cols-2 > *:first-child {
+    border-right: 1px solid var(--rule);
+  }
+
+  .cols-2-even {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cols-2-even > * {
+    padding: 1.5rem 1.5rem;
+  }
+  .cols-2-even > *:first-child {
+    border-right: 1px solid var(--rule);
+  }
+
+  /* ── Typography ── */
+  .headline {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 0.8rem;
+    font-family: Georgia, serif;
+  }
+  .subheadline {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.7rem;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .byline {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--mid);
+    margin-bottom: 1rem;
+  }
+  .body-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .drop-cap::first-letter {
+    float: left;
+    font-size: 3.5rem;
+    line-height: 0.8;
+    font-weight: 700;
+    margin-right: 0.1rem;
+    margin-top: 0.1rem;
+    color: var(--accent);
+  }
+
+  /* ── Pull quote ── */
+  .pull-quote {
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    padding: 1.2rem 0;
+    margin: 1.5rem 0;
+    font-size: 1.3rem;
+    font-style: italic;
+    line-height: 1.4;
+    text-align: center;
+    font-family: Georgia, serif;
+  }
+  .pull-quote cite {
+    display: block;
+    font-size: 0.75rem;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.5rem;
+    color: var(--mid);
+  }
+
+  /* ── Sidebar box ── */
+  .sidebar-box {
+    border: 1px solid var(--ink);
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    background: #f0ebe3;
+  }
+  .sidebar-box h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+  .sidebar-box p {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  /* ── Numbered list ── */
+  .how-list {
+    list-style: none;
+    counter-reset: steps;
+  }
+  .how-list li {
+    counter-increment: steps;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.92rem;
+    padding-left: 2rem;
+    position: relative;
+  }
+  .how-list li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .how-list li strong {
+    display: block;
+    font-size: 0.95rem;
+  }
+
+  /* ── Stat strip ── */
+  .stat-strip {
+    display: flex;
+    justify-content: space-around;
+    padding: 1.2rem 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+  .stat-strip .stat-num {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .stat-strip .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--mid);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Testimonials as classifieds ── */
+  .classified {
+    border-bottom: 1px solid var(--rule);
+    padding: 1rem 0;
+  }
+  .classified:last-child { border-bottom: none; }
+  .classified blockquote {
+    font-size: 0.88rem;
+    font-style: italic;
+    line-height: 1.55;
+    margin-bottom: 0.3rem;
+  }
+  .classified cite {
+    font-size: 0.75rem;
+    font-style: normal;
+    color: var(--mid);
+  }
+
+  /* ── CTA banner ── */
+  .cta-banner {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    margin-top: 0;
+  }
+  .cta-banner h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .cta-banner p {
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.8;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 0.9rem 2.5rem;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    border: none;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  .cta-btn:hover { background: #a10000; }
+
+  /* ── Feature columns ── */
+  .feature-col h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .feature-col p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .feature-col + .feature-col {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.7rem;
+    color: var(--mid);
+    border-top: 4px double var(--ink);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .cols-3, .cols-2, .cols-2-even {
+      grid-template-columns: 1fr;
+    }
+    .cols-3 > *, .cols-2 > *:first-child, .cols-2-even > *:first-child {
+      border-right: none;
+      border-bottom: 1px solid var(--rule);
+    }
+    .stat-strip { flex-direction: column; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ MASTHEAD ═══════════ -->
+<header class="masthead">
+  <div class="masthead-date">Sunday, March 30, 2026 &middot; Vol. I, No. 1 &middot; reflectsalus.app</div>
+  <h1 class="masthead-title">The Reflect Chronicle</h1>
+  <div class="masthead-subtitle">"All the wellness data that's fit to track"</div>
+  <hr class="masthead-rule">
+</header>
+
+<div class="wrapper">
+
+  <!-- ═══════════ HERO: LEAD STORY ═══════════ -->
+  <section class="cols-2">
+    <div>
+      <span class="section-label">Lead Story</span>
+      <h2 class="headline">Check-Ins That Take 60 Seconds. Insights That Last&nbsp;a&nbsp;Season.</h2>
+      <p class="byline">By the Reflect Editorial Board</p>
+      <p class="body-text drop-cap">Coaches managing 15 to 60 or more athletes face an impossible challenge: knowing how every player truly feels after each practice and competition. Traditional methods — clipboard surveys, casual check-ins, gut instinct — leave dangerous gaps. Injuries go unreported. Fatigue compounds silently. By the time a problem surfaces, it's often too late for prevention.</p>
+      <p class="body-text">Enter Reflect, the athlete wellness platform that works where athletes already are. Through automated SMS and WhatsApp check-ins, Reflect delivers brief conversational surveys to every athlete on your roster, then translates their responses into real-time alerts, dashboards, and actionable coaching intelligence.</p>
+      <p class="body-text">No app installation required. No training sessions. No onboarding friction. Athletes simply reply to a text message, and coaches receive a comprehensive view of team wellness within minutes.</p>
+      <div class="pull-quote">
+        "The always-on assistant coach — that's what Reflect is. It never forgets to check in, never misses a pattern, never takes a day off."
+        <cite>Product Mission Statement, Reflect</cite>
+      </div>
+      <p class="body-text">The platform's suite of tools includes automatic flag alerts for concerning responses, an injury body heatmap spanning 18 anatomical regions, a team trends dashboard, AI-powered coaching queries, and comprehensive workout and rehab logging — all unified under a single, intuitive interface.</p>
+    </div>
+    <div>
+      <div class="sidebar-box">
+        <h3>By the Numbers</h3>
+        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">60 seconds</p>
+        <p>Average time for an athlete to complete a Reflect check-in survey</p>
+        <hr style="border: none; border-top: 1px solid var(--rule); margin: 0.8rem 0;">
+        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">94%</p>
+        <p>Typical response rate across programs using SMS/WhatsApp delivery</p>
+        <hr style="border: none; border-top: 1px solid var(--rule); margin: 0.8rem 0;">
+        <p style="font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">18</p>
+        <p>Anatomical regions tracked on the injury body heatmap</p>
+      </div>
+      <div class="sidebar-box">
+        <h3>How It Works</h3>
+        <ol class="how-list">
+          <li><strong>Add Your Roster</strong> Upload athlete names and phone numbers. Setup takes under 10 minutes.</li>
+          <li><strong>Schedule Check-Ins</strong> Configure when surveys go out — post-practice, game day, rest days.</li>
+          <li><strong>Athletes Respond</strong> Brief SMS/WhatsApp surveys covering readiness, energy, effort, and injuries.</li>
+          <li><strong>Insights Delivered</strong> Real-time alerts, dashboards, and AI analysis arrive instantly.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ FEATURES: 3-COLUMN ═══════════ -->
+  <section class="cols-3">
+    <div>
+      <span class="section-label">Monitoring</span>
+      <h3 class="subheadline">Automatic Flag Alerts</h3>
+      <p class="body-text">The system watches every incoming response for warning signs: low readiness scores, injury mentions, high pain ratings, or sudden drops in any metric. Coaches receive instant notifications when any athlete crosses a configurable threshold, ensuring no red flag goes unnoticed in a busy season.</p>
+      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
+        <h4>Injury Body Heatmap</h4>
+        <p>A visual overlay across 18 anatomical regions aggregates pain reports across your entire roster. See at a glance where your team hurts most, and track how injury patterns shift over weeks and months of training.</p>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Analytics</span>
+      <h3 class="subheadline">Team Trends Dashboard</h3>
+      <p class="body-text">Readiness, energy, and effort plotted over time for your entire team. Identify when your squad is peaking, when they're grinding, and when they need rest. The dashboard surfaces patterns that are invisible in daily noise but critical over the arc of a full season.</p>
+      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
+        <h4>Per-Player Drill-Down</h4>
+        <p>Select any athlete and access their complete history: readiness trends, injury timeline, workout logs, and survey responses. Build a comprehensive picture of each individual's trajectory.</p>
+      </div>
+    </div>
+    <div>
+      <span class="section-label">Intelligence</span>
+      <h3 class="subheadline">AI Coaching Assistant</h3>
+      <p class="body-text">Ask questions in natural language. "Which players have reported shoulder pain in the last two weeks?" "What's the team's average readiness after away games?" The AI assistant queries your entire data history and returns precise, actionable answers in seconds.</p>
+      <div class="feature-col" style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--rule);">
+        <h4>Custom Question Templates</h4>
+        <p>Every sport is different. Build your own check-in surveys with sport-specific questions that matter to your program, your training philosophy, and your athletes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ MORE FEATURES + TESTIMONIALS ═══════════ -->
+  <section class="cols-2-even">
+    <div>
+      <span class="section-label">Additional Features</span>
+      <h3 class="subheadline">Workout &amp; Rehab Logging</h3>
+      <p class="body-text">Athletes log completed workouts and rehab exercises directly through the same SMS/WhatsApp channel. Coaches track compliance rates and see exactly who's doing the work — without nagging, without spreadsheets, without guesswork.</p>
+
+      <div class="pull-quote" style="font-size: 1.1rem;">
+        "We went from 30% survey completion to over 90% in the first week. It's just a text — there's nothing to download."
+        <cite>Sarah K., Club Soccer Director</cite>
+      </div>
+
+      <h3 class="subheadline">Fitness Leaderboards</h3>
+      <p class="body-text">Healthy competition drives engagement. Configurable leaderboards rank athletes by workout consistency, readiness scores, or custom metrics. Players see where they stand; coaches see who's showing up.</p>
+    </div>
+    <div>
+      <span class="section-label">Voices from the Field</span>
+      <h3 class="subheadline">Coaches Report Results</h3>
+      <div class="classified">
+        <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have completely missed. That single alert justified the entire investment for our program."</blockquote>
+        <cite>— Marcus T., D-II Women's Basketball Head Coach</cite>
+      </div>
+      <div class="classified">
+        <blockquote>"The AI assistant is a game-changer. Instead of scrolling through spreadsheets, I just ask 'who's been fatigued this week?' and get an answer in seconds. It's like having a sports science intern who never sleeps."</blockquote>
+        <cite>— James R., High School Football Athletic Trainer</cite>
+      </div>
+      <div class="classified">
+        <blockquote>"Managing 52 athletes across three squads was a nightmare for check-ins. Reflect automated the entire process. I spend my time coaching now, not collecting data."</blockquote>
+        <cite>— Diana L., University Track &amp; Field, Assistant Coach</cite>
+      </div>
+      <div class="classified">
+        <blockquote>"Our athletes love that it's just a quick text. No apps, no passwords, no extra accounts. Response rates have never been higher."</blockquote>
+        <cite>— Coach Mike P., Club Volleyball, 36 athletes</cite>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ═══════════ CTA BANNER ═══════════ -->
+<section class="cta-banner">
+  <h2>Start Your Free Trial Today</h2>
+  <p>Set up in under 10 minutes. No credit card required. Works with any team size, any sport.</p>
+  <a href="https://reflectsalus.app/" class="cta-btn">Visit reflectsalus.app</a>
+</section>
+
+<footer class="footer">
+  &copy; 2026 Reflect &middot; reflectsalus.app &middot; The always-on assistant coach
+</footer>
+
+</body>
+</html>

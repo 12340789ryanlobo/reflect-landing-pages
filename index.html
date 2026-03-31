@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflect — 25 Landing Page Iterations</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --text: #1a1a2e;
+            --text-secondary: #64748b;
+            --bg: #fafafa;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --accent: #0055A5;
+            --radius: 10px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        /* ── Header ── */
+        header {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        header p.label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 1rem;
+        }
+        header h1 span { color: var(--accent); }
+        header p.subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* ── Narrative ── */
+        .narrative {
+            max-width: 720px;
+            margin: 0 auto 3rem;
+            padding: 0 2rem;
+        }
+        .narrative h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .narrative p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        .narrative .phase {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .narrative .phase h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .narrative .phase h3 .range {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── Grid ── */
+        .grid-section {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+        }
+        .grid-section h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .grid-section .section-sub {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-preview {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 1rem 1.25rem 1.25rem;
+        }
+        .card-body .version {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        .card-body h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0.25rem 0;
+        }
+        .card-body p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* ── Preview Styles (unique per card) ── */
+        /* v1 - Minimal SaaS */
+        .preview-v1 {
+            background: #f8f9fa;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v1::before {
+            content: '';
+            width: 200px; height: 120px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        /* v2 - Brutalist */
+        .preview-v2 {
+            background: #fff;
+            border-bottom: 3px solid #000;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -2px;
+        }
+        .preview-v2::after { content: 'RAW.'; }
+
+        /* v3 - Editorial */
+        .preview-v3 {
+            background: #f5f0e8;
+            display: flex; align-items: center; justify-content: center;
+            font-family: Georgia, serif;
+            font-size: 1.8rem;
+            font-style: italic;
+            color: #2c1810;
+        }
+        .preview-v3::after { content: 'Vol. I'; }
+
+        /* v4 - Apple Minimal */
+        .preview-v4 {
+            background: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v4::after {
+            content: 'Reflect.';
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            letter-spacing: -1px;
+        }
+
+        /* v5 - Startup Gradient */
+        .preview-v5 {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v5::after {
+            content: 'Get Started';
+            background: #fff;
+            color: #764ba2;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* v6 - Developer / Docs */
+        .preview-v6 {
+            background: #0d1117;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #7ee787;
+        }
+        .preview-v6::after { content: '$ npm install reflect'; }
+
+        /* v7 - Dark Mode */
+        .preview-v7 {
+            background: #0a0a0a;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v7::before {
+            content: '';
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,200,255,0.4), transparent 70%);
+            box-shadow: 0 0 40px rgba(0,200,255,0.3);
+        }
+
+        /* v8 - Playful Wellness */
+        .preview-v8 {
+            background: #fef3e2;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .preview-v8::before {
+            content: '';
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+        .preview-v8::after {
+            content: '';
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #51cf66;
+        }
+
+        /* v9 - Retro / Y2K */
+        .preview-v9 {
+            background: #000080;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Comic Sans MS', 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #ffff00;
+        }
+        .preview-v9::after { content: 'Welcome!!'; }
+
+        /* v10 - Bold Typography */
+        .preview-v10 {
+            background: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-family: Georgia, serif;
+            font-size: 4rem;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -3px;
+        }
+        .preview-v10::after { content: 'R'; }
+
+        /* v11 - Nike / Athletic */
+        .preview-v11 {
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
+            clip-path: polygon(0 0, 100% 5%, 100% 100%, 0 95%);
+        }
+        .preview-v11::after {
+            content: 'JUST TRACK IT.';
+            color: #39ff14;
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* v12 - Glassmorphism */
+        .preview-v12 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v12::before {
+            content: '';
+            width: 160px; height: 90px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+        }
+
+        /* v13 - Healthcare */
+        .preview-v13 {
+            background: #f0f7f4;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .preview-v13::before {
+            content: '+';
+            font-size: 3rem;
+            font-weight: 300;
+            color: #0d9488;
+        }
+
+        /* v14 - Luxury Sport */
+        .preview-v14 {
+            background: #0a0a0a;
+            display: flex; align-items: center; justify-content: center;
+            font-family: Georgia, serif;
+            font-size: 1.4rem;
+            font-style: italic;
+            color: #c9a96e;
+        }
+        .preview-v14::after { content: 'Elevate'; }
+
+        /* v15 - Duotone */
+        .preview-v15 {
+            background: #0a1628;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v15::before {
+            content: '';
+            width: 80px; height: 80px;
+            background: #ff5e5b;
+            border-radius: 50%;
+        }
+
+        /* v16 - Split-Screen */
+        .preview-v16 {
+            display: flex;
+        }
+        .preview-v16::before {
+            content: '';
+            flex: 1;
+            background: #1a1a2e;
+        }
+        .preview-v16::after {
+            content: '';
+            flex: 1;
+            background: #e8f2fb;
+        }
+
+        /* v17 - Newspaper */
+        .preview-v17 {
+            background: #faf8f5;
+            display: flex; align-items: center; justify-content: center;
+            font-family: Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+        .preview-v17::after { content: 'THE REFLECT TIMES'; font-size: 1rem; }
+
+        /* v18 - Neon Cyberpunk */
+        .preview-v18 {
+            background: #0a0a12;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+        }
+        .preview-v18::after { content: 'REFLECT_'; }
+
+        /* v19 - Organic */
+        .preview-v19 {
+            background: #f5f0e6;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v19::before {
+            content: '';
+            width: 100px; height: 80px;
+            background: #8fbc8f;
+            border-radius: 60% 40% 50% 70% / 50% 60% 40% 50%;
+        }
+
+        /* v20 - Bauhaus */
+        .preview-v20 {
+            background: #fff;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .preview-v20::before {
+            content: '';
+            width: 50px; height: 50px;
+            background: #e63b2e;
+            border-radius: 50%;
+        }
+        .preview-v20::after {
+            content: '';
+            width: 50px; height: 50px;
+            background: #1a5aa3;
+        }
+
+        /* v21 - Dashboard */
+        .preview-v21 {
+            background: #111827;
+            display: flex; align-items: flex-end; justify-content: center; gap: 6px;
+            padding-bottom: 30px;
+        }
+        .preview-v21 .bar { width: 20px; background: #3b82f6; border-radius: 3px 3px 0 0; }
+
+        /* v22 - Strava / Fitness */
+        .preview-v22 {
+            background: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v22::after {
+            content: '12.4 km';
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fc4c02;
+        }
+
+        /* v23 - Monochrome */
+        .preview-v23 {
+            background: hsl(220, 40%, 95%);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .preview-v23::before {
+            content: '';
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: hsl(220, 60%, 50%);
+        }
+
+        /* v24 - Blueprint */
+        .preview-v24 {
+            background: #e8f0fe;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 19px, #b0c4de 19px, #b0c4de 20px),
+                repeating-linear-gradient(90deg, transparent, transparent 19px, #b0c4de 19px, #b0c4de 20px);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #003366;
+        }
+        .preview-v24::after { content: 'SPEC-001-REV.A'; }
+
+        /* v25 - Card-Based Modern */
+        .preview-v25 {
+            background: #f8fafc;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .preview-v25::before, .preview-v25::after {
+            content: '';
+            width: 80px; height: 60px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+
+        /* ── Final pick highlight ── */
+        .card.final-pick {
+            border: 2px solid var(--accent);
+            position: relative;
+        }
+        .card.final-pick::after {
+            content: 'Final Direction';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            z-index: 2;
+        }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            header { padding: 3rem 1.5rem 2rem; }
+            .narrative, .grid-section { padding: 0 1.5rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <p class="label">MPCS 51238 &middot; Design, Build, Ship &middot; Spring 2026</p>
+        <h1>25 Iterations of <span>Reflect</span></h1>
+        <p class="subtitle">A rapid prototyping exercise exploring radically different design directions for a single product &mdash; a fitness and rehab tracking app for coaches and athletes.</p>
+    </header>
+
+    <section class="narrative">
+        <h2>The Design Story</h2>
+        <p>This project compresses the full design exploration process into 25 landing pages. Each version reimagines the same product &mdash; Reflect &mdash; through a completely different visual lens. The goal isn't to find one "right" answer immediately, but to explore as widely as possible and discover what works through iteration.</p>
+
+        <div class="phase">
+            <h3><span class="range">v1 &ndash; v10:</span> Go Wide</h3>
+            <p>The first ten versions are radical experiments. Each one inhabits a completely different visual world &mdash; from clean SaaS minimalism to Y2K nostalgia, from brutalist anti-design to editorial warmth. The goal here is divergent thinking: push in every direction and see what resonates.</p>
+        </div>
+
+        <div class="phase">
+            <h3><span class="range">v11 &ndash; v20:</span> Explore Further</h3>
+            <p>The second set continues exploring new territories: athletic energy, glassmorphism, healthcare credibility, luxury aesthetics, split-screen layouts, cyberpunk, organic warmth, and strict Bauhaus geometry. Each version tests a different hypothesis about how Reflect should feel.</p>
+        </div>
+
+        <div class="phase">
+            <h3><span class="range">v21 &ndash; v25:</span> Specialized Directions</h3>
+            <p>The final five versions explore more targeted aesthetics: dashboard-forward data visualization, social fitness community, monochrome constraint, technical blueprint precision, and clean card-based modern design. Version 25 represents the most polished, ship-ready direction.</p>
+        </div>
+    </section>
+
+    <section class="grid-section">
+        <h2>All 25 Versions</h2>
+        <p class="section-sub">Click any card to view the full landing page.</p>
+
+        <div class="grid">
+            <a href="v1.html" class="card">
+                <div class="card-preview preview-v1"></div>
+                <div class="card-body">
+                    <span class="version">Version 1</span>
+                    <h3>Minimal SaaS</h3>
+                    <p>Clean, muted, Notion-style. Lots of whitespace, card-based features, one accent color.</p>
+                </div>
+            </a>
+
+            <a href="v2.html" class="card">
+                <div class="card-preview preview-v2"></div>
+                <div class="card-body">
+                    <span class="version">Version 2</span>
+                    <h3>Brutalist</h3>
+                    <p>Raw grid, monospace type, stark black and white. Exposed structure, anti-design energy.</p>
+                </div>
+            </a>
+
+            <a href="v3.html" class="card">
+                <div class="card-preview preview-v3"></div>
+                <div class="card-body">
+                    <span class="version">Version 3</span>
+                    <h3>Editorial / Magazine</h3>
+                    <p>Serif typefaces, warm tones, multi-column layouts. Bon Appetit meets coaching tech.</p>
+                </div>
+            </a>
+
+            <a href="v4.html" class="card">
+                <div class="card-preview preview-v4"></div>
+                <div class="card-body">
+                    <span class="version">Version 4</span>
+                    <h3>Apple Minimal</h3>
+                    <p>Tight typography, massive whitespace, very few elements. Monochromatic and confident.</p>
+                </div>
+            </a>
+
+            <a href="v5.html" class="card">
+                <div class="card-preview preview-v5"></div>
+                <div class="card-body">
+                    <span class="version">Version 5</span>
+                    <h3>Startup Gradient Hero</h3>
+                    <p>Vibrant gradients, bold CTAs, social proof badges. High-energy startup aesthetic.</p>
+                </div>
+            </a>
+
+            <a href="v6.html" class="card">
+                <div class="card-preview preview-v6"></div>
+                <div class="card-body">
+                    <span class="version">Version 6</span>
+                    <h3>Developer / Docs</h3>
+                    <p>Monospace throughout, code-block aesthetic, dark theme. GitHub meets coaching platform.</p>
+                </div>
+            </a>
+
+            <a href="v7.html" class="card">
+                <div class="card-preview preview-v7"></div>
+                <div class="card-body">
+                    <span class="version">Version 7</span>
+                    <h3>Dark Mode Product</h3>
+                    <p>Deep dark backgrounds with glowing cyan accents. Moody, premium, Linear-inspired.</p>
+                </div>
+            </a>
+
+            <a href="v8.html" class="card">
+                <div class="card-preview preview-v8"></div>
+                <div class="card-body">
+                    <span class="version">Version 8</span>
+                    <h3>Playful Wellness</h3>
+                    <p>Bright colors, rounded everything, bubbly typography. Gen Z wellness energy.</p>
+                </div>
+            </a>
+
+            <a href="v9.html" class="card">
+                <div class="card-preview preview-v9"></div>
+                <div class="card-body">
+                    <span class="version">Version 9</span>
+                    <h3>Retro / Y2K</h3>
+                    <p>Pixel nostalgia, old-web energy, visitor counters. Geocities reborn for coaching.</p>
+                </div>
+            </a>
+
+            <a href="v10.html" class="card">
+                <div class="card-preview preview-v10"></div>
+                <div class="card-body">
+                    <span class="version">Version 10</span>
+                    <h3>Bold Typography</h3>
+                    <p>Giant letterforms, type-as-hero, minimal color. A typographic manifesto for athlete wellness.</p>
+                </div>
+            </a>
+
+            <a href="v11.html" class="card">
+                <div class="card-preview preview-v11"></div>
+                <div class="card-body">
+                    <span class="version">Version 11</span>
+                    <h3>Nike / Athletic</h3>
+                    <p>Bold sport energy, angled clip-paths, neon green on black. Aggressive, dynamic, confident.</p>
+                </div>
+            </a>
+
+            <a href="v12.html" class="card">
+                <div class="card-preview preview-v12"></div>
+                <div class="card-body">
+                    <span class="version">Version 12</span>
+                    <h3>Glassmorphism</h3>
+                    <p>Frosted glass cards, backdrop blur, gradient backgrounds. Modern iOS-inspired depth.</p>
+                </div>
+            </a>
+
+            <a href="v13.html" class="card">
+                <div class="card-preview preview-v13"></div>
+                <div class="card-body">
+                    <span class="version">Version 13</span>
+                    <h3>Healthcare / Clinical</h3>
+                    <p>Medical blues and greens, trustworthy data presentation. Professional, evidence-based.</p>
+                </div>
+            </a>
+
+            <a href="v14.html" class="card">
+                <div class="card-preview preview-v14"></div>
+                <div class="card-body">
+                    <span class="version">Version 14</span>
+                    <h3>Luxury Sport</h3>
+                    <p>Dark backgrounds, gold accents, elegant serif pairing. Equinox-level premium feel.</p>
+                </div>
+            </a>
+
+            <a href="v15.html" class="card">
+                <div class="card-preview preview-v15"></div>
+                <div class="card-body">
+                    <span class="version">Version 15</span>
+                    <h3>Duotone</h3>
+                    <p>Deep navy and electric coral only. The two-color constraint becomes the design statement.</p>
+                </div>
+            </a>
+
+            <a href="v16.html" class="card">
+                <div class="card-preview preview-v16"></div>
+                <div class="card-body">
+                    <span class="version">Version 16</span>
+                    <h3>Split-Screen</h3>
+                    <p>50/50 layouts in every section. Asymmetric tension between content and color blocks.</p>
+                </div>
+            </a>
+
+            <a href="v17.html" class="card">
+                <div class="card-preview preview-v17"></div>
+                <div class="card-body">
+                    <span class="version">Version 17</span>
+                    <h3>Newspaper / Broadsheet</h3>
+                    <p>Multi-column layout, serif headlines, dateline, pull quotes. Classic newspaper authority.</p>
+                </div>
+            </a>
+
+            <a href="v18.html" class="card">
+                <div class="card-preview preview-v18"></div>
+                <div class="card-body">
+                    <span class="version">Version 18</span>
+                    <h3>Neon Cyberpunk</h3>
+                    <p>Electric neon on dark, scanlines, glitch text effects. Blade Runner meets coaching tech.</p>
+                </div>
+            </a>
+
+            <a href="v19.html" class="card">
+                <div class="card-preview preview-v19"></div>
+                <div class="card-body">
+                    <span class="version">Version 19</span>
+                    <h3>Organic / Nature</h3>
+                    <p>Earth tones, blob shapes, calm and grounded. Wellness meets the natural world.</p>
+                </div>
+            </a>
+
+            <a href="v20.html" class="card">
+                <div class="card-preview preview-v20"></div>
+                <div class="card-body">
+                    <span class="version">Version 20</span>
+                    <h3>Bauhaus / Swiss</h3>
+                    <p>Strict grid, primary colors, geometric shapes. Rational, structured, poster-like.</p>
+                </div>
+            </a>
+
+            <a href="v21.html" class="card">
+                <div class="card-preview preview-v21">
+                    <div class="bar" style="height:40px"></div>
+                    <div class="bar" style="height:70px"></div>
+                    <div class="bar" style="height:55px"></div>
+                    <div class="bar" style="height:90px"></div>
+                    <div class="bar" style="height:65px"></div>
+                </div>
+                <div class="card-body">
+                    <span class="version">Version 21</span>
+                    <h3>Dashboard-Forward</h3>
+                    <p>Data visualization as the hero. CSS-only charts, stat cards, progress rings. Numbers-first.</p>
+                </div>
+            </a>
+
+            <a href="v22.html" class="card">
+                <div class="card-preview preview-v22"></div>
+                <div class="card-body">
+                    <span class="version">Version 22</span>
+                    <h3>Strava / Fitness Social</h3>
+                    <p>Activity-feed layout, leaderboards, community energy. Social fitness platform vibes.</p>
+                </div>
+            </a>
+
+            <a href="v23.html" class="card">
+                <div class="card-preview preview-v23"></div>
+                <div class="card-body">
+                    <span class="version">Version 23</span>
+                    <h3>Monochrome</h3>
+                    <p>Single blue hue, all variation from tints and shades. Elegant constraint, cohesive result.</p>
+                </div>
+            </a>
+
+            <a href="v24.html" class="card">
+                <div class="card-preview preview-v24"></div>
+                <div class="card-body">
+                    <span class="version">Version 24</span>
+                    <h3>Blueprint / Technical</h3>
+                    <p>Grid paper background, engineering drawing aesthetic. Technical specs meet landing page.</p>
+                </div>
+            </a>
+
+            <a href="v25.html" class="card final-pick">
+                <div class="card-preview preview-v25"></div>
+                <div class="card-body">
+                    <span class="version">Version 25</span>
+                    <h3>Card-Based Modern</h3>
+                    <p>Clean cards, subtle borders, gentle shadows. The polished, ship-ready direction.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Reflect &mdash; 25 Landing Page Iterations &middot; MPCS 51238 &middot; Spring 2026</p>
+        <p style="margin-top: 0.5rem;"><a href="https://reflectsalus.app/">reflectsalus.app</a></p>
+    </footer>
+</body>
+</html>

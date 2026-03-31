@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect &mdash; Technical Specification</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#e8f0f8;--grid:#c5d5e8;--ink:#003366;--ink-light:#1a5c99;
+    --ink-faint:#6699bb;--ink-ghost:rgba(0,51,102,.12);--white:#f0f6fc;
+    --red:#cc3333;--annotate:#005599;
+  }
+  html{font-size:16px;scroll-behavior:smooth}
+  body{
+    font-family:'Courier New',Courier,monospace;
+    background:var(--bg);
+    background-image:
+      repeating-linear-gradient(0deg,transparent,transparent 19px,var(--grid) 19px,var(--grid) 20px),
+      repeating-linear-gradient(90deg,transparent,transparent 19px,var(--grid) 19px,var(--grid) 20px);
+    background-size:20px 20px;
+    color:var(--ink);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:var(--ink-light);text-decoration:none;border-bottom:1px dashed var(--ink-faint)}
+
+  .container{max-width:1000px;margin:0 auto;padding:0 2rem}
+  .btn{display:inline-block;padding:.7rem 1.75rem;font-family:'Courier New',monospace;font-weight:700;font-size:.9rem;cursor:pointer;text-transform:uppercase;letter-spacing:.1em}
+  .btn-solid{background:var(--ink);color:var(--white);border:2px solid var(--ink)}
+  .btn-wire{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+
+  /* Technical annotation labels */
+  .anno{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-faint);border-bottom:1px solid var(--ink-faint);display:inline-block;padding-bottom:2px;margin-bottom:.75rem}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 2rem;max-width:1000px;margin:0 auto;border-bottom:2px solid var(--ink)}
+  .logo{font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:.2em}
+  nav ul{list-style:none;display:flex;gap:1.5rem}
+  nav ul li a{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;border-bottom:none}
+
+  /* TITLE BLOCK — blueprint style */
+  .title-block{border:2px solid var(--ink);margin:2rem auto;max-width:1000px;padding:0}
+  .tb-top{display:flex;border-bottom:2px solid var(--ink)}
+  .tb-main{flex:1;padding:2rem;border-right:2px solid var(--ink)}
+  .tb-side{width:220px;padding:1rem;display:flex;flex-direction:column;gap:.5rem;font-size:.75rem}
+  .tb-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--ink-ghost);padding-bottom:.35rem}
+  .tb-row .k{color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em}
+  .tb-row .v{font-weight:700}
+
+  .hero h1{font-size:2.5rem;font-weight:700;line-height:1.15;letter-spacing:-.02em;text-transform:uppercase}
+  .hero p{color:var(--ink-light);font-size:.95rem;margin-top:1rem;max-width:560px}
+  .hero-actions{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
+
+  /* SECTION HEADERS */
+  .section-head{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;border-bottom:2px solid var(--ink);padding-bottom:.75rem}
+  .section-num{font-size:1.5rem;font-weight:700;color:var(--ink-faint)}
+  .section-head h2{font-size:1.25rem;text-transform:uppercase;letter-spacing:.1em}
+
+  /* SPEC SECTION — product explanation */
+  .spec{padding:3rem 0}
+  .spec-content{border:1px solid var(--ink-faint);padding:2rem;background:rgba(240,246,252,.5)}
+  .spec-content p{font-size:.9rem;line-height:1.7;color:var(--ink-light);margin-bottom:1rem}
+  .spec-content p:last-child{margin-bottom:0}
+  .callout{border-left:3px solid var(--ink);padding-left:1rem;font-style:italic;color:var(--annotate)}
+
+  /* FEATURES — technical spec table style */
+  .features{padding:3rem 0}
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink)}
+  .feat-cell{padding:1.5rem;border-bottom:1px solid var(--ink);border-right:1px solid var(--ink);position:relative}
+  .feat-cell:nth-child(even){border-right:none}
+  .feat-cell:nth-last-child(-n+2){border-bottom:none}
+  .feat-cell .feat-id{font-size:.65rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.5rem}
+  .feat-cell h3{font-size:.95rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+  .feat-cell p{font-size:.82rem;color:var(--ink-light);line-height:1.55}
+
+  /* PROCESS FLOW */
+  .process{padding:3rem 0}
+  .flow{display:flex;gap:0;border:2px solid var(--ink)}
+  .flow-step{flex:1;padding:1.5rem;text-align:center;border-right:1px solid var(--ink);position:relative}
+  .flow-step:last-child{border-right:none}
+  .flow-step::after{content:'\25B6';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--ink);font-size:.8rem;z-index:1}
+  .flow-step:last-child::after{display:none}
+  .flow-num{font-size:1.5rem;font-weight:700;color:var(--ink-faint);margin-bottom:.25rem}
+  .flow-step h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+  .flow-step p{font-size:.75rem;color:var(--ink-light)}
+
+  /* DIMENSIONS / METRICS */
+  .dims{padding:3rem 0}
+  .dim-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid var(--ink)}
+  .dim-cell{padding:1.5rem;text-align:center;border-right:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  .dim-cell:nth-child(4n){border-right:none}
+  .dim-cell:nth-child(n+5){border-bottom:none}
+  .dim-cell .big{font-size:2rem;font-weight:700}
+  .dim-cell .unit{font-size:.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.1em;margin-top:.25rem}
+
+  /* SCHEMATIC — body map (simplified technical drawing) */
+  .schematic{padding:3rem 0}
+  .schema-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+  .schema-drawing{border:2px solid var(--ink);padding:2rem;background:rgba(240,246,252,.5);text-align:center;position:relative}
+  .schema-drawing::before{content:'INJURY HEATMAP — TOP VIEW';position:absolute;top:-10px;left:1rem;background:var(--bg);padding:0 .5rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-faint)}
+  .region-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:300px;margin:1.5rem auto}
+  .region{height:40px;border:1px solid var(--ink-faint);display:flex;align-items:center;justify-content:center;font-size:.55rem;text-transform:uppercase;color:var(--ink-faint);position:relative}
+  .region.hot{background:rgba(204,51,51,.2);border-color:var(--red);color:var(--red)}
+  .region.warm{background:rgba(204,153,0,.15);border-color:#cc9900;color:#996600}
+  .region.cool{background:rgba(0,51,102,.05)}
+  .schema-notes{font-size:.8rem;color:var(--ink-light);line-height:1.6}
+  .schema-notes h3{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem;color:var(--ink)}
+  .note-item{margin-bottom:.75rem;padding-left:1rem;border-left:2px solid var(--ink-ghost)}
+  .note-item strong{color:var(--ink)}
+
+  /* TESTIMONIALS */
+  .reviews{padding:3rem 0}
+  .rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .rev-card{border:1px solid var(--ink-faint);padding:1.5rem;background:rgba(240,246,252,.5)}
+  .rev-card blockquote{font-size:.85rem;line-height:1.6;margin-bottom:1rem;font-style:italic;color:var(--ink-light)}
+  .rev-card .sig{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+  .rev-card .sig-role{font-size:.7rem;color:var(--ink-faint)}
+
+  /* CTA */
+  .final-cta{padding:3rem 0;text-align:center}
+  .cta-frame{border:2px solid var(--ink);padding:3rem 2rem;position:relative}
+  .cta-frame::before{content:'CALL TO ACTION';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 1rem;font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--ink-faint)}
+  .cta-frame h2{font-size:1.5rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .cta-frame p{color:var(--ink-light);font-size:.9rem;margin-bottom:1.5rem}
+
+  /* FOOTER */
+  footer{border-top:2px solid var(--ink);padding:1.5rem 0;text-align:center;font-size:.75rem;color:var(--ink-faint)}
+
+  @media(max-width:900px){
+    .tb-top{flex-direction:column}
+    .tb-main{border-right:none;border-bottom:2px solid var(--ink)}
+    .tb-side{width:auto}
+    .feat-grid{grid-template-columns:1fr}
+    .feat-cell{border-right:none}
+    .flow{flex-direction:column}
+    .flow-step{border-right:none;border-bottom:1px solid var(--ink)}
+    .flow-step:last-child{border-bottom:none}
+    .flow-step::after{display:none}
+    .dim-grid{grid-template-columns:1fr 1fr}
+    .dim-cell:nth-child(2n){border-right:none}
+    .dim-cell:nth-child(n+3){border-bottom:none}
+    .schema-layout{grid-template-columns:1fr}
+    .rev-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:600px){
+    .hero h1{font-size:1.75rem}
+    .dim-grid{grid-template-columns:1fr}
+    .dim-cell{border-right:none}
+    .dim-cell:last-child{border-bottom:none}
+    nav ul{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Reflect</div>
+  <ul>
+    <li><a href="#features">Spec</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#reviews">Field Notes</a></li>
+    <li><a href="https://reflectsalus.app/">Deploy</a></li>
+  </ul>
+</nav>
+
+<!-- TITLE BLOCK -->
+<div class="title-block hero">
+  <div class="tb-top">
+    <div class="tb-main">
+      <div class="anno">System Overview</div>
+      <h1>Athlete Wellness Monitoring System</h1>
+      <p>Automated post-practice and post-competition check-ins via SMS/WhatsApp. Real-time wellness data delivery to coaching staff. No app installation required.</p>
+      <div class="hero-actions">
+        <a href="https://reflectsalus.app/" class="btn btn-solid">Initialize System</a>
+        <a href="#process" class="btn btn-wire">View Schematic</a>
+      </div>
+    </div>
+    <div class="tb-side">
+      <div class="tb-row"><span class="k">Project</span><span class="v">Reflect v3.2</span></div>
+      <div class="tb-row"><span class="k">Type</span><span class="v">SaaS Platform</span></div>
+      <div class="tb-row"><span class="k">Protocol</span><span class="v">SMS / WhatsApp</span></div>
+      <div class="tb-row"><span class="k">Capacity</span><span class="v">15-60+ athletes</span></div>
+      <div class="tb-row"><span class="k">Survey Time</span><span class="v">60 seconds</span></div>
+      <div class="tb-row"><span class="k">Uptime</span><span class="v">99.9%</span></div>
+      <div class="tb-row"><span class="k">Date</span><span class="v">2026-03-30</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SPEC -->
+<section class="spec">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <h2>System Description</h2>
+    </div>
+    <div class="spec-content">
+      <p>Reflect is an automated athlete wellness monitoring system designed for coaches managing rosters of 15 to 60+ athletes. The system delivers brief post-practice and post-competition surveys via SMS and WhatsApp&mdash;platforms athletes already use daily&mdash;eliminating the need for app installations or account creation.</p>
+      <p>Survey responses (readiness, energy, effort, pain location and severity) are processed in real time and surfaced through a coaching dashboard featuring trend analysis, automatic flag alerts, injury body heatmaps, and a natural language AI assistant.</p>
+      <p class="callout">&ldquo;Check-ins that take 60 seconds. Insights that last a season.&rdquo;</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <h2>Feature Specifications</h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-001 / Alert System</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Real-time notifications triggered by low readiness scores, injury reports, high pain ratings, or anomalous patterns. Configurable thresholds per team and per athlete.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-002 / Visualization</div>
+        <h3>Injury Body Heatmap</h3>
+        <p>Aggregated pain data mapped across 18 anatomical regions. Color-coded severity indicators. Historical overlay for trend identification.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-003 / Analytics</div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Time-series visualization of readiness, energy, and effort scores. Filterable by date range, position group, and individual athlete.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-004 / Intelligence</div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Natural language query interface. Processes questions like &ldquo;Who had low energy this week?&rdquo; and returns data-backed responses with context.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-005 / Tracking</div>
+        <h3>Workout &amp; Rehab Logging</h3>
+        <p>Athlete-reported workout sessions and rehab compliance tracking. Volume metrics and adherence percentages surfaced in coach dashboard.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-006 / Engagement</div>
+        <h3>Fitness Leaderboards</h3>
+        <p>Opt-in competitive rankings for check-in streaks, workout volume, and rehab compliance. Gamification layer to drive engagement.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-007 / Drill-Down</div>
+        <h3>Per-Player Analysis</h3>
+        <p>Individual athlete profiles with historical data, trend lines, injury timeline, and wellness trajectory. Exportable reports.</p>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-id">FEAT-008 / Configuration</div>
+        <h3>Custom Question Templates</h3>
+        <p>Fully configurable survey flows. Pre-built templates for common scenarios. Support for Likert scales, numeric, and free-text responses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS FLOW -->
+<section class="process" id="process">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <h2>Operational Sequence</h2>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <h4>Roster Input</h4>
+        <p>Coach imports athlete names and phone numbers into the system</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <h4>Schedule Config</h4>
+        <p>Check-in timing set for post-practice and/or post-competition windows</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <h4>Survey Dispatch</h4>
+        <p>Automated SMS/WhatsApp delivery at scheduled intervals</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <h4>Data Ingest</h4>
+        <p>Athlete responses parsed, validated, and stored in real time</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">05</div>
+        <h4>Output Render</h4>
+        <p>Dashboard, alerts, trends, and AI insights delivered to coach</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIMENSIONS -->
+<section class="dims">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <h2>Performance Dimensions</h2>
+    </div>
+    <div class="dim-grid">
+      <div class="dim-cell">
+        <div class="big">12,400+</div>
+        <div class="unit">Check-ins Processed</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">94%</div>
+        <div class="unit">Response Rate</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">60s</div>
+        <div class="unit">Avg Survey Duration</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">18</div>
+        <div class="unit">Anatomical Regions</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">180+</div>
+        <div class="unit">Active Programs</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">5 min</div>
+        <div class="unit">Setup Time</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">0</div>
+        <div class="unit">App Downloads Required</div>
+      </div>
+      <div class="dim-cell">
+        <div class="big">24/7</div>
+        <div class="unit">Monitoring Window</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEMATIC -->
+<section class="schematic">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <h2>Injury Mapping Schematic</h2>
+    </div>
+    <div class="schema-layout">
+      <div class="schema-drawing">
+        <div style="font-size:.7rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem">18-Region Anatomical Grid</div>
+        <div class="region-grid">
+          <div class="region cool">Head</div>
+          <div class="region cool">Neck</div>
+          <div class="region cool"></div>
+          <div class="region cool"></div>
+          <div class="region cool">Neck</div>
+          <div class="region cool">Head</div>
+          <div class="region warm">L.Shldr</div>
+          <div class="region cool">Chest</div>
+          <div class="region cool">U.Back</div>
+          <div class="region cool">U.Back</div>
+          <div class="region cool">Chest</div>
+          <div class="region cool">R.Shldr</div>
+          <div class="region cool">L.Arm</div>
+          <div class="region cool">Abdom</div>
+          <div class="region cool">L.Back</div>
+          <div class="region cool">L.Back</div>
+          <div class="region cool">Abdom</div>
+          <div class="region cool">R.Arm</div>
+          <div class="region warm">L.Hip</div>
+          <div class="region cool">Groin</div>
+          <div class="region cool">Glute</div>
+          <div class="region cool">Glute</div>
+          <div class="region cool">Groin</div>
+          <div class="region cool">R.Hip</div>
+          <div class="region hot">L.Knee</div>
+          <div class="region cool">L.Thigh</div>
+          <div class="region cool">R.Thigh</div>
+          <div class="region cool">R.Thigh</div>
+          <div class="region cool">L.Thigh</div>
+          <div class="region cool">R.Knee</div>
+          <div class="region warm">L.Ankle</div>
+          <div class="region cool">L.Shin</div>
+          <div class="region cool">R.Shin</div>
+          <div class="region cool">R.Shin</div>
+          <div class="region cool">L.Shin</div>
+          <div class="region cool">R.Ankle</div>
+        </div>
+        <div style="font-size:.65rem;color:var(--ink-faint);margin-top:1rem">
+          <span style="display:inline-block;width:10px;height:10px;background:rgba(204,51,51,.2);border:1px solid var(--red);margin-right:4px;vertical-align:middle"></span> High Concern
+          &nbsp;&nbsp;
+          <span style="display:inline-block;width:10px;height:10px;background:rgba(204,153,0,.15);border:1px solid #cc9900;margin-right:4px;vertical-align:middle"></span> Moderate
+          &nbsp;&nbsp;
+          <span style="display:inline-block;width:10px;height:10px;background:rgba(0,51,102,.05);border:1px solid var(--ink-faint);margin-right:4px;vertical-align:middle"></span> Normal
+        </div>
+      </div>
+      <div class="schema-notes">
+        <h3>Annotation Notes</h3>
+        <div class="note-item">
+          <strong>L.Knee (HIGH):</strong> 4 athletes reporting pain severity above 6/10 this week. Pattern emerging across midfield position group. Recommend load reduction.
+        </div>
+        <div class="note-item">
+          <strong>L.Shoulder (MOD):</strong> 2 athletes with recurring mild discomfort. Monitor for progression. Currently within acceptable range.
+        </div>
+        <div class="note-item">
+          <strong>L.Hip (MOD):</strong> Post-competition reports elevated. Correlates with increased sprint volume in recent sessions.
+        </div>
+        <div class="note-item">
+          <strong>L.Ankle (MOD):</strong> 1 athlete returning from previous sprain. Rehab compliance at 85%. Trending positive.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FIELD NOTES / TESTIMONIALS -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">06</span>
+      <h2>Field Reports</h2>
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card">
+        <blockquote>&ldquo;The technical precision of the data changed how I plan microcycles. I can see exactly when fatigue accumulates and adjust before it becomes a problem.&rdquo;</blockquote>
+        <div class="sig">Dr. Elena Vasquez</div>
+        <div class="sig-role">Sports Science Director, MLS Academy</div>
+      </div>
+      <div class="rev-card">
+        <blockquote>&ldquo;Zero friction for athletes. That is the critical specification. If it took more than 60 seconds, compliance would drop. Reflect nailed the interface.&rdquo;</blockquote>
+        <div class="sig">Tom Rearden</div>
+        <div class="sig-role">Head of Athletic Performance, Collegiate Swimming</div>
+      </div>
+      <div class="rev-card">
+        <blockquote>&ldquo;The injury heatmap alone justified adoption. We identified a systemic ankle issue across our defensive unit that traditional check-ins completely missed.&rdquo;</blockquote>
+        <div class="sig">Naomi Blackwell</div>
+        <div class="sig-role">Athletic Trainer, Women's Basketball</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-frame">
+      <h2>Deploy Reflect for Your Program</h2>
+      <p>Check-ins that take 60 seconds. Insights that last a season. No app required.</p>
+      <a href="https://reflectsalus.app/" class="btn btn-solid">Initialize Free Trial</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 REFLECT &mdash; Athlete Wellness Monitoring System &mdash; <a href="https://reflectsalus.app/">reflectsalus.app</a> &mdash; REV 3.2</p>
+  </div>
+</footer>
+
+</body>
+</html>

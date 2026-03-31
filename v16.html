@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — The Always-On Assistant Coach</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dark: #0a0a0a;
+    --light: #f5f2ed;
+    --accent: #e84d1a;
+    --accent-light: #ff6b3d;
+    --mid: #2a2a2a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--dark);
+    background: var(--light);
+    line-height: 1.6;
+  }
+
+  /* ── Utility ── */
+  .split {
+    display: flex;
+    min-height: 100vh;
+  }
+  .split > * {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 3rem;
+  }
+
+  .split--reverse { flex-direction: row-reverse; }
+
+  .side-dark {
+    background: var(--dark);
+    color: var(--light);
+  }
+  .side-accent {
+    background: var(--accent);
+    color: #fff;
+  }
+  .side-light {
+    background: var(--light);
+    color: var(--dark);
+  }
+  .side-mid {
+    background: var(--mid);
+    color: var(--light);
+  }
+
+  h1 { font-size: clamp(2.4rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; }
+  h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+  h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+  p { font-size: 1.05rem; max-width: 520px; }
+
+  .btn {
+    display: inline-block;
+    padding: 1rem 2.4rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1.5rem;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+  .btn--light { background: var(--light); color: var(--dark); }
+  .btn--accent { background: var(--accent); color: #fff; }
+  .btn--dark { background: var(--dark); color: var(--light); }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .spacer { height: 1.5rem; }
+
+  /* ── Visual blocks (CSS only) ── */
+  .visual-hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--accent) 0%, #ff9068 100%);
+  }
+  .visual-hero::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    top: -100px; right: -100px;
+  }
+  .visual-hero::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.06);
+    bottom: -80px; left: 40px;
+  }
+
+  .visual-grid {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark);
+  }
+  .visual-grid::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.04) 39px, rgba(255,255,255,0.04) 40px);
+  }
+  .visual-grid::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .visual-dots {
+    position: relative;
+    overflow: hidden;
+    background: var(--light);
+  }
+  .visual-dots::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, var(--accent) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    opacity: 0.25;
+  }
+
+  .visual-stripes {
+    position: relative;
+    overflow: hidden;
+    background: var(--mid);
+  }
+  .visual-stripes::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 18px,
+      rgba(232,77,26,0.15) 18px,
+      rgba(232,77,26,0.15) 20px
+    );
+  }
+
+  .visual-blob {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, #1a1a1a 0%, #2d1a0e 100%);
+  }
+  .visual-blob::before {
+    content: '';
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+    background: var(--accent);
+    opacity: 0.15;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ── Feature cards inside split ── */
+  .features-list { display: flex; flex-direction: column; gap: 2rem; margin-top: 1rem; }
+  .feature-item { border-left: 3px solid var(--accent); padding-left: 1.2rem; }
+  .feature-item p { font-size: 0.95rem; opacity: 0.85; }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 2.5rem; margin-top: 1rem; }
+  .step { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .step-num {
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+  }
+
+  /* ── Testimonials ── */
+  .testimonial {
+    border-top: 2px solid rgba(255,255,255,0.15);
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .testimonial:first-child { border-top: none; margin-top: 0; }
+  .testimonial blockquote {
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 0.7rem;
+  }
+  .testimonial cite {
+    font-style: normal;
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  /* ── Stats row ── */
+  .stat-row { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+  .stat { text-align: left; }
+  .stat-num { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .split { flex-direction: column !important; min-height: auto; }
+    .split > * { padding: 3rem 1.5rem; min-height: 60vh; }
+    .split > .visual-hero,
+    .split > .visual-grid,
+    .split > .visual-dots,
+    .split > .visual-stripes,
+    .split > .visual-blob { min-height: 40vh; }
+    .stat-row { gap: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="split">
+  <div class="side-light" style="justify-content: center;">
+    <span class="tag">Reflect — Athlete Wellness Platform</span>
+    <h1>Check-ins that take 60&nbsp;seconds. Insights that last a&nbsp;season.</h1>
+    <div class="spacer"></div>
+    <p>Automated post-practice and post-competition wellness surveys delivered via SMS and WhatsApp. No app install. No friction. Just data you can act on.</p>
+    <a href="https://reflectsalus.app/" class="btn btn--accent">Start Free Trial</a>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-num">60s</div>
+        <div class="stat-label">Avg check-in time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">94%</div>
+        <div class="stat-label">Response rate</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">18</div>
+        <div class="stat-label">Body regions tracked</div>
+      </div>
+    </div>
+  </div>
+  <div class="visual-hero"></div>
+</section>
+
+<!-- ═══════════ WHAT IS REFLECT ═══════════ -->
+<section class="split split--reverse">
+  <div class="side-dark">
+    <span class="tag" style="color: var(--accent-light);">What Is Reflect?</span>
+    <h2>The always-on assistant&nbsp;coach</h2>
+    <div class="spacer"></div>
+    <p>Reflect automates athlete wellness check-ins so coaches know exactly how their team is feeling — physically and mentally — after every practice and competition. Athletes reply to brief SMS or WhatsApp surveys; coaches get real-time alerts and dashboards.</p>
+    <p style="margin-top:1rem; opacity:0.7;">No more guesswork. No more spreadsheets. No more athletes hiding injuries until it's too late.</p>
+  </div>
+  <div class="visual-grid"></div>
+</section>
+
+<!-- ═══════════ KEY FEATURES ═══════════ -->
+<section class="split">
+  <div class="side-light">
+    <span class="tag">Core Features</span>
+    <h2>Everything you need. Nothing you&nbsp;don't.</h2>
+    <div class="features-list">
+      <div class="feature-item">
+        <h3>Automatic Flag Alerts</h3>
+        <p>Get instant notifications when an athlete reports low readiness, injury concerns, or high pain levels. Never miss a warning sign.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Injury Body Heatmap</h3>
+        <p>Visual overlay across 18 anatomical regions shows where your team hurts — and how severity trends over time.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Team Trends Dashboard</h3>
+        <p>Track readiness, energy, and effort across your entire roster. Spot patterns before they become problems.</p>
+      </div>
+      <div class="feature-item">
+        <h3>AI Coaching Assistant</h3>
+        <p>Ask questions in plain English. "Which players reported knee pain this week?" Get answers instantly.</p>
+      </div>
+    </div>
+  </div>
+  <div class="visual-dots"></div>
+</section>
+
+<!-- ═══════════ MORE FEATURES ═══════════ -->
+<section class="split split--reverse">
+  <div class="side-accent">
+    <span class="tag" style="opacity:0.8;">And More</span>
+    <h2>Built for how coaches actually&nbsp;work</h2>
+    <div class="features-list">
+      <div class="feature-item" style="border-color: #fff;">
+        <h3>Workout &amp; Rehab Logging</h3>
+        <p>Athletes log workouts and rehab exercises. Coaches track compliance and progress without extra admin.</p>
+      </div>
+      <div class="feature-item" style="border-color: #fff;">
+        <h3>Fitness Leaderboards</h3>
+        <p>Healthy competition drives engagement. Customizable leaderboards keep athletes motivated and accountable.</p>
+      </div>
+      <div class="feature-item" style="border-color: #fff;">
+        <h3>Per-Player Drill-Down</h3>
+        <p>Deep-dive into any individual athlete's history — readiness trends, injury timeline, workout logs, and more.</p>
+      </div>
+      <div class="feature-item" style="border-color: #fff;">
+        <h3>Custom Question Templates</h3>
+        <p>Build your own check-in surveys. Add sport-specific questions that matter to your program.</p>
+      </div>
+    </div>
+  </div>
+  <div class="visual-stripes"></div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="split">
+  <div class="side-dark">
+    <span class="tag" style="color: var(--accent-light);">How It Works</span>
+    <h2>Up and running in&nbsp;minutes</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>Add Your Roster</h3>
+          <p>Upload athlete names and phone numbers. That's all you need to get started.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>Schedule Check-Ins</h3>
+          <p>Set when surveys go out — after practice, game day, rest days. Reflect handles delivery via SMS or WhatsApp.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>Athletes Respond</h3>
+          <p>Quick, conversational surveys. Readiness, energy, effort, pain — done in 60 seconds. No app download required.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <h3>Coach Gets Insights</h3>
+          <p>Real-time alerts, dashboards, and AI-powered analysis. Know your team's status before the next session.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="visual-blob"></div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section class="split split--reverse">
+  <div class="side-mid">
+    <span class="tag" style="color: var(--accent-light);">What Coaches Say</span>
+    <h2>Trusted by programs that care about their&nbsp;athletes</h2>
+    <div style="margin-top: 1.5rem;">
+      <div class="testimonial">
+        <blockquote>"We caught a stress fracture developing in our point guard because Reflect flagged a pain trend I would have completely missed. That alone justified the investment."</blockquote>
+        <cite>— Marcus T., D-II Women's Basketball Head Coach</cite>
+      </div>
+      <div class="testimonial">
+        <blockquote>"My athletes actually respond because it's just a text. We went from 30% survey completion on our old system to over 90% with Reflect."</blockquote>
+        <cite>— Sarah K., Club Soccer Director, 48 athletes</cite>
+      </div>
+      <div class="testimonial">
+        <blockquote>"The AI assistant is a game-changer. I can ask 'who's been fatigued this week?' and get an answer in seconds instead of scrolling through spreadsheets."</blockquote>
+        <cite>— James R., High School Football Athletic Trainer</cite>
+      </div>
+    </div>
+  </div>
+  <div class="visual-dots" style="background: var(--dark);"></div>
+</section>
+
+<!-- ═══════════ FINAL CTA ═══════════ -->
+<section class="split">
+  <div class="side-accent" style="text-align: center; align-items: center;">
+    <h2>Ready to know how your athletes really&nbsp;feel?</h2>
+    <p style="text-align: center; opacity: 0.9;">Start your free trial today. Set up takes less than 10 minutes. No credit card required.</p>
+    <a href="https://reflectsalus.app/" class="btn btn--light">Get Started Free</a>
+  </div>
+  <div class="side-dark" style="text-align: center; align-items: center;">
+    <h2 style="color: var(--light);">Questions?</h2>
+    <p style="color: var(--light); opacity: 0.7; text-align: center;">We'd love to walk you through a demo tailored to your sport and team size.</p>
+    <a href="https://reflectsalus.app/" class="btn btn--light">Book a Demo</a>
+  </div>
+</section>
+
+</body>
+</html>

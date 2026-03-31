@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — The Art of Athlete Wellness</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #F5F0E8;
+      --warm-white: #FDFBF7;
+      --terracotta: #C4644A;
+      --deep-brown: #2C1810;
+      --brown: #5C3D2E;
+      --tan: #D4B896;
+      --muted: #8C7A6B;
+      --rule: #D4C8B8;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      background: var(--warm-white);
+      color: var(--deep-brown);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--rule);
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--deep-brown);
+    }
+    header nav {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    header nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+    header nav a:hover { color: var(--deep-brown); }
+    .nav-cta-ed {
+      background: var(--terracotta);
+      color: var(--warm-white);
+      padding: 10px 24px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: -apple-system, sans-serif;
+    }
+
+    /* HERO */
+    .hero-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px 60px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 64px;
+      align-items: end;
+      border-bottom: 1px solid var(--rule);
+    }
+    .hero-ed h1 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 1.05;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      font-style: italic;
+    }
+    .hero-ed h1 em {
+      font-style: normal;
+      color: var(--terracotta);
+    }
+    .hero-right {
+      padding-bottom: 8px;
+    }
+    .hero-right p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--brown);
+      margin-bottom: 32px;
+    }
+    .hero-right .byline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .hero-actions-ed {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .btn-ed-primary {
+      background: var(--deep-brown);
+      color: var(--warm-white);
+      padding: 14px 32px;
+      text-decoration: none;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+    .btn-ed-secondary {
+      color: var(--deep-brown);
+      padding: 14px 0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--deep-brown);
+      font-style: italic;
+    }
+
+    /* DECORATIVE DIVIDER */
+    .divider {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 32px;
+      text-align: center;
+      border-bottom: 1px solid var(--rule);
+    }
+    .pull-quote blockquote {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-style: italic;
+      line-height: 1.5;
+      max-width: 800px;
+      margin: 0 auto;
+      color: var(--brown);
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* PRODUCT SECTION */
+    .product-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 64px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .product-ed-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--terracotta);
+      position: sticky;
+      top: 32px;
+    }
+    .product-ed-content h2 {
+      font-size: 2rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 24px;
+      line-height: 1.3;
+    }
+    .product-ed-content > p {
+      font-size: 1.05rem;
+      color: var(--brown);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      max-width: 580px;
+    }
+    .product-ed-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .product-ed-columns article {
+      padding: 24px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .product-ed-columns article h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .product-ed-columns article p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* FEATURES */
+    .features-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .features-ed-header {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 64px;
+      margin-bottom: 56px;
+    }
+    .features-ed-header h2 {
+      font-size: 2rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.3;
+    }
+    .features-ed-header p {
+      font-size: 1.05rem;
+      color: var(--brown);
+      line-height: 1.8;
+      align-self: end;
+    }
+    .features-ed-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 2px solid var(--deep-brown);
+    }
+    .feature-ed {
+      padding: 32px 28px 32px 0;
+      border-bottom: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+    .feature-ed:nth-child(3n) { border-right: none; }
+    .feature-ed:nth-child(n+4) { }
+    .feature-ed-num {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      color: var(--terracotta);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+    .feature-ed h3 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .feature-ed p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* HOW IT WORKS */
+    .how-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .how-ed > h2 {
+      font-size: 2rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+    .how-ed-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+    }
+    .how-step {
+      text-align: center;
+    }
+    .how-step-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1px solid var(--tan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--terracotta);
+      margin-bottom: 20px;
+    }
+    .how-step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .how-step p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* VISUAL PANEL */
+    .visual-panel {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    .visual-panel-inner {
+      background: linear-gradient(135deg, var(--deep-brown) 0%, #4A2E20 40%, var(--terracotta) 100%);
+      padding: 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      color: var(--cream);
+      margin: 60px 0;
+    }
+    .vp-left h3 {
+      font-size: 1.6rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .vp-left p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      opacity: 0.8;
+    }
+    .vp-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .vp-stat {
+      padding: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .vp-stat .num {
+      font-family: -apple-system, sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+    .vp-stat .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* TESTIMONIALS */
+    .test-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .test-ed > h2 {
+      font-size: 2rem;
+      font-weight: 400;
+      font-style: italic;
+      margin-bottom: 48px;
+    }
+    .test-ed-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+    .test-ed-item {
+      border-top: 2px solid var(--deep-brown);
+      padding-top: 28px;
+    }
+    .test-ed-item blockquote {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      font-style: italic;
+      margin-bottom: 20px;
+      color: var(--brown);
+    }
+    .test-ed-item .author {
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-style: normal;
+      letter-spacing: 0.04em;
+    }
+    .test-ed-item .role {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: normal;
+    }
+
+    /* FINAL CTA */
+    .final-ed {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 32px;
+      text-align: center;
+      border-bottom: 1px solid var(--rule);
+    }
+    .final-ed h2 {
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .final-ed h2 em {
+      font-style: normal;
+      color: var(--terracotta);
+    }
+    .final-ed p {
+      font-size: 1.1rem;
+      color: var(--brown);
+      margin-bottom: 36px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .final-ed a {
+      background: var(--terracotta);
+      color: var(--warm-white);
+      padding: 16px 40px;
+      text-decoration: none;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* FOOTER */
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero-ed { grid-template-columns: 1fr; gap: 32px; }
+      .product-ed { grid-template-columns: 1fr; gap: 24px; }
+      .product-ed-columns { grid-template-columns: 1fr; }
+      .features-ed-header { grid-template-columns: 1fr; gap: 16px; }
+      .features-ed-grid { grid-template-columns: 1fr; }
+      .feature-ed { border-right: none; padding-right: 0; }
+      .how-ed-steps { grid-template-columns: 1fr 1fr; }
+      .visual-panel-inner { grid-template-columns: 1fr; padding: 36px; }
+      .test-ed-grid { grid-template-columns: 1fr; }
+      header nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Reflect</div>
+    <nav>
+      <a href="#product">The Product</a>
+      <a href="#features">Features</a>
+      <a href="#testimonials">Voices</a>
+      <a href="https://reflectsalus.app/" class="nav-cta-ed">Subscribe</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero-ed">
+    <div>
+      <h1>The quiet revolution in <em>athlete care</em></h1>
+    </div>
+    <div class="hero-right">
+      <div class="byline">Spring 2026 / Wellness &amp; Performance</div>
+      <p>How a 60-second text message is replacing clipboard check-ins, transforming the way coaches understand their athletes, and preventing injuries before they happen.</p>
+      <div class="hero-actions-ed">
+        <a href="https://reflectsalus.app/" class="btn-ed-primary">Begin Your Trial</a>
+        <a href="#product" class="btn-ed-secondary">Read the story</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider">
+    <span>Vol. 1 / Issue 1</span>
+    <span>The Always-On Assistant Coach</span>
+    <span>reflectsalus.app</span>
+  </div>
+
+  <!-- PULL QUOTE -->
+  <div class="pull-quote">
+    <blockquote>"Check-ins that take 60 seconds. Insights that last a season."</blockquote>
+    <cite>The Reflect philosophy</cite>
+  </div>
+
+  <!-- PRODUCT -->
+  <section class="product-ed" id="product">
+    <div class="product-ed-label">What Reflect Does</div>
+    <div class="product-ed-content">
+      <h2>Automated wellness tracking that works where athletes already are</h2>
+      <p>Reflect sends brief check-in surveys via SMS and WhatsApp after every practice and competition. Athletes respond with readiness scores, energy levels, effort ratings, and injury reports. Coaches receive instant alerts and a living dashboard of team wellness.</p>
+      <div class="product-ed-columns">
+        <article>
+          <h3>For the Coach</h3>
+          <p>Real-time dashboards, automatic flag alerts, injury heatmaps, and an AI assistant that answers questions about your team in plain English.</p>
+        </article>
+        <article>
+          <h3>For the Athlete</h3>
+          <p>No app to download. No login to remember. Just reply to a text about how you feel. Takes 60 seconds after every session.</p>
+        </article>
+        <article>
+          <h3>For the Program</h3>
+          <p>Institutional memory for athlete wellness. Historical data, trend analysis, and compliance tracking that survives staff turnover.</p>
+        </article>
+        <article>
+          <h3>For Prevention</h3>
+          <p>Catch overtraining patterns, fatigue trends, and injury precursors before they become serious problems that cost athletes their season.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-ed" id="features">
+    <div class="features-ed-header">
+      <h2>A closer look at the details</h2>
+      <p>Every feature built around a single principle: make it effortless for athletes to report, and effortless for coaches to act.</p>
+    </div>
+    <div class="features-ed-grid">
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 01</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Instant notifications when athletes report low readiness, injury pain, or high fatigue. The system watches so you don't have to.</p>
+      </div>
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 02</div>
+        <h3>Injury Body Heatmap</h3>
+        <p>A visual map of injury reports across 18 anatomical regions. Patterns emerge that spreadsheets can never reveal.</p>
+      </div>
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 03</div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Readiness, energy, and effort visualized over time. See how training load affects your team across a full season arc.</p>
+      </div>
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 04</div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Natural language queries against your own data. Ask questions, get answers backed by real athlete check-ins.</p>
+      </div>
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 05</div>
+        <h3>Per-Player Drill-Down</h3>
+        <p>Individual athlete profiles with full wellness history, injury logs, and trend analysis for deeper one-on-one conversations.</p>
+      </div>
+      <div class="feature-ed">
+        <div class="feature-ed-num">Feature 06</div>
+        <h3>Custom Question Templates</h3>
+        <p>Tailor every check-in to your sport and your philosophy. Add questions that matter to your specific program.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-ed">
+    <h2>The process, simplified</h2>
+    <div class="how-ed-steps">
+      <div class="how-step">
+        <div class="how-step-circle">I</div>
+        <h3>Schedule</h3>
+        <p>Set up automated check-ins after practices and games. Choose your delivery channel and question template.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">II</div>
+        <h3>Respond</h3>
+        <p>Athletes receive a brief survey via SMS or WhatsApp and reply in under 60 seconds. No app. No friction.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">III</div>
+        <h3>Analyze</h3>
+        <p>Responses flow into your dashboard in real time. Alerts fire automatically. Trends update continuously.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-step-circle">IV</div>
+        <h3>Decide</h3>
+        <p>Use real data to adjust training, modify recovery protocols, and have informed conversations with athletes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISUAL PANEL -->
+  <div class="visual-panel">
+    <div class="visual-panel-inner">
+      <div class="vp-left">
+        <h3>Built for coaches managing real rosters</h3>
+        <p>Whether you have 15 athletes or 60+, Reflect scales with your program. Every check-in is one more data point toward a healthier, better-performing team.</p>
+      </div>
+      <div class="vp-stats">
+        <div class="vp-stat">
+          <div class="num">60s</div>
+          <div class="lbl">Avg response time</div>
+        </div>
+        <div class="vp-stat">
+          <div class="num">94%</div>
+          <div class="lbl">Response rate</div>
+        </div>
+        <div class="vp-stat">
+          <div class="num">18</div>
+          <div class="lbl">Body regions tracked</div>
+        </div>
+        <div class="vp-stat">
+          <div class="num">0</div>
+          <div class="lbl">App downloads needed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="test-ed" id="testimonials">
+    <h2>In their own words</h2>
+    <div class="test-ed-grid">
+      <div class="test-ed-item">
+        <blockquote>"I spent years relying on hallway conversations to gauge how my athletes felt. Reflect replaced guesswork with data, without adding a single minute to my day."</blockquote>
+        <div class="author">Coach Lisa Park</div>
+        <div class="role">Head Coach, D1 Women's Volleyball</div>
+      </div>
+      <div class="test-ed-item">
+        <blockquote>"The body heatmap told a story our training logs never could. We saw knee complaints clustering on the left side and traced it back to a field drill that needed adjustment."</blockquote>
+        <div class="author">James Holloway, ATC</div>
+        <div class="role">Head Athletic Trainer, Prep School</div>
+      </div>
+      <div class="test-ed-item">
+        <blockquote>"My players actually respond because it's just a text. I've tried three other platforms. This is the first one they stuck with."</blockquote>
+        <div class="author">Maria Estrada</div>
+        <div class="role">Assistant Coach, Club Soccer</div>
+      </div>
+      <div class="test-ed-item">
+        <blockquote>"The AI assistant is remarkable. I asked 'who has reported increasing fatigue over the last two weeks' and had my answer in seconds."</blockquote>
+        <div class="author">Dr. Anthony Russo</div>
+        <div class="role">Director of Sports Performance</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-ed">
+    <h2>Begin the conversation with <em>your athletes</em></h2>
+    <p>Sixty seconds of their time. A season of insight for yours. Start your free trial today.</p>
+    <a href="https://reflectsalus.app/">Start Your Free Trial</a>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Reflect</span>
+    <span>The Always-On Assistant Coach</span>
+  </footer>
+
+</body>
+</html>

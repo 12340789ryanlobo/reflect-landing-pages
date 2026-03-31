@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — Athlete Wellness on Autopilot</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0F0A1A;
+      color: #FFFFFF;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #A855F7, #6366F1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    nav .links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    nav .links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    nav .links a:hover { color: #fff; }
+    .nav-cta-grad {
+      background: linear-gradient(135deg, #A855F7, #6366F1);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* HERO */
+    .hero-grad {
+      position: relative;
+      text-align: center;
+      padding: 100px 32px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-grad::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(99,102,241,0.1) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-grad > * { position: relative; z-index: 1; }
+
+    /* SOCIAL PROOF BADGES */
+    .badges {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34D399;
+    }
+
+    .hero-grad h1 {
+      font-size: clamp(2.8rem, 7vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .hero-grad h1 .gradient-text {
+      background: linear-gradient(135deg, #A855F7 0%, #6366F1 30%, #3B82F6 60%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-grad p {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+    .hero-cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-grad-primary {
+      background: linear-gradient(135deg, #A855F7, #6366F1);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: inline-block;
+      box-shadow: 0 4px 24px rgba(168,85,247,0.4);
+    }
+    .btn-grad-secondary {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .hero-sub {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* LOGOS ROW */
+    .logos-row {
+      text-align: center;
+      padding: 60px 32px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .logos-row p {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+    }
+    .logos-flex {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .logo-placeholder {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.05em;
+    }
+
+    /* PRODUCT SECTION */
+    .product-grad {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+    }
+    .product-grad-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .product-grad-header .overline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #A855F7;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .product-grad-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .product-grad-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 1.1rem;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .product-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .product-card-grad {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card-grad::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    .product-card-grad:nth-child(1)::before { background: linear-gradient(90deg, #A855F7, #6366F1); }
+    .product-card-grad:nth-child(2)::before { background: linear-gradient(90deg, #3B82F6, #06B6D4); }
+    .product-card-grad:nth-child(3)::before { background: linear-gradient(90deg, #F97316, #EF4444); }
+    .product-card-grad:nth-child(4)::before { background: linear-gradient(90deg, #34D399, #3B82F6); }
+    .product-card-grad h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .product-card-grad p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+    }
+
+    /* FEATURES */
+    .features-grad {
+      padding: 80px 32px;
+      background: linear-gradient(180deg, transparent 0%, rgba(168,85,247,0.05) 50%, transparent 100%);
+    }
+    .features-grad-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .features-grad-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .features-grad-header .overline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #3B82F6;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .features-grad-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .feat-grid-grad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feat-grad {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .feat-grad-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .fgi-1 { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05)); color: #EF4444; }
+    .fgi-2 { background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(249,115,22,0.05)); color: #F97316; }
+    .fgi-3 { background: linear-gradient(135deg, rgba(52,211,153,0.2), rgba(52,211,153,0.05)); color: #34D399; }
+    .fgi-4 { background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(59,130,246,0.05)); color: #3B82F6; }
+    .fgi-5 { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(168,85,247,0.05)); color: #A855F7; }
+    .fgi-6 { background: linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); color: #06B6D4; }
+    .feat-grad h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feat-grad p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how-grad {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 32px;
+    }
+    .how-grad-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .how-grad-header .overline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #34D399;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .how-grad-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .how-steps-grad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .how-step-grad {
+      text-align: center;
+      padding: 32px 20px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      position: relative;
+    }
+    .how-step-num {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+    }
+    .hsn-1 { background: linear-gradient(135deg, #A855F7, #6366F1); }
+    .hsn-2 { background: linear-gradient(135deg, #3B82F6, #06B6D4); }
+    .hsn-3 { background: linear-gradient(135deg, #F97316, #EF4444); }
+    .hsn-4 { background: linear-gradient(135deg, #34D399, #3B82F6); }
+    .how-step-grad h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .how-step-grad p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.5;
+    }
+
+    /* STATS BANNER */
+    .stats-banner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+    .stats-banner-inner {
+      background: linear-gradient(135deg, #A855F7 0%, #6366F1 40%, #3B82F6 70%, #06B6D4 100%);
+      border-radius: 20px;
+      padding: 56px 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+    .stat-item .stat-num {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .stat-item .stat-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 6px;
+    }
+
+    /* TESTIMONIALS */
+    .test-grad {
+      padding: 80px 32px;
+    }
+    .test-grad-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-grad-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .test-grad-header .overline {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #F97316;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .test-grad-header h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .test-grid-grad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .test-card-grad {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .test-stars {
+      color: #FBBF24;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    .test-card-grad blockquote {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 24px;
+    }
+    .test-author-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .test-avatar-grad {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    .ta-1 { background: linear-gradient(135deg, #A855F7, #6366F1); }
+    .ta-2 { background: linear-gradient(135deg, #3B82F6, #06B6D4); }
+    .ta-3 { background: linear-gradient(135deg, #F97316, #EF4444); }
+    .test-author-info strong {
+      display: block;
+      font-size: 0.85rem;
+    }
+    .test-author-info span {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* FINAL CTA */
+    .final-grad {
+      text-align: center;
+      padding: 100px 32px;
+      position: relative;
+    }
+    .final-grad::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(168,85,247,0.08) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-grad > * { position: relative; z-index: 1; }
+    .final-grad h2 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .final-grad h2 .gradient-text {
+      background: linear-gradient(135deg, #A855F7, #3B82F6, #06B6D4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .final-grad p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.5);
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+    .final-grad .btn-grad-primary {
+      font-size: 1.15rem;
+      padding: 18px 44px;
+    }
+    .final-grad .sub {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav .links { display: none; }
+      .product-cards { grid-template-columns: 1fr; }
+      .feat-grid-grad { grid-template-columns: 1fr; }
+      .how-steps-grad { grid-template-columns: 1fr 1fr; }
+      .stats-banner-inner { grid-template-columns: 1fr 1fr; padding: 36px 24px; }
+      .test-grid-grad { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Reflect</div>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#testimonials">Proof</a>
+      <a href="https://reflectsalus.app/" class="nav-cta-grad">Start Free</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-grad">
+    <div class="badges">
+      <div class="badge"><div class="badge-dot"></div> Now in early access</div>
+      <div class="badge">No credit card required</div>
+      <div class="badge">Setup in 5 minutes</div>
+    </div>
+    <h1>Athlete wellness on <span class="gradient-text">autopilot</span></h1>
+    <p>Automated check-ins via SMS and WhatsApp. Real-time dashboards and instant alerts. The always-on assistant coach your program needs.</p>
+    <div class="hero-cta-row">
+      <a href="https://reflectsalus.app/" class="btn-grad-primary">Start Your Free Trial</a>
+      <a href="#how" class="btn-grad-secondary">See How It Works</a>
+    </div>
+    <div class="hero-sub">Free for 14 days. No app install required. Works with SMS &amp; WhatsApp.</div>
+  </section>
+
+  <!-- LOGOS -->
+  <div class="logos-row">
+    <p>Trusted by coaches at programs like</p>
+    <div class="logos-flex">
+      <span class="logo-placeholder">STATE UNIVERSITY</span>
+      <span class="logo-placeholder">ELITE TRACK</span>
+      <span class="logo-placeholder">METRO ACADEMY</span>
+      <span class="logo-placeholder">COASTAL FC</span>
+      <span class="logo-placeholder">SUMMIT PREP</span>
+    </div>
+  </div>
+
+  <!-- WHAT REFLECT DOES -->
+  <section class="product-grad">
+    <div class="product-grad-header">
+      <div class="overline">The Product</div>
+      <h2>What Reflect does for your program</h2>
+      <p>Automate the hardest part of athlete wellness: getting consistent, honest data from every player after every session.</p>
+    </div>
+    <div class="product-cards">
+      <div class="product-card-grad">
+        <h3>Automated SMS/WhatsApp Check-Ins</h3>
+        <p>Brief surveys go out automatically after every practice and game. Athletes reply in 60 seconds. No app download, no login, no friction.</p>
+      </div>
+      <div class="product-card-grad">
+        <h3>Real-Time Coach Dashboard</h3>
+        <p>Every response populates your live dashboard instantly. See readiness, energy, effort, and injuries across your entire roster at a glance.</p>
+      </div>
+      <div class="product-card-grad">
+        <h3>Instant Flag Alerts</h3>
+        <p>Get notified the moment an athlete reports low readiness, high pain, or injury concern. Never miss a warning sign again.</p>
+      </div>
+      <div class="product-card-grad">
+        <h3>AI-Powered Coaching Insights</h3>
+        <p>Ask your AI assistant questions in plain English. "Who reported knee pain this week?" Get answers from real check-in data in seconds.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-grad" id="features">
+    <div class="features-grad-inner">
+      <div class="features-grad-header">
+        <div class="overline">Features</div>
+        <h2>Built for serious coaches</h2>
+      </div>
+      <div class="feat-grid-grad">
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-1">&#9888;</div>
+          <h3>Automatic Flag Alerts</h3>
+          <p>Instant notifications for low readiness, injury concern, and high pain levels. Catch issues before they escalate.</p>
+        </div>
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-2">&#9673;</div>
+          <h3>Injury Body Heatmap</h3>
+          <p>Visual injury tracking across 18 anatomical regions. Spot patterns and problem areas across your roster.</p>
+        </div>
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-3">&#9650;</div>
+          <h3>Team Trends Dashboard</h3>
+          <p>Track readiness, energy, and effort over time. See how your team responds to training load across the season.</p>
+        </div>
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-4">&#9733;</div>
+          <h3>Per-Player Drill-Down</h3>
+          <p>Deep-dive into individual athlete data with full wellness histories, injury logs, and trend analysis.</p>
+        </div>
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-5">&#9829;</div>
+          <h3>Fitness Leaderboards</h3>
+          <p>Gamified fitness tracking to keep athletes motivated, accountable, and engaged with their training goals.</p>
+        </div>
+        <div class="feat-grad">
+          <div class="feat-grad-icon fgi-6">&#9998;</div>
+          <h3>Custom Question Templates</h3>
+          <p>Build your own check-in questions tailored to your sport, your program, and your athletes' needs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-grad" id="how">
+    <div class="how-grad-header">
+      <div class="overline">How It Works</div>
+      <h2>Up and running in minutes</h2>
+    </div>
+    <div class="how-steps-grad">
+      <div class="how-step-grad">
+        <div class="how-step-num hsn-1">1</div>
+        <h3>Schedule</h3>
+        <p>Set up automatic check-ins after every practice and game. Choose SMS, WhatsApp, or both.</p>
+      </div>
+      <div class="how-step-grad">
+        <div class="how-step-num hsn-2">2</div>
+        <h3>Respond</h3>
+        <p>Athletes answer brief questions on readiness, energy, effort, and injuries. Takes 60 seconds.</p>
+      </div>
+      <div class="how-step-grad">
+        <div class="how-step-num hsn-3">3</div>
+        <h3>Analyze</h3>
+        <p>Data flows into your dashboard in real time. Alerts fire automatically for flagged responses.</p>
+      </div>
+      <div class="how-step-grad">
+        <div class="how-step-num hsn-4">4</div>
+        <h3>Act</h3>
+        <p>Use trends, heatmaps, and AI insights to make confident training and recovery decisions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BANNER -->
+  <div class="stats-banner">
+    <div class="stats-banner-inner">
+      <div class="stat-item">
+        <div class="stat-num">60s</div>
+        <div class="stat-label">Average response time</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">94%</div>
+        <div class="stat-label">Athlete response rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">18</div>
+        <div class="stat-label">Body regions tracked</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">App downloads needed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="test-grad" id="testimonials">
+    <div class="test-grad-inner">
+      <div class="test-grad-header">
+        <div class="overline">Social Proof</div>
+        <h2>Coaches are already seeing results</h2>
+      </div>
+      <div class="test-grid-grad">
+        <div class="test-card-grad">
+          <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"Reflect took our athlete wellness tracking from nonexistent to best-in-class in one week. The SMS approach was the key — our athletes actually respond."</blockquote>
+          <div class="test-author-row">
+            <div class="test-avatar-grad ta-1"></div>
+            <div class="test-author-info">
+              <strong>Coach Davis</strong>
+              <span>Head Coach, D1 Women's Soccer</span>
+            </div>
+          </div>
+        </div>
+        <div class="test-card-grad">
+          <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"The injury heatmap alone is worth it. We spotted a cluster of ankle complaints from one specific drill and fixed it before anyone got seriously hurt."</blockquote>
+          <div class="test-author-row">
+            <div class="test-avatar-grad ta-2"></div>
+            <div class="test-author-info">
+              <strong>Mike Tanaka</strong>
+              <span>Athletic Trainer, Elite Track Club</span>
+            </div>
+          </div>
+        </div>
+        <div class="test-card-grad">
+          <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <blockquote>"I asked the AI 'who has reported increasing fatigue the last two weeks' and had my answer in 3 seconds. This is the future of coaching."</blockquote>
+          <div class="test-author-row">
+            <div class="test-avatar-grad ta-3"></div>
+            <div class="test-author-info">
+              <strong>Rachel Osei</strong>
+              <span>Assistant Coach, High School Basketball</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-grad">
+    <h2>Ready to know how your <span class="gradient-text">athletes really feel?</span></h2>
+    <p>Check-ins that take 60 seconds. Insights that last a season. Start your free trial today.</p>
+    <a href="https://reflectsalus.app/" class="btn-grad-primary">Start Your Free Trial</a>
+    <div class="sub">Free for 14 days. No credit card required. Cancel anytime.</div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Reflect. The always-on assistant coach. Built for coaches who care.</p>
+  </footer>
+
+</body>
+</html>

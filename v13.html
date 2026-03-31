@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Evidence-Based Athlete Wellness Monitoring</title>
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#1a6fc4;--blue-light:#e8f2fc;--blue-dark:#0d3b6e;--green:#1a9e6f;--green-light:#e6f7f0;--teal:#2aa0a4;--white:#fff;--gray-50:#f8fafb;--gray-100:#eef2f5;--gray-200:#d4dce4;--gray-400:#8e9baa;--gray-600:#4a5568;--gray-800:#1e2a3a;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05)}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--gray-800);background:var(--white);line-height:1.6;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+
+  .container{max-width:1080px;margin:0 auto;padding:0 24px}
+  .btn{display:inline-block;padding:14px 36px;font-size:1rem;font-weight:600;border-radius:var(--radius);cursor:pointer;transition:transform .15s,box-shadow .15s;border:none}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,111,196,.3)}
+  .btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue)}
+  .btn-outline:hover{background:var(--blue-light)}
+  .tag{display:inline-block;font-size:.7rem;text-transform:uppercase;letter-spacing:3px;color:var(--blue);font-weight:600;background:var(--blue-light);padding:6px 14px;border-radius:20px;margin-bottom:16px}
+
+  /* Nav */
+  nav{background:var(--white);border-bottom:1px solid var(--gray-100);padding:16px 0;position:sticky;top:0;z-index:100}
+  nav .container{display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{font-weight:700;font-size:1.2rem;color:var(--blue-dark);display:flex;align-items:center;gap:8px}
+  .nav-logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:6px}
+  .nav-link{font-size:.9rem;color:var(--gray-600);font-weight:500}
+
+  /* Hero */
+  .hero{padding:80px 0 100px;background:linear-gradient(180deg,var(--blue-light) 0%,var(--white) 100%)}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+  .hero h1{font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--blue-dark);line-height:1.25;margin-bottom:16px}
+  .hero p{color:var(--gray-600);font-size:1.1rem;margin-bottom:32px;max-width:480px}
+  .hero-badges{display:flex;gap:20px;margin-top:24px;flex-wrap:wrap}
+  .hero-badge{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--gray-600)}
+  .hero-badge-icon{width:20px;height:20px;border-radius:50%;background:var(--green-light);position:relative;display:flex;align-items:center;justify-content:center}
+  .hero-badge-icon::after{content:'';width:8px;height:5px;border-left:2px solid var(--green);border-bottom:2px solid var(--green);transform:rotate(-45deg);margin-top:-2px}
+
+  /* Dashboard mock */
+  .dash-mock{background:var(--white);border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--gray-100);padding:24px;position:relative}
+  .dash-header{display:flex;gap:6px;margin-bottom:20px}
+  .dash-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-200)}
+  .dash-dot:first-child{background:#f87171}
+  .dash-dot:nth-child(2){background:#fbbf24}
+  .dash-dot:nth-child(3){background:#34d399}
+  .dash-row{display:flex;gap:12px;margin-bottom:12px}
+  .dash-bar{height:24px;border-radius:4px;background:var(--blue-light)}
+  .dash-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+  .dash-label{font-size:.7rem;color:var(--gray-400);min-width:60px;line-height:24px}
+  .dash-alert{background:linear-gradient(90deg,#fef3c7,#fef9c3);border:1px solid #fcd34d;border-radius:6px;padding:8px 12px;font-size:.75rem;color:#92400e;margin-top:8px;display:flex;align-items:center;gap:8px}
+  .dash-alert-icon{width:16px;height:16px;background:#fbbf24;border-radius:50%;flex-shrink:0}
+
+  /* About */
+  .about{padding:80px 0;background:var(--gray-50);border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100)}
+  .about-inner{max-width:720px;margin:0 auto;text-align:center}
+  .about h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--blue-dark);margin-bottom:16px}
+  .about p{color:var(--gray-600);font-size:1.05rem;line-height:1.8}
+
+  /* Features */
+  .features{padding:80px 0}
+  .features h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--blue-dark);text-align:center;margin-bottom:48px}
+  .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .feat-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:32px;transition:box-shadow .2s}
+  .feat-card:hover{box-shadow:var(--shadow)}
+  .feat-icon{width:44px;height:44px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;justify-content:center}
+  .feat-icon-blue{background:var(--blue-light)}
+  .feat-icon-green{background:var(--green-light)}
+  .feat-icon-teal{background:rgba(42,160,164,.1)}
+  /* Geometric icons */
+  .ico-alert{width:18px;height:18px;background:var(--blue);clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .ico-body{width:18px;height:18px;background:var(--green);border-radius:50%}
+  .ico-trend{width:20px;height:14px;background:transparent;border-bottom:2px solid var(--teal);border-left:2px solid var(--teal);position:relative}
+  .ico-trend::after{content:'';position:absolute;bottom:-1px;left:2px;width:100%;height:100%;border-top:2px solid var(--teal);border-radius:0;clip-path:polygon(0 80%,33% 30%,66% 60%,100% 10%,100% 100%,0 100%);background:rgba(42,160,164,.15)}
+  .ico-ai{width:18px;height:18px;border:2px solid var(--blue);border-radius:4px;position:relative}
+  .ico-ai::after{content:'';position:absolute;inset:4px;background:var(--blue);border-radius:2px}
+  .ico-log{width:16px;height:20px;border:2px solid var(--green);border-radius:2px}
+  .ico-lead{width:20px;height:16px;background:repeating-linear-gradient(90deg,var(--teal) 0px,var(--teal) 4px,transparent 4px,transparent 7px)}
+  .feat-card h3{font-size:1rem;font-weight:600;color:var(--blue-dark);margin-bottom:8px}
+  .feat-card p{color:var(--gray-600);font-size:.9rem;line-height:1.6}
+
+  /* How */
+  .how{padding:80px 0;background:var(--blue-dark);color:var(--white)}
+  .how h2{font-size:clamp(1.6rem,3vw,2.2rem);text-align:center;margin-bottom:48px}
+  .how-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;counter-reset:step}
+  .how-step{text-align:center;counter-increment:step;position:relative;padding-top:60px}
+  .how-step::before{content:counter(step);position:absolute;top:0;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:var(--teal);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;line-height:44px}
+  .how-step h3{font-size:1rem;font-weight:600;margin-bottom:8px}
+  .how-step p{color:rgba(255,255,255,.65);font-size:.9rem;line-height:1.6}
+
+  /* Evidence */
+  .evidence{padding:80px 0;background:var(--gray-50);border-top:1px solid var(--gray-100)}
+  .evidence h2{font-size:clamp(1.6rem,3vw,2.2rem);color:var(--blue-dark);text-align:center;margin-bottom:48px}
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .test-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:28px;position:relative}
+  .test-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:var(--radius) var(--radius) 0 0}
+  .test-card blockquote{font-size:.95rem;color:var(--gray-600);line-height:1.7;margin-bottom:16px;font-style:italic}
+  .test-card cite{font-size:.8rem;color:var(--blue);font-weight:600;font-style:normal}
+  .outcomes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin-top:48px}
+  .outcome{text-align:center;padding:28px;background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius)}
+  .outcome-num{font-size:2.2rem;font-weight:700;color:var(--blue)}
+  .outcome-label{font-size:.8rem;color:var(--gray-400);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+  /* CTA */
+  .final-cta{padding:80px 0;text-align:center}
+  .final-cta h2{font-size:clamp(1.6rem,3vw,2.4rem);color:var(--blue-dark);margin-bottom:12px}
+  .final-cta p{color:var(--gray-600);margin-bottom:32px;font-size:1.05rem}
+  .cta-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+  footer{background:var(--gray-50);border-top:1px solid var(--gray-100);padding:32px 0;text-align:center;font-size:.8rem;color:var(--gray-400)}
+
+  @media(max-width:768px){
+    .hero-grid{grid-template-columns:1fr}
+    .dash-mock{margin-top:20px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="nav-logo"><div class="nav-logo-icon"></div> Reflect</div>
+    <a href="https://reflectsalus.app/" class="btn btn-primary" style="padding:10px 24px;font-size:.85rem">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="tag">Athlete Wellness Monitoring</div>
+        <h1>Evidence-based athlete monitoring. Delivered via text.</h1>
+        <p>Reflect automates post-activity wellness check-ins through SMS and WhatsApp, giving sports medicine staff and coaches real-time data on athlete readiness, pain, and recovery status.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="https://reflectsalus.app/" class="btn btn-primary">Request a Demo</a>
+          <a href="https://reflectsalus.app/" class="btn btn-outline">View Documentation</a>
+        </div>
+        <div class="hero-badges">
+          <div class="hero-badge"><div class="hero-badge-icon"></div> HIPAA-Aware Design</div>
+          <div class="hero-badge"><div class="hero-badge-icon"></div> No App Install Required</div>
+          <div class="hero-badge"><div class="hero-badge-icon"></div> 60-Second Check-Ins</div>
+        </div>
+      </div>
+      <div class="dash-mock">
+        <div class="dash-header"><div class="dash-dot"></div><div class="dash-dot"></div><div class="dash-dot"></div></div>
+        <div class="dash-row">
+          <div class="dash-label">Readiness</div>
+          <div class="dash-bar" style="flex:1"><div class="dash-bar-fill" style="width:78%"></div></div>
+        </div>
+        <div class="dash-row">
+          <div class="dash-label">Energy</div>
+          <div class="dash-bar" style="flex:1"><div class="dash-bar-fill" style="width:65%"></div></div>
+        </div>
+        <div class="dash-row">
+          <div class="dash-label">Effort</div>
+          <div class="dash-bar" style="flex:1"><div class="dash-bar-fill" style="width:88%"></div></div>
+        </div>
+        <div class="dash-row">
+          <div class="dash-label">Soreness</div>
+          <div class="dash-bar" style="flex:1"><div class="dash-bar-fill" style="width:42%;background:linear-gradient(90deg,#f59e0b,#f97316)"></div></div>
+        </div>
+        <div class="dash-alert"><div class="dash-alert-icon"></div> Flag: 3 athletes reported elevated knee soreness this week</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="tag">What Is Reflect</div>
+      <h2>A clinical-grade wellness monitoring platform built for sport</h2>
+      <p>Reflect automates the collection of athlete self-report data — readiness, energy, effort, and injury status — through SMS and WhatsApp messaging. Coaches and sports medicine professionals receive instant flag alerts and access a comprehensive dashboard for tracking team wellness patterns over time. Designed for teams of 15 to 60+ athletes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <div class="container">
+    <div class="tag" style="display:block;text-align:center">Platform Capabilities</div>
+    <h2>Comprehensive athlete monitoring tools</h2>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-blue"><div class="ico-alert"></div></div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Real-time notifications triggered by low readiness scores, injury reports, elevated pain levels, or trend anomalies across your roster.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-green"><div class="ico-body"></div></div>
+        <h3>Injury Body Heatmap</h3>
+        <p>18-region anatomical visualization of reported soreness and injury across your team. Identify clustering patterns by body region.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-teal"><div class="ico-trend"></div></div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Longitudinal tracking of readiness, energy, and perceived effort. Filter by individual, position group, or custom date ranges.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-blue"><div class="ico-ai"></div></div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Natural language interface for querying team data. Ask complex questions and receive structured, data-backed responses.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-green"><div class="ico-log"></div></div>
+        <h3>Workout &amp; Rehab Logging</h3>
+        <p>Structured logging for workouts and rehabilitation protocols. Monitor compliance rates and return-to-play timelines.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon feat-icon-teal"><div class="ico-lead"></div></div>
+        <h3>Custom Question Templates</h3>
+        <p>Create sport-specific and role-specific check-in templates. Standardize data collection across your organization.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how">
+  <div class="container">
+    <div class="tag" style="display:block;text-align:center;background:rgba(42,160,164,.2);color:#5eead4">Implementation</div>
+    <h2>How Reflect integrates into your workflow</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <h3>Configure</h3>
+        <p>Import your athlete roster and customize check-in questionnaires to your sport and monitoring needs.</p>
+      </div>
+      <div class="how-step">
+        <h3>Collect</h3>
+        <p>Athletes receive automated SMS or WhatsApp surveys post-activity. Average completion time: 60 seconds.</p>
+      </div>
+      <div class="how-step">
+        <h3>Monitor</h3>
+        <p>Data populates your dashboard in real time. Flag alerts notify staff of concerning responses immediately.</p>
+      </div>
+      <div class="how-step">
+        <h3>Intervene</h3>
+        <p>Use trend analysis, heatmaps, and the AI assistant to inform clinical decisions and training modifications.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Evidence / Social Proof -->
+<section class="evidence">
+  <div class="container">
+    <div class="tag" style="display:block;text-align:center">Clinical Outcomes</div>
+    <h2>Trusted by sports medicine professionals</h2>
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>"Reflect gave us the systematic wellness data collection we'd been trying to build with spreadsheets for years. The flag alerts alone have changed how we prioritize athlete care."</blockquote>
+        <cite>Dr. Rachel Simmons, Sports Medicine, NCAA D1 Program</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>"Compliance is the biggest challenge with athlete monitoring. Reflect solved it by meeting athletes where they already are — their text messages. We're at 94% response rates."</blockquote>
+        <cite>Tom Bradley, Head Athletic Trainer, High School Athletic Conference</cite>
+      </div>
+      <div class="test-card">
+        <blockquote>"The body heatmap identified a bilateral knee soreness pattern in our distance runners two weeks before any formal injury report. That's preventive care in action."</blockquote>
+        <cite>Dr. Kenji Mori, Team Physician, Club Athletics</cite>
+      </div>
+    </div>
+    <div class="outcomes">
+      <div class="outcome"><div class="outcome-num">94%</div><div class="outcome-label">Athlete Response Rate</div></div>
+      <div class="outcome"><div class="outcome-num">60s</div><div class="outcome-label">Mean Completion Time</div></div>
+      <div class="outcome"><div class="outcome-num">3x</div><div class="outcome-label">Faster Issue Identification</div></div>
+      <div class="outcome"><div class="outcome-num">500+</div><div class="outcome-label">Athletes Monitored</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container">
+    <div class="tag">Get Started</div>
+    <h2>Ready to implement evidence-based athlete monitoring?</h2>
+    <p>Start your free trial or schedule a demonstration with our team.</p>
+    <div class="cta-btns">
+      <a href="https://reflectsalus.app/" class="btn btn-primary">Start Free Trial</a>
+      <a href="https://reflectsalus.app/" class="btn btn-outline">Schedule Demo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">&copy; 2026 Reflect Health Technologies &mdash; Athlete Wellness Monitoring Platform</div>
+</footer>
+
+</body>
+</html>

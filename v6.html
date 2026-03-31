@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Documentation</title>
+<style>
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-purple: #bc8cff;
+    --accent-orange: #d29922;
+    --accent-red: #f85149;
+    --accent-cyan: #39d2c0;
+    --mono: 'Courier New', 'Consolas', 'Monaco', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  /* Top Nav */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .topnav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .topnav-brand .icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .topnav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .topnav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+
+  .topnav-links a:hover { color: var(--text-primary); }
+
+  .topnav-links .badge {
+    background: var(--accent-green);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 0.25rem;
+  }
+
+  /* Layout */
+  .page-layout {
+    display: flex;
+    min-height: calc(100vh - 50px);
+  }
+
+  .sidebar {
+    width: 260px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .sidebar-section h4 {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .sidebar-section a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+  }
+
+  .sidebar-section a:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .sidebar-section a.active {
+    color: var(--text-primary);
+    border-left-color: var(--accent-blue);
+    background: var(--bg-tertiary);
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 3rem 4rem;
+    max-width: 900px;
+    min-width: 0;
+  }
+
+  /* Hero / readme style */
+  .hero-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    margin-right: 0.4rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .badge-green { background: #238636; color: #fff; }
+  .badge-blue { background: #1f6feb; color: #fff; }
+  .badge-purple { background: #8957e5; color: #fff; }
+  .badge-orange { background: #9e6a03; color: #fff; }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  h1 .accent { color: var(--accent-green); }
+
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--accent-green);
+    color: var(--bg-primary);
+    padding: 0.6rem 1.5rem;
+    text-decoration: none;
+    font-family: var(--mono);
+    font-weight: bold;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-cta.secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .hero-cta:hover { opacity: 0.9; }
+
+  hr.section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  /* Section headings */
+  h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 .hash {
+    color: var(--accent-blue);
+    margin-right: 0.3rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  p, li {
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+
+  .code-block-header {
+    background: var(--bg-tertiary);
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .code-block-header .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .code-block-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: var(--accent-red); }
+  .dot-yellow { background: var(--accent-orange); }
+  .dot-green { background: var(--accent-green); }
+
+  .code-block pre {
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  .code-block .line-num {
+    color: var(--text-muted);
+    display: inline-block;
+    width: 2.5em;
+    text-align: right;
+    margin-right: 1.5em;
+    user-select: none;
+  }
+
+  /* Syntax colors */
+  .syn-keyword { color: var(--accent-red); }
+  .syn-string { color: #a5d6ff; }
+  .syn-func { color: var(--accent-purple); }
+  .syn-comment { color: var(--text-muted); font-style: italic; }
+  .syn-type { color: var(--accent-orange); }
+  .syn-var { color: var(--accent-cyan); }
+  .syn-prop { color: var(--accent-blue); }
+
+  /* Feature cards */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .feature-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem;
+  }
+
+  .feature-card h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .feature-card .icon-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .feature-card p {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+  }
+
+  /* Steps */
+  .steps {
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--accent-green);
+    flex-shrink: 0;
+  }
+
+  .step-content h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .step-content p {
+    font-size: 0.8rem;
+  }
+
+  /* Inline code */
+  code {
+    background: var(--bg-tertiary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+    color: var(--accent-cyan);
+  }
+
+  /* Table */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.8rem;
+  }
+
+  .doc-table th, .doc-table td {
+    text-align: left;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .doc-table th {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: bold;
+  }
+
+  .doc-table td {
+    color: var(--text-secondary);
+  }
+
+  /* Testimonials as "issues" */
+  .issue-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .issue-card .issue-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .issue-card .issue-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    flex-shrink: 0;
+  }
+
+  .issue-card .issue-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+
+  .issue-card .issue-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .issue-card .issue-body {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding-left: 0;
+    border-left: 3px solid var(--border);
+    padding-left: 1rem;
+  }
+
+  /* Footer */
+  .doc-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  .doc-footer a {
+    color: var(--accent-blue);
+    text-decoration: none;
+  }
+
+  /* Final CTA */
+  .final-cta {
+    background: var(--bg-secondary);
+    border: 1px solid var(--accent-green);
+    border-radius: 6px;
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem 0;
+  }
+
+  .final-cta h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .final-cta p {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main-content { padding: 2rem 1.5rem; }
+  }
+
+  @media (max-width: 600px) {
+    .main-content { padding: 1.5rem 1rem; }
+    h1 { font-size: 1.5rem; }
+    .topnav { padding: 0.75rem 1rem; }
+    .topnav-links { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="https://reflectsalus.app/" class="topnav-brand">
+    <span class="icon"></span>
+    reflect
+  </a>
+  <div class="topnav-links">
+    <a href="#overview">Overview</a>
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#api">API Reference</a>
+    <a href="https://reflectsalus.app/">Get Started <span class="badge">v2.1</span></a>
+  </div>
+</nav>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h4>Getting Started</h4>
+      <a href="#overview" class="active">Overview</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#how-it-works">How It Works</a>
+    </div>
+    <div class="sidebar-section">
+      <h4>Core Features</h4>
+      <a href="#features">Feature List</a>
+      <a href="#alerts">Flag Alerts</a>
+      <a href="#heatmap">Body Heatmap</a>
+      <a href="#trends">Team Trends</a>
+      <a href="#ai-assistant">AI Assistant</a>
+    </div>
+    <div class="sidebar-section">
+      <h4>API Reference</h4>
+      <a href="#api">Endpoints</a>
+      <a href="#webhooks">Webhooks</a>
+      <a href="#templates">Templates</a>
+    </div>
+    <div class="sidebar-section">
+      <h4>Resources</h4>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#changelog">Changelog</a>
+      <a href="#support">Support</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- Hero -->
+    <section id="overview">
+      <span class="hero-badge badge-green">stable</span>
+      <span class="hero-badge badge-blue">v2.1.0</span>
+      <span class="hero-badge badge-purple">SMS + WhatsApp</span>
+      <span class="hero-badge badge-orange">HIPAA ready</span>
+
+      <h1>reflect<span class="accent">.salus</span></h1>
+      <p class="hero-sub">The always-on assistant coach. Automated post-practice check-ins via SMS and WhatsApp. Real-time athlete wellness data delivered to your dashboard.</p>
+
+      <a href="https://reflectsalus.app/" class="hero-cta">$ npm install reflect</a>
+      <a href="#quickstart" class="hero-cta secondary">Read the docs</a>
+
+      <div class="code-block" style="margin-top: 2rem;">
+        <div class="code-block-header">
+          <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span>quickstart.sh</span>
+        </div>
+        <pre><span class="line-num">1</span><span class="syn-comment"># Check-ins that take 60 seconds.</span>
+<span class="line-num">2</span><span class="syn-comment"># Insights that last a season.</span>
+<span class="line-num">3</span>
+<span class="line-num">4</span><span class="syn-keyword">reflect</span> init --team <span class="syn-string">"Varsity Soccer"</span>
+<span class="line-num">5</span><span class="syn-keyword">reflect</span> roster import <span class="syn-string">roster.csv</span>
+<span class="line-num">6</span><span class="syn-keyword">reflect</span> checkin schedule <span class="syn-var">--after</span> practice
+<span class="line-num">7</span>
+<span class="line-num">8</span><span class="syn-comment"># Athletes get a 60-second SMS survey</span>
+<span class="line-num">9</span><span class="syn-comment"># Coaches get real-time alerts + dashboard</span>
+<span class="line-num">10</span><span class="syn-keyword">reflect</span> dashboard open</pre>
+      </div>
+    </section>
+
+    <hr class="section-divider" id="quickstart">
+
+    <!-- What is Reflect -->
+    <section>
+      <h2><span class="hash">#</span> What is Reflect?</h2>
+      <p>Reflect automates post-practice and post-competition check-ins, delivering real-time athlete wellness data to coaches. No app installs required &mdash; it works where athletes already are: <code>SMS</code> and <code>WhatsApp</code>.</p>
+      <p>Athletes respond to brief surveys covering readiness, energy, effort, and injuries. Coaches receive instant alerts and dashboards tracking team patterns across the entire season.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span>athlete_checkin.json</span>
+        </div>
+        <pre><span class="line-num">1</span>{
+<span class="line-num">2</span>  <span class="syn-prop">"athlete"</span>: <span class="syn-string">"Maria Santos"</span>,
+<span class="line-num">3</span>  <span class="syn-prop">"timestamp"</span>: <span class="syn-string">"2026-03-29T18:45:00Z"</span>,
+<span class="line-num">4</span>  <span class="syn-prop">"readiness"</span>: <span class="syn-type">7</span>,
+<span class="line-num">5</span>  <span class="syn-prop">"energy"</span>: <span class="syn-type">6</span>,
+<span class="line-num">6</span>  <span class="syn-prop">"effort"</span>: <span class="syn-type">8</span>,
+<span class="line-num">7</span>  <span class="syn-prop">"injury_report"</span>: {
+<span class="line-num">8</span>    <span class="syn-prop">"region"</span>: <span class="syn-string">"right_knee"</span>,
+<span class="line-num">9</span>    <span class="syn-prop">"severity"</span>: <span class="syn-type">3</span>,
+<span class="line-num">10</span>    <span class="syn-prop">"flag"</span>: <span class="syn-string">"injury_concern"</span>
+<span class="line-num">11</span>  }
+<span class="line-num">12</span>}</pre>
+      </div>
+    </section>
+
+    <hr class="section-divider" id="features">
+
+    <!-- Features -->
+    <section>
+      <h2><span class="hash">#</span> Features</h2>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-red);"></span> Flag Alerts</h3>
+          <p>Automatic notifications for low readiness, injury concerns, high pain, and abnormal patterns. Never miss a warning sign.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-orange);"></span> Body Heatmap</h3>
+          <p>18 anatomical regions tracked per athlete. Visual overlay shows team-wide injury density at a glance.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-blue);"></span> Team Trends</h3>
+          <p>Readiness, energy, and effort graphed over time. Spot fatigue cycles before they become injuries.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-purple);"></span> AI Assistant</h3>
+          <p>Ask natural language questions: <code>Who had low energy this week?</code> Get instant data-backed answers.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-green);"></span> Workout Logging</h3>
+          <p>Athletes log workouts and rehab exercises. Track recovery timelines and return-to-play milestones.</p>
+        </div>
+        <div class="feature-card">
+          <h3><span class="icon-dot" style="background: var(--accent-cyan);"></span> Custom Templates</h3>
+          <p>Build your own question sets. Sport-specific, position-specific, or injury-specific check-ins.</p>
+        </div>
+      </div>
+
+      <table class="doc-table" id="api">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Channel</th>
+            <th>Latency</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Check-in Surveys</td>
+            <td><code>SMS</code> / <code>WhatsApp</code></td>
+            <td>&lt; 200ms</td>
+            <td style="color: var(--accent-green);">stable</td>
+          </tr>
+          <tr>
+            <td>Flag Alerts</td>
+            <td>Dashboard + Push</td>
+            <td>Real-time</td>
+            <td style="color: var(--accent-green);">stable</td>
+          </tr>
+          <tr>
+            <td>AI Coaching</td>
+            <td>Dashboard NLP</td>
+            <td>&lt; 2s</td>
+            <td style="color: var(--accent-purple);">beta</td>
+          </tr>
+          <tr>
+            <td>Body Heatmap</td>
+            <td>Dashboard</td>
+            <td>Real-time</td>
+            <td style="color: var(--accent-green);">stable</td>
+          </tr>
+          <tr>
+            <td>Leaderboards</td>
+            <td>Dashboard</td>
+            <td>&lt; 500ms</td>
+            <td style="color: var(--accent-green);">stable</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider" id="how-it-works">
+
+    <!-- How It Works -->
+    <section>
+      <h2><span class="hash">#</span> How It Works</h2>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>reflect init</h3>
+            <p>Coach creates a team, imports the roster (CSV or manual entry), and sets check-in schedule. Takes under 5 minutes.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Automated Check-Ins Deploy</h3>
+            <p>After each practice or game, athletes receive a brief SMS or WhatsApp survey. Readiness, energy, effort, and injury status &mdash; answered in 60 seconds.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Data Flows to Dashboard</h3>
+            <p>Responses populate the coach dashboard in real time. Flag alerts trigger immediately for concerning responses. Body heatmap updates with every check-in.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Patterns Emerge</h3>
+            <p>Team trends reveal fatigue cycles, injury patterns, and readiness fluctuations over weeks and months. AI assistant answers complex queries instantly.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <div class="dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span>webhook_example.py</span>
+        </div>
+        <pre><span class="line-num">1</span><span class="syn-keyword">from</span> reflect <span class="syn-keyword">import</span> <span class="syn-type">ReflectClient</span>
+<span class="line-num">2</span>
+<span class="line-num">3</span><span class="syn-var">client</span> = <span class="syn-type">ReflectClient</span>(<span class="syn-prop">api_key</span>=<span class="syn-string">"rfl_..."</span>)
+<span class="line-num">4</span>
+<span class="line-num">5</span><span class="syn-comment"># Get flagged athletes from today's practice</span>
+<span class="line-num">6</span><span class="syn-var">flags</span> = client.<span class="syn-func">get_flags</span>(
+<span class="line-num">7</span>    <span class="syn-prop">team</span>=<span class="syn-string">"varsity-soccer"</span>,
+<span class="line-num">8</span>    <span class="syn-prop">since</span>=<span class="syn-string">"today"</span>,
+<span class="line-num">9</span>    <span class="syn-prop">severity</span>=<span class="syn-string">"high"</span>
+<span class="line-num">10</span>)
+<span class="line-num">11</span>
+<span class="line-num">12</span><span class="syn-keyword">for</span> flag <span class="syn-keyword">in</span> <span class="syn-var">flags</span>:
+<span class="line-num">13</span>    <span class="syn-func">print</span>(<span class="syn-string">f"</span><span class="syn-var">{flag.athlete}</span><span class="syn-string">: </span><span class="syn-var">{flag.type}</span><span class="syn-string">"</span>)
+<span class="line-num">14</span>
+<span class="line-num">15</span><span class="syn-comment"># Output:</span>
+<span class="line-num">16</span><span class="syn-comment"># Jake Morrison: low_readiness</span>
+<span class="line-num">17</span><span class="syn-comment"># Sarah Chen: injury_concern (left_ankle)</span></pre>
+      </div>
+    </section>
+
+    <hr class="section-divider" id="testimonials">
+
+    <!-- Testimonials as "issues" -->
+    <section>
+      <h2><span class="hash">#</span> What Coaches Are Saying</h2>
+
+      <div class="issue-card">
+        <div class="issue-header">
+          <div class="issue-icon"></div>
+          <span class="issue-title">Best tool we've adopted in 5 years</span>
+        </div>
+        <div class="issue-meta">coachpatel opened this issue 2 weeks ago &middot; D1 Women's Lacrosse &middot; 42 athletes</div>
+        <div class="issue-body">
+          <p>We went from guessing which athletes were fatigued to having data-backed decisions every single practice. The SMS approach means we get 95%+ response rates. Game changer for our injury prevention.</p>
+        </div>
+      </div>
+
+      <div class="issue-card">
+        <div class="issue-header">
+          <div class="issue-icon"></div>
+          <span class="issue-title">Finally, compliance isn't an issue</span>
+        </div>
+        <div class="issue-meta">marcusjohnson-atc opened this issue 1 month ago &middot; NFL Practice Squad ATC &middot; 28 athletes</div>
+        <div class="issue-body">
+          <p>We tried three other wellness tracking tools. Athletes never opened the apps. With Reflect, they just reply to a text. Compliance went from 40% to 97% in the first week. The body heatmap alone justifies the cost.</p>
+        </div>
+      </div>
+
+      <div class="issue-card">
+        <div class="issue-header">
+          <div class="issue-icon"></div>
+          <span class="issue-title">AI assistant saves me hours per week</span>
+        </div>
+        <div class="issue-meta">coach-rivera opened this issue 3 weeks ago &middot; High School Football &middot; 58 athletes</div>
+        <div class="issue-body">
+          <p>Managing 58 kids, I don't have time to dig through spreadsheets. I just ask Reflect "who's been trending down this week?" and get an instant answer. It's like having another assistant coach on staff.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- Final CTA -->
+    <section>
+      <div class="final-cta">
+        <h3>Ready to get started?</h3>
+        <p>Set up your team in under 5 minutes. No app installs for your athletes.</p>
+        <a href="https://reflectsalus.app/" class="hero-cta">Start Free Trial</a>
+        <a href="https://reflectsalus.app/" class="hero-cta secondary">Schedule Demo</a>
+      </div>
+    </section>
+
+    <footer class="doc-footer">
+      <p>&copy; 2026 Reflect Salus &middot; <a href="https://reflectsalus.app/">reflectsalus.app</a> &middot; Built for coaches, by coaches.</p>
+    </footer>
+
+  </main>
+</div>
+
+</body>
+</html>

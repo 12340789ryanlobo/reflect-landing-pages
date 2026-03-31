@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — Athlete Wellness, Reimagined</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #1D1D1F;
+      --gray-dark: #424245;
+      --gray-mid: #86868B;
+      --gray-light: #D2D2D7;
+      --gray-bg: #F5F5F7;
+      --white: #FFFFFF;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    nav .inner {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 12px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--black);
+      letter-spacing: -0.02em;
+    }
+    nav .links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    nav .links a {
+      color: var(--gray-mid);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+    nav .links a:hover { color: var(--black); }
+    .nav-cta-apple {
+      background: var(--black);
+      color: var(--white);
+      padding: 8px 20px;
+      border-radius: 980px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* HERO */
+    .hero-apple {
+      text-align: center;
+      padding: 120px 24px 100px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .hero-apple .overline {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gray-mid);
+      margin-bottom: 16px;
+    }
+    .hero-apple h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--black) 0%, var(--gray-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-apple p {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--gray-dark);
+      line-height: 1.5;
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    .hero-apple-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .btn-apple-primary {
+      background: var(--black);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 980px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .btn-apple-secondary {
+      color: #0071E3;
+      padding: 14px 32px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* PRODUCT VISUAL */
+    .product-visual {
+      max-width: 980px;
+      margin: 0 auto 120px;
+      padding: 0 22px;
+    }
+    .product-visual-box {
+      background: linear-gradient(180deg, #1D1D1F 0%, #2C2C2E 100%);
+      border-radius: 24px;
+      padding: 60px 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .pv-card {
+      background: rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .pv-card .label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .pv-card .value {
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .pv-card .sub {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 8px;
+    }
+    .pv-bar-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 16px;
+      height: 6px;
+    }
+    .pv-bar {
+      border-radius: 3px;
+      height: 100%;
+    }
+
+    /* CENTERED SECTIONS */
+    .section-centered {
+      text-align: center;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+    .section-centered .overline {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0071E3;
+      margin-bottom: 12px;
+    }
+    .section-centered h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-centered > p {
+      font-size: 1.15rem;
+      color: var(--gray-dark);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* PRODUCT EXPLANATION */
+    .explain-grid {
+      max-width: 980px;
+      margin: 48px auto 0;
+      padding: 0 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      text-align: left;
+    }
+    .explain-card {
+      background: var(--gray-bg);
+      border-radius: 20px;
+      padding: 40px;
+    }
+    .explain-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .explain-card p {
+      font-size: 0.95rem;
+      color: var(--gray-dark);
+      line-height: 1.6;
+    }
+
+    /* FEATURES */
+    .features-apple {
+      background: var(--gray-bg);
+      padding: 120px 24px;
+    }
+    .features-apple-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .features-apple-inner .section-centered {
+      padding-bottom: 64px;
+    }
+    .feat-grid-apple {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .feat-apple {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 36px;
+      text-align: left;
+    }
+    .feat-apple-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .fai-1 { background: linear-gradient(135deg, #FF3B30, #FF6259); color: #fff; }
+    .fai-2 { background: linear-gradient(135deg, #FF9500, #FFAC33); color: #fff; }
+    .fai-3 { background: linear-gradient(135deg, #34C759, #5DD27A); color: #fff; }
+    .fai-4 { background: linear-gradient(135deg, #007AFF, #339FFF); color: #fff; }
+    .fai-5 { background: linear-gradient(135deg, #AF52DE, #C077E6); color: #fff; }
+    .fai-6 { background: linear-gradient(135deg, #5856D6, #7574E0); color: #fff; }
+    .feat-apple h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
+    }
+    .feat-apple p {
+      font-size: 0.9rem;
+      color: var(--gray-mid);
+      line-height: 1.55;
+    }
+
+    /* HOW IT WORKS */
+    .how-apple {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 120px 22px;
+    }
+    .how-apple .section-centered { padding-bottom: 64px; }
+    .how-steps-apple {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+    .how-apple-step {
+      position: relative;
+    }
+    .how-apple-num {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      background: linear-gradient(180deg, var(--black) 0%, var(--gray-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .how-apple-step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .how-apple-step p {
+      font-size: 0.85rem;
+      color: var(--gray-mid);
+      line-height: 1.5;
+    }
+
+    /* TESTIMONIALS */
+    .test-apple {
+      background: var(--black);
+      color: var(--white);
+      padding: 120px 24px;
+    }
+    .test-apple-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    .test-apple-inner .overline {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-mid);
+      margin-bottom: 12px;
+    }
+    .test-apple-inner h2 {
+      text-align: center;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      margin-bottom: 64px;
+    }
+    .test-grid-apple {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .test-card-apple {
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .test-card-apple blockquote {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 24px;
+    }
+    .test-card-apple .author {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .test-card-apple .role {
+      font-size: 0.8rem;
+      color: var(--gray-mid);
+    }
+
+    /* FINAL CTA */
+    .final-apple {
+      text-align: center;
+      padding: 120px 24px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .final-apple h2 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .final-apple p {
+      font-size: 1.15rem;
+      color: var(--gray-dark);
+      margin-bottom: 36px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+    .final-apple a {
+      background: var(--black);
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 980px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(0,0,0,0.08);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--gray-mid);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav .links { display: none; }
+      .product-visual-box { grid-template-columns: 1fr; padding: 32px 24px; }
+      .explain-grid { grid-template-columns: 1fr; }
+      .feat-grid-apple { grid-template-columns: 1fr; }
+      .how-steps-apple { grid-template-columns: 1fr 1fr; }
+      .test-grid-apple { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="inner">
+      <div class="logo">Reflect</div>
+      <div class="links">
+        <a href="#features">Features</a>
+        <a href="#how">How It Works</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="https://reflectsalus.app/" class="nav-cta-apple">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-apple">
+    <div class="overline">Athlete Wellness Platform</div>
+    <h1>Know how your athletes feel. Every day.</h1>
+    <p>Automated check-ins via SMS and WhatsApp. Real-time dashboards and alerts. No app install required.</p>
+    <div class="hero-apple-actions">
+      <a href="https://reflectsalus.app/" class="btn-apple-primary">Start Free Trial</a>
+      <a href="#how" class="btn-apple-secondary">Learn more &#8250;</a>
+    </div>
+  </section>
+
+  <!-- PRODUCT VISUAL -->
+  <div class="product-visual">
+    <div class="product-visual-box">
+      <div class="pv-card">
+        <div class="label">Average Readiness</div>
+        <div class="value">7.8</div>
+        <div class="sub">+0.4 from last week</div>
+        <div class="pv-bar-row">
+          <div class="pv-bar" style="flex:3;background:#34C759;"></div>
+          <div class="pv-bar" style="flex:1;background:#FF9500;"></div>
+          <div class="pv-bar" style="flex:0.5;background:#FF3B30;"></div>
+        </div>
+      </div>
+      <div class="pv-card">
+        <div class="label">Active Alerts</div>
+        <div class="value">3</div>
+        <div class="sub">2 injury, 1 fatigue</div>
+        <div class="pv-bar-row">
+          <div class="pv-bar" style="flex:2;background:#FF3B30;"></div>
+          <div class="pv-bar" style="flex:1;background:#FF9500;"></div>
+        </div>
+      </div>
+      <div class="pv-card">
+        <div class="label">Response Rate</div>
+        <div class="value">94%</div>
+        <div class="sub">47 of 50 athletes</div>
+        <div class="pv-bar-row">
+          <div class="pv-bar" style="flex:47;background:#34C759;"></div>
+          <div class="pv-bar" style="flex:3;background:rgba(255,255,255,0.1);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT REFLECT DOES -->
+  <div class="section-centered">
+    <div class="overline">The Product</div>
+    <h2>The always-on assistant coach</h2>
+    <p>Reflect automates post-practice and post-competition check-ins, delivering real-time athlete wellness data straight to your dashboard.</p>
+  </div>
+  <div class="explain-grid" style="margin-bottom:120px;">
+    <div class="explain-card">
+      <h3>Works where athletes already are</h3>
+      <p>SMS and WhatsApp. No app to download, no account to create. Athletes reply to a text message with their readiness, energy, effort, and injury status in 60 seconds.</p>
+    </div>
+    <div class="explain-card">
+      <h3>Instant insights for coaches</h3>
+      <p>Every response populates your live dashboard. Flag alerts fire automatically for low readiness, high pain, and injury concerns. The AI assistant answers questions about your team in plain English.</p>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-apple" id="features">
+    <div class="features-apple-inner">
+      <div class="section-centered">
+        <div class="overline">Features</div>
+        <h2>Everything you need. Nothing you don't.</h2>
+      </div>
+      <div class="feat-grid-apple">
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-1">&#9888;</div>
+          <h3>Automatic Flag Alerts</h3>
+          <p>Instant notifications for low readiness, injury concern, and high pain. Catch problems before they become serious.</p>
+        </div>
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-2">&#9673;</div>
+          <h3>Injury Body Heatmap</h3>
+          <p>Visual injury tracking across 18 anatomical regions. See patterns that data tables can never reveal.</p>
+        </div>
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-3">&#9650;</div>
+          <h3>Team Trends</h3>
+          <p>Readiness, energy, and effort over time. Understand how your team responds to training load across the season.</p>
+        </div>
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-4">&#9733;</div>
+          <h3>AI Coaching Assistant</h3>
+          <p>Ask questions in plain English about your team and get answers powered by your own athlete data.</p>
+        </div>
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-5">&#9829;</div>
+          <h3>Workout &amp; Rehab Logging</h3>
+          <p>Athletes log workouts and rehab directly through their check-in flow. Track compliance effortlessly.</p>
+        </div>
+        <div class="feat-apple">
+          <div class="feat-apple-icon fai-6">&#9998;</div>
+          <h3>Custom Templates</h3>
+          <p>Build your own check-in questions tailored to your sport, your program, and your athletes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="how-apple" id="how">
+    <div class="section-centered">
+      <div class="overline">How It Works</div>
+      <h2>Four steps. Zero complexity.</h2>
+    </div>
+    <div class="how-steps-apple">
+      <div class="how-apple-step">
+        <div class="how-apple-num">01</div>
+        <h3>Schedule</h3>
+        <p>Set up automatic check-ins after practices and games. Pick SMS, WhatsApp, or both.</p>
+      </div>
+      <div class="how-apple-step">
+        <div class="how-apple-num">02</div>
+        <h3>Respond</h3>
+        <p>Athletes answer brief surveys about readiness, energy, effort, and injuries. 60 seconds.</p>
+      </div>
+      <div class="how-apple-step">
+        <div class="how-apple-num">03</div>
+        <h3>Analyze</h3>
+        <p>Data flows into your dashboard in real time. Alerts fire automatically for flagged responses.</p>
+      </div>
+      <div class="how-apple-step">
+        <div class="how-apple-num">04</div>
+        <h3>Act</h3>
+        <p>Use trends, heatmaps, and the AI assistant to make informed training and recovery decisions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="test-apple" id="testimonials">
+    <div class="test-apple-inner">
+      <div class="overline">Testimonials</div>
+      <h2>Coaches trust Reflect.</h2>
+      <div class="test-grid-apple">
+        <div class="test-card-apple">
+          <blockquote>"Reflect replaced our paper check-in forms and three different spreadsheets. Now everything is in one place, updated in real time."</blockquote>
+          <div class="author">Coach Sarah Kim</div>
+          <div class="role">Head Coach, D1 Women's Soccer</div>
+        </div>
+        <div class="test-card-apple">
+          <blockquote>"The heatmap showed a pattern in shoulder complaints among our pitchers that we completely missed. That one insight changed our throwing program."</blockquote>
+          <div class="author">Brian Okafor</div>
+          <div class="role">Pitching Coach, College Baseball</div>
+        </div>
+        <div class="test-card-apple">
+          <blockquote>"My athletes respond because there's no app to download. They just reply to a text. Our compliance rate went from inconsistent to 95%."</blockquote>
+          <div class="author">Nicole Tran</div>
+          <div class="role">Athletic Director, Academy</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <section class="final-apple">
+    <h2>Start knowing how your athletes feel.</h2>
+    <p>Check-ins that take 60 seconds. Insights that last a season. Free to try, no credit card required.</p>
+    <a href="https://reflectsalus.app/">Get Started for Free</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Reflect. The always-on assistant coach.</p>
+  </footer>
+
+</body>
+</html>

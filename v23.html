@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect &mdash; Athlete Wellness, Simplified</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    /* Single hue: blue (220) — all variation from tints/shades */
+    --h:220;
+    --50:hsl(var(--h),60%,97%);
+    --100:hsl(var(--h),55%,93%);
+    --200:hsl(var(--h),50%,85%);
+    --300:hsl(var(--h),48%,72%);
+    --400:hsl(var(--h),50%,58%);
+    --500:hsl(var(--h),55%,48%);
+    --600:hsl(var(--h),60%,38%);
+    --700:hsl(var(--h),65%,28%);
+    --800:hsl(var(--h),70%,18%);
+    --900:hsl(var(--h),75%,10%);
+    --950:hsl(var(--h),80%,6%);
+  }
+  html{font-size:16px;scroll-behavior:smooth}
+  body{font-family:'Georgia','Times New Roman',serif;background:var(--50);color:var(--900);line-height:1.7;overflow-x:hidden}
+  h1,h2,h3,h4{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.2}
+  a{color:var(--600);text-decoration:none}
+
+  .container{max-width:1000px;margin:0 auto;padding:0 1.5rem}
+  .btn{display:inline-block;padding:.85rem 2.25rem;border-radius:.375rem;font-weight:600;font-size:.95rem;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;cursor:pointer;border:none}
+  .btn-solid{background:var(--700);color:var(--50)}
+  .btn-ghost{background:transparent;border:1.5px solid var(--300);color:var(--700)}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;max-width:1000px;margin:0 auto}
+  .logo{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-weight:800;font-size:1.3rem;color:var(--700);letter-spacing:-.02em}
+  nav ul{list-style:none;display:flex;gap:2rem}
+  nav ul li a{color:var(--400);font-size:.9rem;font-weight:500;font-family:-apple-system,sans-serif}
+
+  /* HERO */
+  .hero{padding:6rem 0 5rem;text-align:center}
+  .hero h1{font-size:3.25rem;font-weight:800;color:var(--800);letter-spacing:-.04em;max-width:700px;margin:0 auto}
+  .hero .sub{font-size:1.15rem;color:var(--400);max-width:520px;margin:1.5rem auto 2.5rem}
+  .hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+  /* Decorative divider */
+  .divider{width:60px;height:3px;background:var(--300);margin:0 auto;border-radius:2px}
+
+  /* PRODUCT INTRO */
+  .intro{padding:5rem 0;text-align:center}
+  .intro h2{font-size:1.75rem;font-weight:700;color:var(--800);margin-bottom:1rem}
+  .intro p{max-width:620px;margin:0 auto;color:var(--500);font-size:1.05rem}
+
+  /* FEATURES */
+  .features{padding:4rem 0}
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:3rem}
+  .feat{text-align:center}
+  .feat-dot{width:56px;height:56px;border-radius:50%;margin:0 auto 1.25rem;display:flex;align-items:center;justify-content:center}
+  .feat h3{font-size:1.1rem;font-weight:700;color:var(--800);margin-bottom:.5rem}
+  .feat p{font-size:.92rem;color:var(--400);line-height:1.6}
+
+  /* HOW */
+  .how{padding:5rem 0}
+  .how-header{text-align:center;margin-bottom:3rem}
+  .how-header h2{font-size:1.75rem;font-weight:700;color:var(--800)}
+  .how-header p{color:var(--400);margin-top:.5rem}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+  .step{background:var(--100);border-radius:.75rem;padding:2rem 1.5rem;text-align:center;border:1px solid var(--200)}
+  .step-n{font-size:2rem;font-weight:800;color:var(--300);margin-bottom:.5rem;font-family:-apple-system,sans-serif}
+  .step h4{font-size:1rem;font-weight:700;color:var(--700);margin-bottom:.5rem}
+  .step p{font-size:.85rem;color:var(--400)}
+
+  /* SHOWCASE — metrics */
+  .showcase{padding:5rem 0;background:var(--800);color:var(--100)}
+  .showcase .container{text-align:center}
+  .showcase h2{font-size:1.75rem;font-weight:700;color:var(--100);margin-bottom:.5rem}
+  .showcase .sub{color:var(--300);margin-bottom:3rem}
+  .show-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+  .show-card{background:var(--700);border:1px solid var(--600);border-radius:.75rem;padding:2rem 1rem;text-align:center}
+  .show-card .big{font-size:2.5rem;font-weight:800;color:var(--200);font-family:-apple-system,sans-serif}
+  .show-card .label{font-size:.8rem;color:var(--400);margin-top:.25rem;font-family:-apple-system,sans-serif}
+
+  /* PROGRESS VIS */
+  .vis{padding:5rem 0}
+  .vis-layout{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  .vis-text h2{font-size:1.75rem;font-weight:700;color:var(--800);margin-bottom:1rem}
+  .vis-text p{color:var(--400);font-size:1rem;margin-bottom:1.5rem}
+  .bar-chart{display:flex;flex-direction:column;gap:.75rem}
+  .bc-row{display:flex;align-items:center;gap:1rem}
+  .bc-label{width:80px;text-align:right;font-size:.8rem;color:var(--400);font-family:-apple-system,sans-serif;flex-shrink:0}
+  .bc-track{flex:1;height:22px;background:var(--100);border-radius:4px;overflow:hidden}
+  .bc-fill{height:100%;border-radius:4px}
+  .bc-val{width:40px;font-size:.8rem;font-weight:700;color:var(--700);font-family:-apple-system,sans-serif}
+
+  /* TESTIMONIALS */
+  .testimonials{padding:5rem 0;background:var(--100)}
+  .test-header{text-align:center;margin-bottom:3rem}
+  .test-header h2{font-size:1.75rem;font-weight:700;color:var(--800)}
+  .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+  .test-card{background:var(--50);border:1px solid var(--200);border-radius:.75rem;padding:2rem}
+  .test-card blockquote{font-size:.95rem;color:var(--600);line-height:1.65;margin-bottom:1.25rem;font-style:italic}
+  .test-card .name{font-family:-apple-system,sans-serif;font-weight:600;font-size:.88rem;color:var(--800)}
+  .test-card .role{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--400)}
+
+  /* CTA */
+  .cta{padding:5rem 0;text-align:center}
+  .cta h2{font-size:2rem;font-weight:700;color:var(--800);margin-bottom:.75rem}
+  .cta p{color:var(--400);margin-bottom:2rem;font-size:1.05rem}
+
+  footer{border-top:1px solid var(--200);padding:2rem 0;text-align:center;color:var(--400);font-size:.85rem;font-family:-apple-system,sans-serif}
+
+  @media(max-width:900px){
+    .feat-grid{grid-template-columns:1fr 1fr}
+    .steps,.show-grid{grid-template-columns:1fr 1fr}
+    .test-grid{grid-template-columns:1fr}
+    .vis-layout{grid-template-columns:1fr}
+  }
+  @media(max-width:600px){
+    .hero h1{font-size:2.25rem}
+    .feat-grid,.steps,.show-grid{grid-template-columns:1fr}
+    nav ul{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Reflect</div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">Process</a></li>
+    <li><a href="#testimonials">Testimonials</a></li>
+    <li><a href="https://reflectsalus.app/">Sign Up</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1>Clarity for every coach, every athlete</h1>
+    <p class="sub">Reflect automates post-practice check-ins via SMS and WhatsApp, delivering real-time wellness data so you can focus on what matters.</p>
+    <div class="hero-actions">
+      <a href="https://reflectsalus.app/" class="btn btn-solid">Start Free Trial</a>
+      <a href="#how" class="btn btn-ghost">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- INTRO -->
+<section class="intro">
+  <div class="container">
+    <h2>The always-on assistant coach</h2>
+    <p>Athletes respond to 60-second surveys about readiness, energy, effort, and pain. You get a live dashboard with trends, alerts, and AI-powered insights&mdash;all without asking anyone to download an app.</p>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div style="text-align:center">
+      <h2 style="font-size:1.75rem;font-weight:700;color:var(--800)">Designed around what coaches actually need</h2>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9888;</span>
+        </div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Instant notifications for low readiness, injury concerns, and high pain scores. Catch problems early.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9673;</span>
+        </div>
+        <h3>Injury Body Heatmap</h3>
+        <p>Pain reports mapped across 18 anatomical regions. See where your team hurts at a glance.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9636;</span>
+        </div>
+        <h3>Team Trends</h3>
+        <p>Readiness, energy, and effort tracked over time. Understand how training load affects your athletes.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9733;</span>
+        </div>
+        <h3>AI Assistant</h3>
+        <p>Ask natural language questions and get instant, data-backed answers. No spreadsheets required.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9881;</span>
+        </div>
+        <h3>Workout Logging</h3>
+        <p>Athletes log workouts and rehab sessions. Coaches track compliance and volume effortlessly.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-dot" style="background:var(--200)">
+          <span style="font-size:1.5rem;color:var(--600)">&#9998;</span>
+        </div>
+        <h3>Custom Templates</h3>
+        <p>Build bespoke survey flows for any scenario&mdash;pre-game, post-practice, weekly wellness, rehab updates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-header">
+      <h2>Four steps. Five minutes. Done.</h2>
+      <p>No app installs. No training sessions. Works where athletes already are.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">01</div>
+        <h4>Import Roster</h4>
+        <p>Add athlete names and phone numbers. That is the only setup.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">02</div>
+        <h4>Set Schedule</h4>
+        <p>Choose when check-ins go out. After practice, after games, or custom.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">03</div>
+        <h4>Athletes Reply</h4>
+        <p>60-second surveys via SMS or WhatsApp. No friction, no excuses.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <h4>Insights Arrive</h4>
+        <p>Dashboard, alerts, trends, AI answers. Everything in real time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE METRICS -->
+<section class="showcase">
+  <div class="container">
+    <h2>The numbers speak</h2>
+    <p class="sub">Check-ins that take 60 seconds. Insights that last a season.</p>
+    <div class="show-grid">
+      <div class="show-card">
+        <div class="big">12k+</div>
+        <div class="label">Check-ins completed</div>
+      </div>
+      <div class="show-card">
+        <div class="big">94%</div>
+        <div class="label">Response rate</div>
+      </div>
+      <div class="show-card">
+        <div class="big">60s</div>
+        <div class="label">Avg check-in time</div>
+      </div>
+      <div class="show-card">
+        <div class="big">180+</div>
+        <div class="label">Programs active</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA VIS -->
+<section class="vis">
+  <div class="container vis-layout">
+    <div class="vis-text">
+      <h2>Watch your team's readiness evolve</h2>
+      <p>Reflect tracks readiness scores across your roster week over week, revealing how athletes respond to training loads, travel, and competition cycles.</p>
+      <a href="https://reflectsalus.app/" class="btn btn-solid" style="font-size:.9rem;padding:.7rem 1.75rem">See It In Action</a>
+    </div>
+    <div>
+      <div class="bar-chart">
+        <div class="bc-row">
+          <span class="bc-label">Week 1</span>
+          <div class="bc-track"><div class="bc-fill" style="width:68%;background:var(--400)"></div></div>
+          <span class="bc-val">6.8</span>
+        </div>
+        <div class="bc-row">
+          <span class="bc-label">Week 2</span>
+          <div class="bc-track"><div class="bc-fill" style="width:72%;background:var(--400)"></div></div>
+          <span class="bc-val">7.2</span>
+        </div>
+        <div class="bc-row">
+          <span class="bc-label">Week 3</span>
+          <div class="bc-track"><div class="bc-fill" style="width:65%;background:var(--500)"></div></div>
+          <span class="bc-val">6.5</span>
+        </div>
+        <div class="bc-row">
+          <span class="bc-label">Week 4</span>
+          <div class="bc-track"><div class="bc-fill" style="width:78%;background:var(--500)"></div></div>
+          <span class="bc-val">7.8</span>
+        </div>
+        <div class="bc-row">
+          <span class="bc-label">Week 5</span>
+          <div class="bc-track"><div class="bc-fill" style="width:82%;background:var(--600)"></div></div>
+          <span class="bc-val">8.2</span>
+        </div>
+        <div class="bc-row">
+          <span class="bc-label">Week 6</span>
+          <div class="bc-track"><div class="bc-fill" style="width:80%;background:var(--600)"></div></div>
+          <span class="bc-val">8.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="test-header">
+      <h2>Trusted by coaches who care about their athletes</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <blockquote>&ldquo;The simplicity is what sold me. My athletes respond because it takes less time than tying their shoes. I get the data I need without the hassle of spreadsheets.&rdquo;</blockquote>
+        <div class="name">Rachel Whitfield</div>
+        <div class="role">Head Coach, D3 Women's Volleyball</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;We identified a concerning fatigue pattern across our midfielders two weeks before conference play. Adjusted our training and went undefeated.&rdquo;</blockquote>
+        <div class="name">Andre Mitchell</div>
+        <div class="role">Director of Performance, Club Soccer</div>
+      </div>
+      <div class="test-card">
+        <blockquote>&ldquo;I have 52 athletes across three teams. Before Reflect, I had no system. Now I have a real-time picture of every single one. This is a necessity.&rdquo;</blockquote>
+        <div class="name">Kim Tanaka</div>
+        <div class="role">Athletic Director, Lincoln Prep Academy</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="container">
+    <h2>Start coaching with clarity</h2>
+    <p>Check-ins that take 60 seconds. Insights that last a season.</p>
+    <a href="https://reflectsalus.app/" class="btn btn-solid" style="font-size:1.05rem;padding:1rem 2.5rem">Get Started Free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Reflect. The always-on assistant coach. <a href="https://reflectsalus.app/">reflectsalus.app</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

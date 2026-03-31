@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect &mdash; Athlete Wellness Platform</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#fafafa;--white:#ffffff;--gray-50:#f9fafb;--gray-100:#f3f4f6;
+    --gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;
+    --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+    --gray-800:#1f2937;--gray-900:#111827;
+    --accent:#4f46e5;--accent-light:#eef2ff;--accent-dark:#3730a3;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+    --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+    --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+    --shadow-lg:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+    --radius:.75rem;--radius-lg:1rem;
+  }
+  html{font-size:16px;scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--gray-900);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+
+  .container{max-width:1120px;margin:0 auto;padding:0 1.5rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:.75rem 1.75rem;border-radius:.5rem;font-weight:600;font-size:.925rem;cursor:pointer;border:none;gap:.5rem}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 1px 2px rgba(79,70,229,.3)}
+  .btn-secondary{background:var(--white);color:var(--gray-700);border:1px solid var(--gray-200);box-shadow:var(--shadow-sm)}
+  .badge{display:inline-flex;align-items:center;padding:.25rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:500}
+  .badge-accent{background:var(--accent-light);color:var(--accent)}
+
+  /* NAV */
+  header{background:var(--white);border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:100}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.5rem;max-width:1120px;margin:0 auto}
+  .logo{font-weight:700;font-size:1.25rem;color:var(--gray-900);letter-spacing:-.02em}
+  .logo span{color:var(--accent)}
+  .nav-links{list-style:none;display:flex;gap:2rem;align-items:center}
+  .nav-links li a{color:var(--gray-500);font-size:.875rem;font-weight:500}
+  .nav-links li a:hover{color:var(--gray-900)}
+
+  /* HERO */
+  .hero{padding:5rem 0 4rem;text-align:center}
+  .hero .badge{margin-bottom:1.25rem}
+  .hero h1{font-size:3rem;font-weight:800;letter-spacing:-.04em;line-height:1.1;max-width:700px;margin:0 auto;color:var(--gray-900)}
+  .hero p{font-size:1.15rem;color:var(--gray-500);max-width:540px;margin:1.25rem auto 2rem}
+  .hero-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+
+  /* LOGOS / SOCIAL PROOF BAR */
+  .proof-bar{padding:3rem 0;border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100)}
+  .proof-bar p{text-align:center;font-size:.8rem;color:var(--gray-400);text-transform:uppercase;letter-spacing:.08em;font-weight:500;margin-bottom:1.5rem}
+  .proof-logos{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;align-items:center}
+  .proof-logo{font-weight:700;font-size:1rem;color:var(--gray-300);letter-spacing:.02em}
+
+  /* PRODUCT EXPLANATION */
+  .product{padding:5rem 0}
+  .product-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .product-text .overline{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.75rem}
+  .product-text h2{font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1rem}
+  .product-text p{color:var(--gray-500);font-size:1rem;margin-bottom:1.5rem}
+  .product-list{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+  .product-list li{display:flex;align-items:flex-start;gap:.75rem;font-size:.925rem;color:var(--gray-600)}
+  .product-list li::before{content:'\2713';display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:.7rem;font-weight:700;flex-shrink:0;margin-top:2px}
+
+  /* Product visual — mock phone/card */
+  .product-visual{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:2rem;display:flex;flex-direction:column;gap:1rem}
+  .pv-header{display:flex;align-items:center;gap:.75rem;padding-bottom:1rem;border-bottom:1px solid var(--gray-100)}
+  .pv-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-200)}
+  .pv-dot.active{background:var(--accent)}
+  .pv-title{font-weight:600;font-size:.9rem;margin-left:.5rem}
+  .pv-msg{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:.5rem;padding:1rem;font-size:.85rem;color:var(--gray-600)}
+  .pv-msg strong{color:var(--gray-800)}
+  .pv-reply{background:var(--accent-light);border:1px solid rgba(79,70,229,.15);border-radius:.5rem;padding:1rem;font-size:.85rem;color:var(--accent-dark);margin-left:2rem}
+
+  /* FEATURES */
+  .features{padding:5rem 0;background:var(--gray-50)}
+  .features-header{text-align:center;margin-bottom:3rem}
+  .features-header .overline{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.75rem}
+  .features-header h2{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+  .features-header p{color:var(--gray-500);margin-top:.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .feat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow-sm)}
+  .feat-card:hover{box-shadow:var(--shadow-md)}
+  .feat-icon{width:44px;height:44px;border-radius:.625rem;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.1rem}
+  .feat-card h3{font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--gray-800)}
+  .feat-card p{font-size:.875rem;color:var(--gray-500);line-height:1.55}
+
+  /* HOW IT WORKS */
+  .how{padding:5rem 0}
+  .how-header{text-align:center;margin-bottom:3rem}
+  .how-header .overline{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.75rem}
+  .how-header h2{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+  .how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+  .how-card{text-align:center;padding:1.5rem}
+  .how-num{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;margin:0 auto 1rem}
+  .how-card h4{font-size:.95rem;font-weight:600;margin-bottom:.4rem;color:var(--gray-800)}
+  .how-card p{font-size:.85rem;color:var(--gray-500)}
+
+  /* STATS */
+  .stats{padding:4rem 0;background:var(--gray-900);color:#fff}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center}
+  .stat-item .num{font-size:2.5rem;font-weight:800;letter-spacing:-.02em}
+  .stat-item .label{font-size:.85rem;color:var(--gray-400);margin-top:.25rem}
+
+  /* TESTIMONIALS */
+  .testimonials{padding:5rem 0;background:var(--gray-50)}
+  .test-header{text-align:center;margin-bottom:3rem}
+  .test-header .overline{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.75rem}
+  .test-header h2{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+  .test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .test-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.75rem;box-shadow:var(--shadow-sm)}
+  .test-stars{color:#f59e0b;font-size:.85rem;letter-spacing:1px;margin-bottom:.75rem}
+  .test-card blockquote{font-size:.9rem;color:var(--gray-600);line-height:1.6;margin-bottom:1.25rem}
+  .test-author{display:flex;align-items:center;gap:.75rem}
+  .test-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:600;color:#fff;flex-shrink:0}
+  .test-info .name{font-weight:600;font-size:.85rem;color:var(--gray-800)}
+  .test-info .role{font-size:.8rem;color:var(--gray-400)}
+
+  /* CTA */
+  .cta{padding:5rem 0;text-align:center}
+  .cta-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:4rem 2rem;max-width:700px;margin:0 auto}
+  .cta-card h2{font-size:2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem}
+  .cta-card p{color:var(--gray-500);margin-bottom:2rem;font-size:1.05rem}
+  .cta-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--gray-200);padding:2rem 0;text-align:center;font-size:.85rem;color:var(--gray-400)}
+
+  @media(max-width:900px){
+    .product-inner{grid-template-columns:1fr}
+    .feat-grid,.test-grid{grid-template-columns:1fr 1fr}
+    .how-grid{grid-template-columns:1fr 1fr}
+    .stats-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    .hero h1{font-size:2.25rem}
+    .feat-grid,.test-grid,.how-grid,.stats-grid{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .proof-logos{gap:1.5rem}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">Reflect<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="https://reflectsalus.app/" class="btn btn-primary" style="padding:.5rem 1.25rem;font-size:.825rem">Get Started</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <span class="badge badge-accent">Now in open beta</span>
+    <h1>The always-on assistant coach for your team</h1>
+    <p>Automate post-practice check-ins via SMS and WhatsApp. Get real-time athlete wellness data, alerts, and AI insights without asking anyone to download an app.</p>
+    <div class="hero-actions">
+      <a href="https://reflectsalus.app/" class="btn btn-primary">Start Free Trial</a>
+      <a href="#how" class="btn btn-secondary">See How It Works</a>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF BAR -->
+<section class="proof-bar">
+  <div class="container">
+    <p>Trusted by coaching staffs at</p>
+    <div class="proof-logos">
+      <span class="proof-logo">Ridgewood Athletics</span>
+      <span class="proof-logo">Lincoln Prep</span>
+      <span class="proof-logo">Cascade FC</span>
+      <span class="proof-logo">Northstar Hockey</span>
+      <span class="proof-logo">Summit Track Club</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT EXPLANATION -->
+<section class="product">
+  <div class="container product-inner">
+    <div class="product-text">
+      <div class="overline">What Reflect Does</div>
+      <h2>Works where athletes already are</h2>
+      <p>Reflect sends brief wellness surveys via SMS or WhatsApp after practices and competitions. Athletes respond in 60 seconds, and coaches receive a real-time dashboard with trends, alerts, and AI-powered insights.</p>
+      <ul class="product-list">
+        <li>No app download required for athletes</li>
+        <li>Surveys cover readiness, energy, effort, and pain</li>
+        <li>Automatic alerts for concerning responses</li>
+        <li>AI assistant answers natural language questions</li>
+        <li>Built for rosters of 15 to 60+ athletes</li>
+      </ul>
+    </div>
+    <div class="product-visual">
+      <div class="pv-header">
+        <div class="pv-dot active"></div>
+        <div class="pv-dot"></div>
+        <div class="pv-dot"></div>
+        <span class="pv-title">Reflect Check-in</span>
+      </div>
+      <div class="pv-msg">
+        <strong>Reflect:</strong> Hi Jordan! Post-practice check-in. How would you rate your readiness today? (1-10)
+      </div>
+      <div class="pv-reply">8</div>
+      <div class="pv-msg">
+        <strong>Reflect:</strong> Great. Any pain or discomfort to report? Reply with body area and severity (1-10), or "none".
+      </div>
+      <div class="pv-reply">None</div>
+      <div class="pv-msg">
+        <strong>Reflect:</strong> All set! Check-in complete. Keep up the great work. &#127919;
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="overline">Features</div>
+      <h2>Everything you need to monitor your team</h2>
+      <p>From automated surveys to AI-powered coaching insights, all in one platform.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fef2f2;color:#dc2626">&#9888;</div>
+        <h3>Automatic Flag Alerts</h3>
+        <p>Get instant notifications when athletes report low readiness, high pain, or injury concerns. Configurable thresholds.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:var(--accent-light);color:var(--accent)">&#9673;</div>
+        <h3>Injury Body Heatmap</h3>
+        <p>Visualize pain across 18 anatomical regions. Spot team-wide patterns before they become problems.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#ecfdf5;color:#059669">&#9636;</div>
+        <h3>Team Trends Dashboard</h3>
+        <p>Track readiness, energy, and effort over time. Filter by date, position, or individual athlete.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#faf5ff;color:#7c3aed">&#9733;</div>
+        <h3>AI Coaching Assistant</h3>
+        <p>Ask questions in plain English. Get instant, data-backed answers about your team's wellness.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#fffbeb;color:#d97706">&#9881;</div>
+        <h3>Workout &amp; Rehab Logging</h3>
+        <p>Athletes log sessions. Coaches track compliance and volume. Everyone stays accountable.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon" style="background:#f0f9ff;color:#0284c7">&#9998;</div>
+        <h3>Custom Question Templates</h3>
+        <p>Build your own survey flows for any scenario. Pre-game, post-practice, rehab, and more.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-header">
+      <div class="overline">How It Works</div>
+      <h2>Up and running in 5 minutes</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <h4>Import your roster</h4>
+        <p>Add athlete names and phone numbers. That is the only setup required.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <h4>Set your schedule</h4>
+        <p>Choose when check-ins go out: post-practice, post-game, or custom timing.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <h4>Athletes respond</h4>
+        <p>60-second surveys via SMS or WhatsApp. No app, no login, no friction.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">4</div>
+        <h4>Get insights</h4>
+        <p>Real-time dashboard, automatic alerts, trends, and AI-powered answers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="num">12,400+</div>
+        <div class="label">Check-ins completed</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">94%</div>
+        <div class="label">Average response rate</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">60s</div>
+        <div class="label">Average check-in time</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">180+</div>
+        <div class="label">Active programs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="test-header">
+      <div class="overline">Testimonials</div>
+      <h2>Loved by coaches, used by athletes</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>&ldquo;Reflect gave me visibility I never had before. I can see which athletes are struggling and intervene before it becomes an injury or a performance dip.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="test-avatar" style="background:var(--accent)">MC</div>
+          <div class="test-info">
+            <div class="name">Marcus Chen</div>
+            <div class="role">Head Coach, D2 Women's Soccer</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>&ldquo;Our response rate went from 40% on paper forms to 94% with Reflect. SMS was the key. Athletes just reply and move on. It is that simple.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="test-avatar" style="background:#059669">SO</div>
+          <div class="test-info">
+            <div class="name">Sarah Okonkwo</div>
+            <div class="role">Director of Sports Performance</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>&ldquo;The AI assistant is incredible. I ask it who needs a rest day and it gives me a ranked list with reasoning. Saves me 30 minutes every morning.&rdquo;</blockquote>
+        <div class="test-author">
+          <div class="test-avatar" style="background:#7c3aed">JP</div>
+          <div class="test-info">
+            <div class="name">James Paretti</div>
+            <div class="role">Athletic Trainer, Club Lacrosse</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta">
+  <div class="container">
+    <div class="cta-card">
+      <h2>Ready to see your team clearly?</h2>
+      <p>Check-ins that take 60 seconds. Insights that last a season.</p>
+      <div class="cta-actions">
+        <a href="https://reflectsalus.app/" class="btn btn-primary">Start Free Trial</a>
+        <a href="https://reflectsalus.app/" class="btn btn-secondary">Schedule a Demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Reflect &middot; The always-on assistant coach &middot; <a href="https://reflectsalus.app/">reflectsalus.app</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
