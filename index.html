@@ -331,26 +331,44 @@
 
     <section class="narrative">
         <h2>The Design Story</h2>
-        <p>This project compresses the full design exploration process into three rounds. Round 1 goes wide with 25 directions. Round 2 combines favorites. Round 2.5 rebuilds from scratch using Magic UI and shadcn component patterns as the primary design system.</p>
+        <p>This project compresses the full design exploration process into three rounds of iteration, narrowing from 25 radically different directions down to one final page.</p>
 
         <div class="phase">
-            <h3><span class="range">Round 2.5 (v1&ndash;v10):</span> Component-Driven Rebuild</h3>
-            <p>A fresh start built primarily from Magic UI and shadcn component patterns: DotPattern backgrounds, OrbitingCircles, BorderBeam, ShineBorder, AnimatedGradientText, iPhone 15 Pro mockups, Safari browser frames, BentoGrids, Marquee testimonials, Ripple effects, RetroGrid, WarpBackground, NeonGradientCards, PulsatingButtons, and InteractiveHoverButtons &mdash; all translated to pure CSS. Every section uses named component patterns.</p>
+            <h3><span class="range">Round 1 (25 pages):</span> Go Wide</h3>
+            <p>25 radically different explorations &mdash; minimal SaaS, brutalist, editorial, Apple minimal, startup gradient, developer docs, dark mode, playful wellness, retro Y2K, bold typography, Nike athletic, glassmorphism, healthcare, luxury sport, duotone, split-screen, newspaper, cyberpunk, organic, Bauhaus, dashboard, Strava social, monochrome, blueprint, and card-based modern.</p>
         </div>
 
         <div class="phase">
-            <h3><span class="range">Round 2 (v1&ndash;v10):</span> Converge &amp; Combine</h3>
-            <p>After reviewing Round 1, the strongest elements were identified: Apple-minimal typography, vibrant gradients, dark premium feel, product demos, dashboard data, and hover discovery. Round 2 combines these into 10 focused templates.</p>
+            <h3><span class="range">Round 2 (10 pages):</span> Combine Favorites</h3>
+            <p>Identified the strongest elements from Round 1 &mdash; Apple-minimal typography, vibrant gradients, dark premium feel, product demos showing SMS conversations, dashboard data visualization, and discoverable hover interactions &mdash; and combined them into 10 focused templates.</p>
         </div>
 
         <div class="phase">
-            <h3><span class="range">Round 1 (v1&ndash;v25):</span> Go Wide</h3>
-            <p>25 radically different explorations &mdash; from minimal SaaS to brutalist, editorial to cyberpunk, athletic to blueprint. Divergent thinking across every direction imaginable.</p>
+            <h3><span class="range">Round 2.5 (10 pages + finals):</span> Component-Driven Rebuild</h3>
+            <p>Rebuilt from scratch using Magic UI and shadcn component patterns as the primary design system: DotPattern, BorderBeam, ShineBorder, AnimatedGradientText, iPhone 15 Pro mockups, Safari browser frames, BentoGrids, Marquee testimonials, Ripple effects, and RetroGrid &mdash; all translated to pure CSS. Then refined the strongest direction (v10) through three targeted passes based on specific feedback, producing the final page.</p>
         </div>
     </section>
 
-    <!-- ── ROUND 2.5 (featured first) ── -->
-    <section class="grid-section">
+    <!-- ── FINAL CHOICE ── -->
+    <section class="grid-section" style="margin-bottom:2rem;">
+        <h2>Final Choice</h2>
+        <p class="section-sub">The result of 45+ iterations, combining the best elements from every round.</p>
+
+        <div class="grid" style="grid-template-columns:1fr;">
+            <a href="round2.5/final-c.html" class="card highlight" data-badge="Final" style="max-width:600px;">
+                <div class="card-preview" style="background:white;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;height:200px;"><div style="position:absolute;bottom:0;left:0;right:0;height:45%;background:#14141b;"></div><span style="z-index:1;font-size:1.6rem;font-weight:800;letter-spacing:0.5px;background:linear-gradient(135deg,#7c3aed,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Make sure you're listening.</span></div>
+                <div class="card-body">
+                    <span class="version">Final</span>
+                    <h3>The Final Page</h3>
+                    <p>Alternating light/dark sections. iPhone SMS demo, Safari dashboard preview, "Three steps. Zero friction." process, bento feature grid with product mocks, two-row testimonial marquee, RetroGrid CTA. Built from Magic UI + shadcn patterns in pure CSS.</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ── ROUND 2.5 ── -->
+    <div class="divider">
+    <section class="grid-section" style="padding:0; margin-bottom:4rem;">
         <h2>Round 2.5 &mdash; Component-Driven Rebuild</h2>
         <p class="section-sub">10 templates built from Magic UI + shadcn patterns. Click any card to view.</p>
 
@@ -397,6 +415,7 @@
             </a>
         </div>
     </section>
+    </div>
 
     <!-- ── ROUND 2 ── -->
     <div class="divider">
