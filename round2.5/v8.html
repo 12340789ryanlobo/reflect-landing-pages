@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Premium Restraint</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #111;
+    color: #e8e0d4;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Dot Pattern (very faint amber) ── */
+  .dot-bg {
+    background-image: radial-gradient(circle, rgba(212,160,84,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* ── Animated Gradient Text (warm) ── */
+  .gradient-text {
+    background: linear-gradient(90deg, #f5e6d0, #d4a054, #c8943e, #f5e6d0);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ── Animated Shiny Text Badge (dark variant) ── */
+  .shiny-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: rgba(212,160,84,0.08);
+    border: 1px solid rgba(212,160,84,0.2);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #d4a054;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.02em;
+  }
+  .shiny-badge::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212,160,84,0.15), transparent);
+    animation: shinySlide 3s ease-in-out infinite;
+  }
+  @keyframes shinySlide {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* ── Interactive Hover Button ── */
+  .hover-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 40px;
+    background: transparent;
+    color: #d4a054;
+    border: 1.5px solid #d4a054;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+    transition: color 0.4s ease;
+    z-index: 1;
+  }
+  .hover-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 100%;
+    background: #d4a054;
+    transition: width 0.4s ease;
+    z-index: -1;
+  }
+  .hover-btn:hover::before { width: 100%; }
+  .hover-btn:hover { color: #111; }
+
+  /* ── Pulsating Button (amber) ── */
+  .pulse-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 40px;
+    background: #d4a054;
+    color: #111;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 1;
+  }
+  .pulse-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: #d4a054;
+    z-index: -1;
+    animation: pulseRing 2.5s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* ── Neon Gradient Card (warm) ── */
+  .neon-card {
+    position: relative;
+    background: rgba(212,160,84,0.04);
+    border: 1px solid rgba(212,160,84,0.12);
+    border-radius: 20px;
+    padding: 48px 36px;
+    transition: box-shadow 0.6s ease;
+    animation: neonPulse 4s ease-in-out infinite;
+  }
+  @keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 30px rgba(212,160,84,0.06), 0 0 60px rgba(212,160,84,0.03); }
+    50% { box-shadow: 0 0 40px rgba(212,160,84,0.1), 0 0 80px rgba(212,160,84,0.05); }
+  }
+  .neon-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #f5e6d0;
+    margin-bottom: 12px;
+  }
+  .neon-card p {
+    font-size: 0.95rem;
+    color: rgba(232,224,212,0.6);
+    line-height: 1.7;
+  }
+  .neon-card .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: rgba(212,160,84,0.1);
+    border: 1px solid rgba(212,160,84,0.15);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+  }
+
+  /* ── Shine Border (amber) ── */
+  .shine-border {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .shine-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1.5px;
+    background: conic-gradient(from var(--shine-angle, 0deg), #d4a054, #c8943e, #f5e6d0, #d4a054);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: shineSpin 5s linear infinite;
+  }
+  @keyframes shineSpin {
+    to { --shine-angle: 360deg; }
+  }
+  @property --shine-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .shine-border::after {
+    content: '';
+    position: absolute;
+    inset: 1.5px;
+    border-radius: 15px;
+    background: #161616;
+    z-index: 0;
+  }
+  .shine-border > * { position: relative; z-index: 1; }
+
+  /* ── Border Beam (amber) ── */
+  .border-beam {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px;
+    background: conic-gradient(from var(--beam-angle, 0deg), transparent 70%, #d4a054, #f5e6d0, transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beamSpin 3s linear infinite;
+  }
+  @keyframes beamSpin {
+    to { --beam-angle: 360deg; }
+  }
+  @property --beam-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .border-beam::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 14px;
+    background: #161616;
+    z-index: 0;
+  }
+  .border-beam > * { position: relative; z-index: 1; }
+
+  /* ── Safari Mockup (dark) ── */
+  .safari-mockup {
+    border-radius: 12px;
+    border: 1px solid rgba(212,160,84,0.15);
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+  .safari-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #1e1e1e;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .safari-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .safari-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .safari-dots span:nth-child(1) { background: #ff5f57; }
+  .safari-dots span:nth-child(2) { background: #febc2e; }
+  .safari-dots span:nth-child(3) { background: #28c840; }
+  .safari-url {
+    flex: 1;
+    text-align: center;
+    font-size: 0.72rem;
+    color: #666;
+    background: rgba(255,255,255,0.04);
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .safari-content {
+    padding: 20px;
+  }
+
+  /* ── Ripple ── */
+  .ripple-container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .ripple-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(212,160,84,0.08);
+    animation: rippleExpand 6s ease-out infinite;
+  }
+  .ripple-ring:nth-child(1) { width: 200px; height: 200px; animation-delay: 0s; }
+  .ripple-ring:nth-child(2) { width: 360px; height: 360px; animation-delay: 1s; }
+  .ripple-ring:nth-child(3) { width: 520px; height: 520px; animation-delay: 2s; }
+  .ripple-ring:nth-child(4) { width: 680px; height: 680px; animation-delay: 3s; }
+  .ripple-ring:nth-child(5) { width: 840px; height: 840px; animation-delay: 4s; }
+  @keyframes rippleExpand {
+    0% { transform: scale(0.6); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  /* ── Layout ── */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 100px 0; }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(17,17,17,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(212,160,84,0.08);
+    padding: 16px 0;
+  }
+  .nav-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f5e6d0;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.85rem;
+    color: rgba(232,224,212,0.5);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: #d4a054; }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 80px;
+  }
+  .hero h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: #f5e6d0;
+    margin: 24px 0;
+    max-width: 700px;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: rgba(232,224,212,0.45);
+    max-width: 440px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  /* ── Section titles ── */
+  .section-label {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #f5e6d0;
+    margin-bottom: 16px;
+  }
+  .section-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: rgba(232,224,212,0.4);
+    max-width: 480px;
+    margin: 0 auto 64px;
+    line-height: 1.7;
+  }
+
+  /* ── Features ── */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ── Dashboard section ── */
+  .dash-section {
+    display: flex;
+    justify-content: center;
+    padding: 80px 0;
+  }
+  .dash-stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .dash-stat {
+    background: rgba(212,160,84,0.05);
+    border: 1px solid rgba(212,160,84,0.1);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .dash-stat-label {
+    font-size: 0.65rem;
+    color: rgba(232,224,212,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .dash-stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #d4a054;
+  }
+  .mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 40px;
+  }
+  .mini-bars .mb {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, rgba(212,160,84,0.3), rgba(212,160,84,0.6));
+  }
+
+  /* ── Testimonials ── */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .testimonial-inner {
+    padding: 32px;
+  }
+  .testimonial-inner p {
+    font-size: 0.95rem;
+    color: rgba(232,224,212,0.6);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+  .testimonial-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f5e6d0;
+  }
+  .testimonial-role {
+    font-size: 0.75rem;
+    color: rgba(232,224,212,0.35);
+  }
+
+  /* ── How it Works ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .step {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .step-number {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(212,160,84,0.25);
+    color: #d4a054;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-content h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #f5e6d0;
+    margin-bottom: 4px;
+  }
+  .step-content p {
+    font-size: 0.9rem;
+    color: rgba(232,224,212,0.4);
+    line-height: 1.6;
+  }
+
+  /* ── Final CTA ── */
+  .final-cta {
+    text-align: center;
+    padding: 120px 24px;
+  }
+  .final-cta p {
+    font-size: 1.15rem;
+    color: rgba(232,224,212,0.4);
+    margin-bottom: 40px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: rgba(212,160,84,0.2);
+    margin: 0 auto;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 0.78rem;
+    color: rgba(232,224,212,0.25);
+    border-top: 1px solid rgba(212,160,84,0.06);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 2.6rem; }
+    .features-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .dash-stat-row { grid-template-columns: 1fr 1fr; }
+    .section-title { font-size: 1.9rem; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 2rem; }
+    .neon-card { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body class="dot-bg">
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Reflect</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#product">Product</a></li>
+      <li><a href="#cta">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero with Ripple ── -->
+<section class="hero">
+  <div class="ripple-container">
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+  </div>
+
+  <div style="position: relative; z-index: 1;">
+    <div class="shiny-badge">The always-on assistant coach</div>
+    <h1>Know your athletes<br><span class="gradient-text">before they tell you.</span></h1>
+    <p>Automated check-ins via SMS. Real-time wellness dashboards. No app downloads. No friction.</p>
+    <a href="#cta" class="hover-btn">Start Free Trial</a>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section id="features">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">Core capabilities</span></div>
+    <h2 class="section-title"><span class="gradient-text">Three things, done perfectly.</span></h2>
+    <p class="section-subtitle">Reflect does less so you can see more. Every feature earns its place.</p>
+
+    <div class="features-grid">
+      <div class="neon-card" style="animation-delay: 0s;">
+        <div class="card-icon">
+          <span style="color: #d4a054; font-weight: 700;">!</span>
+        </div>
+        <h3>Flag Alerts</h3>
+        <p>Instant notifications when an athlete reports pain, poor sleep, or declining readiness. You see it the moment they say it.</p>
+      </div>
+
+      <div class="neon-card" style="animation-delay: 1.3s;">
+        <div class="card-icon">
+          <span style="color: #d4a054; font-weight: 700;">&bull;</span>
+        </div>
+        <h3>Injury Heatmaps</h3>
+        <p>Visual mapping of pain reports across your roster. Patterns emerge that individual conversations miss entirely.</p>
+      </div>
+
+      <div class="neon-card" style="animation-delay: 2.6s;">
+        <div class="card-icon">
+          <span style="color: #d4a054; font-weight: 700;">&sim;</span>
+        </div>
+        <h3>AI Insights</h3>
+        <p>Ask your data questions and get answers. Which athletes need rest? What trends should worry you? It knows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Divider ── -->
+<div class="divider"></div>
+
+<!-- ── Product — Safari Dashboard ── -->
+<section id="product">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">The dashboard</span></div>
+    <h2 class="section-title">Everything. <span class="gradient-text">At a glance.</span></h2>
+    <p class="section-subtitle">One screen. Every athlete. Updated in real-time as check-in responses flow in.</p>
+
+    <div style="max-width: 600px; margin: 0 auto;">
+      <div class="border-beam">
+        <div class="safari-mockup" style="position: relative; z-index: 1;">
+          <div class="safari-bar">
+            <div class="safari-dots"><span></span><span></span><span></span></div>
+            <div class="safari-url">app.reflectsalus.app/dashboard</div>
+          </div>
+          <div class="safari-content">
+            <div class="dash-stat-row">
+              <div class="dash-stat">
+                <div class="dash-stat-label">Readiness</div>
+                <div class="dash-stat-value">87%</div>
+              </div>
+              <div class="dash-stat">
+                <div class="dash-stat-label">Response</div>
+                <div class="dash-stat-value">94%</div>
+              </div>
+              <div class="dash-stat">
+                <div class="dash-stat-label">Flags</div>
+                <div class="dash-stat-value">4</div>
+              </div>
+            </div>
+            <div style="font-size: 0.65rem; color: rgba(232,224,212,0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">7-Day Trend</div>
+            <div class="mini-bars">
+              <div class="mb" style="height: 70%;"></div>
+              <div class="mb" style="height: 85%;"></div>
+              <div class="mb" style="height: 90%;"></div>
+              <div class="mb" style="height: 65%;"></div>
+              <div class="mb" style="height: 95%;"></div>
+              <div class="mb" style="height: 55%;"></div>
+              <div class="mb" style="height: 80%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Divider ── -->
+<div class="divider"></div>
+
+<!-- ── How It Works ── -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">How it works</span></div>
+    <h2 class="section-title"><span class="gradient-text">Effortlessly simple.</span></h2>
+    <p class="section-subtitle">No app installs. No training sessions. Just results.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Add your roster</h3>
+          <p>Import phone numbers. Your athletes don't need to download anything or create accounts.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Athletes reply to texts</h3>
+          <p>After practice, Reflect sends a short SMS check-in. Athletes respond in under a minute.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>You see everything</h3>
+          <p>Real-time dashboards, trend analysis, flag alerts, and AI insights update automatically.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Divider ── -->
+<div class="divider"></div>
+
+<!-- ── Testimonials ── -->
+<section>
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">From coaches</span></div>
+    <h2 class="section-title"><span class="gradient-text">Quiet confidence.</span></h2>
+    <p class="section-subtitle">Two coaches. Two programs. Same result.</p>
+
+    <div class="testimonials-grid">
+      <div class="shine-border">
+        <div class="testimonial-inner" style="position: relative; z-index: 1;">
+          <p>"I used to find out about injuries days too late. Now I know within hours. With 45 athletes, that visibility is everything."</p>
+          <div class="testimonial-author">Coach Rivera</div>
+          <div class="testimonial-role">Head Coach, D1 Soccer</div>
+        </div>
+      </div>
+      <div class="shine-border">
+        <div class="testimonial-inner" style="position: relative; z-index: 1;">
+          <p>"94% response rate. No app has ever come close. Athletes actually respond because it's just a text message."</p>
+          <div class="testimonial-author">Marcus Chen</div>
+          <div class="testimonial-role">Athletic Director</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Final CTA ── -->
+<section id="cta" class="final-cta">
+  <div class="container">
+    <h2 class="section-title" style="margin-bottom: 0;"><span class="gradient-text">See everything.</span></h2>
+    <p>Join 240+ coaches who never miss a signal.</p>
+    <a href="#" class="pulse-btn">Start Free Trial</a>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>&copy; 2026 Reflect</p>
+</footer>
+
+</body>
+</html>

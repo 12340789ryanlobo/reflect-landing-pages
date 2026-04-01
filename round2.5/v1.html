@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — The Always-On Assistant Coach</title>
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif;
+    color: #1a1a2e; background: #ffffff; line-height: 1.6; overflow-x: hidden;
+  }
+  a { text-decoration: none; color: inherit; }
+  h1, h2, h3, h4 { line-height: 1.15; }
+  section { position: relative; }
+
+  /* ========== COMPONENT: DotPattern ========== */
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.10) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .dot-pattern-masked {
+    mask-image: radial-gradient(600px circle at center, white, transparent);
+    -webkit-mask-image: radial-gradient(600px circle at center, white, transparent);
+  }
+
+  /* ========== COMPONENT: AnimatedGradientText ========== */
+  .gradient-text {
+    background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+    background-size: 300% 100%;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+  @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+  /* ========== COMPONENT: AnimatedShinyText ========== */
+  .shiny-text {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 9999px; border: 1px solid rgba(0,0,0,0.06);
+    background-color: #f5f5f5; padding: 6px 16px; font-size: 0.85rem;
+    background-image: linear-gradient(110deg, transparent 33%, rgba(124,58,237,0.12) 50%, transparent 67%);
+    background-size: 300% 100%;
+    animation: shinySlide 3s ease-in-out infinite;
+    color: #555; font-weight: 500;
+  }
+  @keyframes shinySlide { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* ========== COMPONENT: ShimmerButton ========== */
+  .shimmer-btn {
+    position: relative; overflow: hidden; padding: 14px 32px; border-radius: 10px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6); color: white; font-weight: 600;
+    border: none; font-size: 1rem; cursor: pointer; display: inline-block;
+    transition: transform 0.2s;
+  }
+  .shimmer-btn:hover { transform: translateY(-1px); }
+  .shimmer-btn::after {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer { 100%{left:100%} }
+
+  /* ========== COMPONENT: PulsatingButton ========== */
+  .pulse-btn {
+    position: relative; overflow: visible; padding: 16px 36px; border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6); color: white; font-weight: 600;
+    border: none; font-size: 1.05rem; cursor: pointer; display: inline-block;
+  }
+  .pulse-btn::before {
+    content: ''; position: absolute; inset: -4px; border-radius: 16px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6); opacity: 0; z-index: -1;
+    animation: pulseRing 2s ease-out infinite;
+  }
+  @keyframes pulseRing { 0%{opacity:0.5;transform:scale(1)} 100%{opacity:0;transform:scale(1.12)} }
+
+  /* ========== COMPONENT: Ripple ========== */
+  .ripple-container {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    pointer-events: none; z-index: 0;
+  }
+  .ripple-ring {
+    position: absolute; border-radius: 50%; border: 1px solid rgba(124,58,237,0.12);
+    animation: rippleExpand 4s ease-out infinite;
+  }
+  .ripple-ring:nth-child(2) { animation-delay: 0.8s; }
+  .ripple-ring:nth-child(3) { animation-delay: 1.6s; }
+  .ripple-ring:nth-child(4) { animation-delay: 2.4s; }
+  @keyframes rippleExpand { 0%{width:80px;height:80px;opacity:0.4} 100%{width:700px;height:700px;opacity:0} }
+
+  /* ========== COMPONENT: AvatarCircles ========== */
+  .avatar-row { display: flex; align-items: center; }
+  .avatar-circle {
+    width: 38px; height: 38px; border-radius: 50%; border: 2px solid white;
+    margin-left: -10px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.75rem; color: white;
+  }
+  .avatar-circle:first-child { margin-left: 0; }
+  .avatar-count { margin-left: 14px; font-size: 0.88rem; color: #666; }
+
+  /* ========== COMPONENT: NeonGradientCard ========== */
+  .neon-card {
+    border-radius: 16px; padding: 2rem; position: relative;
+    background: white; border: 1px solid #e5e7eb;
+    box-shadow: 0 0 15px rgba(124,58,237,0.1), 0 0 30px rgba(59,130,246,0.06);
+    animation: neonPulse 3s ease-in-out infinite alternate;
+    z-index: 1;
+  }
+  @keyframes neonPulse {
+    0% { box-shadow: 0 0 15px rgba(124,58,237,0.1), 0 0 30px rgba(59,130,246,0.06); }
+    100% { box-shadow: 0 0 25px rgba(124,58,237,0.2), 0 0 50px rgba(59,130,246,0.12); }
+  }
+
+  /* ========== COMPONENT: BentoGrid ========== */
+  .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .bento-wide { grid-column: span 2; }
+
+  /* ========== COMPONENT: Marquee ========== */
+  .marquee-wrap { overflow: hidden; position: relative; padding: 1rem 0; }
+  .marquee-track { display: flex; gap: 1.5rem; animation: marqueeScroll 35s linear infinite; width: max-content; }
+  .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+  .marquee-fade-l, .marquee-fade-r { position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none; }
+  .marquee-fade-l { left: 0; background: linear-gradient(to right, white, transparent); }
+  .marquee-fade-r { right: 0; background: linear-gradient(to left, white, transparent); }
+  @keyframes marqueeScroll { to { transform: translateX(-50%); } }
+
+  /* ========== LAYOUT ========== */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  .section-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: #7c3aed; font-weight: 600; margin-bottom: 0.75rem; }
+  .section-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 0.75rem; color: #1a1a2e; }
+  .section-sub { font-size: 1.1rem; color: #555; max-width: 580px; line-height: 1.65; }
+  .text-center { text-align: center; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .nav-inner {
+    max-width: 1140px; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between; height: 64px;
+  }
+  .nav-logo { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; }
+  .nav-logo span { color: #7c3aed; }
+  .nav-links { display: flex; gap: 32px; font-size: 0.9rem; color: #555; }
+  .nav-links a:hover { color: #7c3aed; }
+  .nav-cta {
+    padding: 8px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600;
+    background: #1a1a2e; color: white; border: none; cursor: pointer;
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    padding: 160px 0 100px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero-content { position: relative; z-index: 1; }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 3.8rem); font-weight: 800;
+    letter-spacing: -0.03em; margin: 1.25rem 0 1.25rem; line-height: 1.08;
+  }
+  .hero p.sub {
+    font-size: clamp(1rem, 2vw, 1.2rem); color: #555; max-width: 540px;
+    margin: 0 auto 2rem; line-height: 1.6;
+  }
+  .hero-cta-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 2.5rem; flex-wrap: wrap; }
+  .hero-secondary {
+    padding: 14px 28px; border-radius: 10px; border: 1px solid #ddd; background: white;
+    font-weight: 600; font-size: 1rem; color: #1a1a2e; cursor: pointer;
+  }
+
+  /* ========== PRODUCT SECTION ========== */
+  .product { padding: 80px 0; }
+  .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-top: 3rem; }
+  .product-visual {
+    background: #f8f7ff; border-radius: 16px; padding: 2.5rem; min-height: 340px;
+    display: flex; flex-direction: column; gap: 12px; border: 1px solid #ede9fe;
+  }
+  .mock-bar { height: 10px; border-radius: 5px; background: #e0d6ff; }
+  .mock-bar.short { width: 60%; }
+  .mock-bar.med { width: 80%; }
+  .mock-bar.accent { background: linear-gradient(90deg, #7c3aed, #3b82f6); width: 45%; }
+  .mock-row { display: flex; gap: 12px; margin-top: 8px; }
+  .mock-chip { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .mock-chip.green { background: #dcfce7; color: #166534; }
+  .mock-chip.yellow { background: #fef9c3; color: #854d0e; }
+  .mock-chip.red { background: #fee2e2; color: #991b1b; }
+  .product-text h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
+  .product-text p { color: #555; line-height: 1.7; margin-bottom: 1.5rem; }
+  .product-stat-row { display: flex; gap: 2rem; }
+  .product-stat strong { display: block; font-size: 1.5rem; color: #7c3aed; }
+  .product-stat span { font-size: 0.85rem; color: #888; }
+
+  /* ========== FEATURES (BentoGrid + NeonGradientCard) ========== */
+  .features { padding: 80px 0; }
+  .bento-card {
+    background: white; border: 1px solid #e5e7eb; border-radius: 16px;
+    padding: 2rem; position: relative; overflow: hidden;
+  }
+  .bento-card .card-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 1rem;
+  }
+  .bento-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .bento-card p { font-size: 0.92rem; color: #666; line-height: 1.6; }
+  .icon-purple { background: #ede9fe; color: #7c3aed; }
+  .icon-blue { background: #dbeafe; color: #3b82f6; }
+  .icon-cyan { background: #cffafe; color: #0891b2; }
+  .icon-green { background: #dcfce7; color: #16a34a; }
+  .icon-amber { background: #fef3c7; color: #d97706; }
+  /* Mini mock visuals inside bento cards */
+  .mini-heatmap { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; margin-top: 1rem; }
+  .mini-heatmap span { width: 100%; aspect-ratio: 1; border-radius: 3px; }
+  .heat-0 { background: #f0fdf4; } .heat-1 { background: #bbf7d0; } .heat-2 { background: #fde68a; }
+  .heat-3 { background: #fca5a5; } .heat-4 { background: #ef4444; }
+  .mini-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-top: 1rem; }
+  .mini-chart span { flex: 1; border-radius: 4px 4px 0 0; background: linear-gradient(to top, #7c3aed, #a78bfa); }
+
+  /* ========== HOW IT WORKS ========== */
+  .how-it-works { padding: 80px 0; background: #fafafe; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .step {
+    text-align: center; padding: 2rem 1.25rem; border-radius: 16px;
+    background: white; border: 1px solid #e5e7eb;
+  }
+  .step-num {
+    width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem; color: white;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  }
+  .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .step p { font-size: 0.88rem; color: #666; }
+  .step-connector { display: none; }
+
+  /* ========== TESTIMONIALS (Marquee) ========== */
+  .testimonials { padding: 80px 0; }
+  .testimonial-card {
+    min-width: 320px; max-width: 360px; padding: 1.75rem; border-radius: 16px;
+    background: white; border: 1px solid #e5e7eb; flex-shrink: 0;
+  }
+  .testimonial-card .stars { color: #f59e0b; margin-bottom: 0.75rem; font-size: 0.9rem; }
+  .testimonial-card blockquote { font-size: 0.95rem; color: #444; line-height: 1.65; margin-bottom: 1rem; }
+  .testimonial-author { display: flex; align-items: center; gap: 10px; }
+  .testimonial-avatar {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 0.8rem; color: white;
+  }
+  .testimonial-name { font-weight: 600; font-size: 0.88rem; }
+  .testimonial-role { font-size: 0.78rem; color: #888; }
+
+  /* ========== FINAL CTA ========== */
+  .final-cta {
+    padding: 100px 0; text-align: center; position: relative; overflow: hidden;
+  }
+  .final-cta .dot-pattern { position: absolute; inset: 0; }
+  .final-cta-content { position: relative; z-index: 1; }
+  .final-cta h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 1rem; }
+  .final-cta p { color: #555; max-width: 480px; margin: 0 auto 2rem; font-size: 1.05rem; }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 2.5rem 0; text-align: center; font-size: 0.82rem; color: #999;
+    border-top: 1px solid #eee;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .bento-wide { grid-column: span 2; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .product-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .bento { grid-template-columns: 1fr; }
+    .bento-wide { grid-column: span 1; }
+    .steps { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2rem; }
+    .nav-inner { height: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">reflect<span>.</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#testimonials">Testimonials</a>
+    </div>
+    <button class="nav-cta">Get Early Access</button>
+  </div>
+</nav>
+
+<!-- HERO — DotPattern + Ripple + AnimatedGradientText + AnimatedShinyText + ShimmerButton + AvatarCircles -->
+<section class="hero dot-pattern dot-pattern-masked">
+  <!-- Ripple rings -->
+  <div class="ripple-container">
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+    <div class="ripple-ring"></div>
+  </div>
+
+  <div class="hero-content container">
+    <!-- AnimatedShinyText badge -->
+    <span class="shiny-text">&#9733; Now in closed beta for college programs</span>
+
+    <!-- AnimatedGradientText headline -->
+    <h1>
+      The <span class="gradient-text">always-on</span><br>assistant coach
+    </h1>
+    <p class="sub">Reflect automates athlete check-ins via SMS &amp; WhatsApp and delivers real-time wellness dashboards, injury heatmaps, and AI coaching insights — so nothing slips through the cracks.</p>
+
+    <!-- ShimmerButton CTA -->
+    <div class="hero-cta-row">
+      <a href="#" class="shimmer-btn">Start Free Pilot &rarr;</a>
+      <a href="#how" class="hero-secondary">See How It Works</a>
+    </div>
+
+    <!-- AvatarCircles social proof -->
+    <div class="avatar-row" style="justify-content:center;">
+      <div class="avatar-circle" style="background:#7c3aed;">JM</div>
+      <div class="avatar-circle" style="background:#3b82f6;">KL</div>
+      <div class="avatar-circle" style="background:#06b6d4;">TS</div>
+      <div class="avatar-circle" style="background:#8b5cf6;">RD</div>
+      <div class="avatar-circle" style="background:#2563eb;">AW</div>
+      <span class="avatar-count">Trusted by <strong>200+</strong> coaches nationwide</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT EXPLANATION -->
+<section class="product">
+  <div class="container">
+    <p class="section-label text-center">How Reflect Works</p>
+    <h2 class="section-title text-center">One text. Total visibility.</h2>
+    <p class="section-sub text-center mx-auto">Athletes answer a 90-second SMS check-in after every practice. Coaches see everything — soreness, sleep, mood, and flags — in one dashboard before the next session.</p>
+
+    <div class="product-grid">
+      <div class="product-visual">
+        <div style="font-weight:700;font-size:0.9rem;color:#7c3aed;margin-bottom:8px;">&#128241; SMS Check-in Preview</div>
+        <div class="mock-bar accent"></div>
+        <div class="mock-bar med"></div>
+        <div class="mock-bar short"></div>
+        <div style="margin-top:12px;font-size:0.82rem;color:#666;">Athlete flags today:</div>
+        <div class="mock-row">
+          <span class="mock-chip green">&#10003; 42 Clear</span>
+          <span class="mock-chip yellow">&#9888; 6 Moderate</span>
+          <span class="mock-chip red">&#9679; 2 High Risk</span>
+        </div>
+        <div class="mock-bar" style="margin-top:auto; width:100%; height:6px;"></div>
+      </div>
+      <div class="product-text">
+        <h2>Automated check-ins that athletes actually answer</h2>
+        <p>Reflect sends a quick text after every practice or competition — no app downloads, no passwords, no friction. Athletes reply in under 90 seconds. You get structured data on soreness, sleep, mood, and readiness, updated before the next session.</p>
+        <div class="product-stat-row">
+          <div class="product-stat">
+            <strong>94%</strong>
+            <span>Response rate</span>
+          </div>
+          <div class="product-stat">
+            <strong>&lt;90s</strong>
+            <span>Avg. completion</span>
+          </div>
+          <div class="product-stat">
+            <strong>0</strong>
+            <span>App downloads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES — BentoGrid + NeonGradientCard -->
+<section class="features" id="features">
+  <div class="container">
+    <p class="section-label text-center">Features</p>
+    <h2 class="section-title text-center">Everything a coaching staff needs</h2>
+    <p class="section-sub text-center mx-auto" style="margin-bottom:3rem;">From automated check-ins to AI-powered insights, Reflect gives you full visibility into your roster's wellness.</p>
+
+    <div class="bento">
+      <!-- Featured: NeonGradientCard (wide) -->
+      <div class="bento-wide neon-card">
+        <div class="card-icon icon-purple">&#128202;</div>
+        <h3>Real-Time Wellness Dashboard</h3>
+        <p>See your entire roster's status at a glance. Filter by sport, position, or risk level. Every data point updates the moment athletes respond.</p>
+        <div class="mini-chart">
+          <span style="height:40%"></span><span style="height:65%"></span><span style="height:50%"></span>
+          <span style="height:80%"></span><span style="height:60%"></span><span style="height:90%"></span>
+          <span style="height:45%"></span><span style="height:70%"></span><span style="height:55%"></span>
+          <span style="height:75%"></span><span style="height:85%"></span><span style="height:50%"></span>
+        </div>
+      </div>
+
+      <!-- Regular card -->
+      <div class="bento-card">
+        <div class="card-icon icon-amber">&#9888;&#65039;</div>
+        <h3>Flag Alerts</h3>
+        <p>Instant notifications when an athlete's responses cross risk thresholds. Never miss a red flag again.</p>
+      </div>
+
+      <!-- Regular card -->
+      <div class="bento-card">
+        <div class="card-icon icon-cyan">&#128506;</div>
+        <h3>Injury Heatmaps</h3>
+        <p>Visualize exactly where your team is hurting with body-mapped soreness data, aggregated across your roster.</p>
+        <div class="mini-heatmap">
+          <span class="heat-0"></span><span class="heat-1"></span><span class="heat-2"></span><span class="heat-0"></span><span class="heat-1"></span><span class="heat-0"></span>
+          <span class="heat-1"></span><span class="heat-3"></span><span class="heat-4"></span><span class="heat-2"></span><span class="heat-0"></span><span class="heat-1"></span>
+          <span class="heat-0"></span><span class="heat-2"></span><span class="heat-3"></span><span class="heat-1"></span><span class="heat-0"></span><span class="heat-0"></span>
+        </div>
+      </div>
+
+      <!-- Regular card -->
+      <div class="bento-card">
+        <div class="card-icon icon-green">&#129302;</div>
+        <h3>AI Coaching Insights</h3>
+        <p>Ask Reflect anything about your roster. "Who shouldn't practice today?" Get answers backed by your own data.</p>
+      </div>
+
+      <!-- Featured: NeonGradientCard -->
+      <div class="neon-card bento-wide">
+        <div class="card-icon icon-blue">&#128172;</div>
+        <h3>SMS &amp; WhatsApp Check-ins</h3>
+        <p>Meet athletes where they already are. No apps to download, no portals to log into. Just a simple text conversation that captures structured wellness data in under 90 seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how">
+  <div class="container">
+    <p class="section-label text-center">How It Works</p>
+    <h2 class="section-title text-center">Set up in 5 minutes. Insights by tomorrow.</h2>
+    <p class="section-sub text-center mx-auto">Reflect integrates into your team's routine without any behavior change.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Upload Your Roster</h3>
+        <p>Paste a CSV or add athletes manually. Reflect handles the rest.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Schedule Check-ins</h3>
+        <p>Set timing around your practice &amp; competition schedule. Fully customizable.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Athletes Reply via Text</h3>
+        <p>90-second SMS or WhatsApp check-in — soreness, sleep, mood, readiness.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Coach Sees Everything</h3>
+        <p>Dashboard updates in real-time. Flags, heatmaps, trends, AI insights — all before the next session.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS — Marquee -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <p class="section-label text-center">Testimonials</p>
+    <h2 class="section-title text-center">Coaches love Reflect</h2>
+    <p class="section-sub text-center mx-auto" style="margin-bottom:2.5rem;">Here's what programs using Reflect have to say.</p>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-fade-l"></div>
+    <div class="marquee-fade-r"></div>
+    <div class="marquee-track">
+      <!-- Card set (duplicated for seamless loop) -->
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"Reflect caught a red flag on one of our starters that we would've totally missed. She was underreporting pain in person but answered honestly via text."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#7c3aed;">SM</div>
+          <div><div class="testimonial-name">Sarah Martinez</div><div class="testimonial-role">Head Coach, D1 Volleyball</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"I manage 60+ athletes. Before Reflect I had no systematic way to track wellness. Now I see everything before practice starts."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#3b82f6;">DP</div>
+          <div><div class="testimonial-name">David Park</div><div class="testimonial-role">Director of Sports Performance</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"The AI assistant is a game-changer. I asked 'who's trending down this week?' and got an actionable list in seconds."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#06b6d4;">LW</div>
+          <div><div class="testimonial-name">Lisa Washington</div><div class="testimonial-role">Athletic Trainer, Big 10</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"94% response rate — no other tool we've tried comes close. Athletes actually respond because it's just a text."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#8b5cf6;">JT</div>
+          <div><div class="testimonial-name">James Torres</div><div class="testimonial-role">Head Coach, D2 Soccer</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"We reduced overuse injuries by 30% in one season. The heatmaps showed us patterns we couldn't see otherwise."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#2563eb;">RK</div>
+          <div><div class="testimonial-name">Rachel Kim</div><div class="testimonial-role">Strength Coach, D1 Track</div></div>
+        </div>
+      </div>
+      <!-- Duplicate set for seamless loop -->
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"Reflect caught a red flag on one of our starters that we would've totally missed. She was underreporting pain in person but answered honestly via text."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#7c3aed;">SM</div>
+          <div><div class="testimonial-name">Sarah Martinez</div><div class="testimonial-role">Head Coach, D1 Volleyball</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"I manage 60+ athletes. Before Reflect I had no systematic way to track wellness. Now I see everything before practice starts."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#3b82f6;">DP</div>
+          <div><div class="testimonial-name">David Park</div><div class="testimonial-role">Director of Sports Performance</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"The AI assistant is a game-changer. I asked 'who's trending down this week?' and got an actionable list in seconds."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#06b6d4;">LW</div>
+          <div><div class="testimonial-name">Lisa Washington</div><div class="testimonial-role">Athletic Trainer, Big 10</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"94% response rate — no other tool we've tried comes close. Athletes actually respond because it's just a text."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#8b5cf6;">JT</div>
+          <div><div class="testimonial-name">James Torres</div><div class="testimonial-role">Head Coach, D2 Soccer</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>"We reduced overuse injuries by 30% in one season. The heatmaps showed us patterns we couldn't see otherwise."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#2563eb;">RK</div>
+          <div><div class="testimonial-name">Rachel Kim</div><div class="testimonial-role">Strength Coach, D1 Track</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA — PulsatingButton + DotPattern -->
+<section class="final-cta">
+  <div class="dot-pattern dot-pattern-masked" style="position:absolute;inset:0;"></div>
+  <div class="final-cta-content container">
+    <p class="section-label">Ready to start?</p>
+    <h2>Your athletes are already talking.<br>Make sure you're <span class="gradient-text">listening</span>.</h2>
+    <p>Join 200+ coaching programs using Reflect to catch injuries early, improve performance, and build trust with their athletes.</p>
+    <a href="#" class="pulse-btn">Start Your Free Pilot &rarr;</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Reflect. Built for coaches, by coaches. &nbsp;|&nbsp; <a href="https://reflectsalus.app" style="color:#7c3aed;">reflectsalus.app</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

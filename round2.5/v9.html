@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Full Demo + Gradient + Everything Discoverable</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0b;
+    --gray-900: #18181b;
+    --gray-800: #27272a;
+    --gray-700: #3f3f46;
+    --gray-600: #52525b;
+    --gray-500: #71717a;
+    --gray-400: #a1a1aa;
+    --gray-300: #d4d4d8;
+    --gray-200: #e4e4e7;
+    --gray-100: #f4f4f5;
+    --gray-50: #fafafa;
+    --white: #ffffff;
+    --violet: #7c3aed;
+    --blue: #3b82f6;
+    --cyan: #06b6d4;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --gradient: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
+    --gradient-text: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ====== ANIMATIONS ====== */
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes shinySlide {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  @keyframes orbit {
+    to { transform: rotate(360deg) translateX(var(--orbit-radius, 140px)) rotate(-360deg); }
+  }
+
+  @keyframes borderBeam {
+    to { --beam-angle: 360deg; }
+  }
+
+  @keyframes shineBorderSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.2), 0 0 60px rgba(59,130,246,0.1); }
+    50% { box-shadow: 0 0 35px rgba(124,58,237,0.35), 0 0 80px rgba(59,130,246,0.18); }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marqueeReverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes retroGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 40px; }
+  }
+
+  @keyframes barGrow {
+    from { transform: scaleY(0); }
+    to { transform: scaleY(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @property --beam-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  /* ====== NAV ====== */
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-size: 20px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--gray-600);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    -webkit-text-fill-color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--gray-800); }
+
+  /* ====== HERO SECTION ====== */
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+  }
+
+  /* DotPattern background */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(0,0,0,0.1) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 70%);
+    z-index: 0;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hero-left { display: flex; flex-direction: column; gap: 24px; }
+
+  /* AnimatedShinyText badge */
+  .shiny-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--gray-200);
+    background: linear-gradient(90deg, transparent 20%, rgba(124,58,237,0.08) 50%, transparent 80%);
+    background-size: 300% 100%;
+    animation: shinySlide 3s ease infinite;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-600);
+    width: fit-content;
+  }
+  .shiny-badge span { color: var(--violet); }
+
+  /* AnimatedGradientText headline */
+  .gradient-headline {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -2px;
+    background: var(--gradient-text);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--gray-500);
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* PulsatingButton */
+  .btn-pulsate {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: var(--gradient);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 0;
+  }
+  .btn-pulsate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: var(--gradient);
+    animation: pulseRing 2s ease-out infinite;
+    z-index: -1;
+  }
+
+  /* AvatarCircles */
+  .avatar-circles {
+    display: flex;
+    align-items: center;
+  }
+  .avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    margin-left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .avatar-circle:first-child { margin-left: 0; }
+  .avatar-circle.ac1 { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+  .avatar-circle.ac2 { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+  .avatar-circle.ac3 { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+  .avatar-circle.ac4 { background: linear-gradient(135deg, #22c55e, #4ade80); }
+  .avatar-count {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--white);
+    margin-left: -10px;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-600);
+  }
+  .avatar-label {
+    margin-left: 12px;
+    font-size: 13px;
+    color: var(--gray-500);
+    font-weight: 500;
+  }
+
+  /* iPhone15Pro Mockup */
+  .iphone-mockup {
+    width: 300px;
+    background: #1a1a1e;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.06) inset;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .iphone-notch {
+    width: 120px;
+    height: 28px;
+    background: #1a1a1e;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .iphone-screen {
+    background: var(--white);
+    border-radius: 34px;
+    overflow: hidden;
+    min-height: 520px;
+  }
+
+  .sms-header {
+    background: var(--gray-100);
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .sms-header small { display: block; font-size: 10px; color: var(--gray-400); font-weight: 400; }
+
+  .sms-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sms-msg {
+    max-width: 82%;
+    padding: 8px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .sms-msg.incoming {
+    background: var(--gray-100);
+    color: var(--gray-800);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+  .sms-msg.outgoing {
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: var(--white);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .sms-time {
+    font-size: 9px;
+    color: var(--gray-400);
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* ====== ORBITING CIRCLES SECTION ====== */
+
+  .orbiting-section {
+    padding: 100px 24px;
+    background: var(--gray-50);
+    text-align: center;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--gray-200);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--violet);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    background: var(--white);
+  }
+
+  .section-title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--gray-500);
+    max-width: 560px;
+    margin: 0 auto 60px;
+    line-height: 1.6;
+  }
+
+  .orbit-container {
+    position: relative;
+    width: 340px;
+    height: 340px;
+    margin: 0 auto;
+  }
+
+  .orbit-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 28px;
+    font-weight: 800;
+    box-shadow: 0 8px 32px rgba(124,58,237,0.3);
+    z-index: 2;
+  }
+
+  .orbit-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px dashed var(--gray-300);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .orbit-ring.ring1 { width: 200px; height: 200px; }
+  .orbit-ring.ring2 { width: 300px; height: 300px; }
+
+  .orbit-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    animation: orbit var(--orbit-duration) linear infinite;
+    --orbit-radius: var(--radius);
+    z-index: 3;
+  }
+  .orbit-item-inner {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    gap: 2px;
+  }
+  .orbit-item-inner small {
+    font-size: 7px;
+    font-weight: 600;
+    color: var(--gray-500);
+    letter-spacing: 0.3px;
+  }
+
+  /* ====== BENTO GRID FEATURES ====== */
+
+  .bento-section {
+    padding: 100px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .bento-card {
+    position: relative;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 28px;
+    overflow: hidden;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .bento-card:hover {
+    border-color: transparent;
+    box-shadow: 0 8px 32px rgba(124,58,237,0.08);
+  }
+  .bento-card.span-2 { grid-column: span 2; }
+
+  /* BorderBeam on hover */
+  .bento-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: conic-gradient(from var(--beam-angle, 0deg), transparent 60%, var(--violet) 78%, var(--blue) 88%, var(--cyan) 94%, transparent 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    opacity: 0;
+    transition: opacity 0.3s;
+    animation: borderBeam 3s linear infinite;
+  }
+  .bento-card:hover::before { opacity: 1; }
+
+  .bento-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  .bento-icon.violet { background: rgba(124,58,237,0.1); }
+  .bento-icon.blue { background: rgba(59,130,246,0.1); }
+  .bento-icon.cyan { background: rgba(6,182,212,0.1); }
+  .bento-icon.green { background: rgba(34,197,94,0.1); }
+  .bento-icon.amber { background: rgba(245,158,11,0.1); }
+  .bento-icon.red { background: rgba(239,68,68,0.1); }
+
+  .bento-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--black);
+  }
+  .bento-desc {
+    font-size: 14px;
+    color: var(--gray-500);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* Mini mocks inside bento cards */
+  .mini-mock {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Bar chart mini mock */
+  .mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+  }
+  .mini-bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    animation: barGrow 1s ease-out forwards;
+    transform-origin: bottom;
+  }
+
+  /* Alert notification mini mock */
+  .mini-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .mini-alert-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .mini-alert-text { font-size: 12px; color: var(--gray-600); }
+  .mini-alert-text strong { color: var(--black); }
+
+  /* Body heatmap mini mock */
+  .mini-heatmap {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .heatmap-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+  }
+
+  /* Leaderboard mini mock */
+  .mini-leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: var(--white);
+    border-radius: 8px;
+    border: 1px solid var(--gray-100);
+  }
+  .lb-rank {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-400);
+    width: 18px;
+  }
+  .lb-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .lb-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    flex: 1;
+  }
+  .lb-score {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* AI chat bubble mini mock */
+  .mini-chat-bubbles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mini-chat-msg {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1.4;
+    max-width: 85%;
+  }
+  .mini-chat-msg.user-msg {
+    background: var(--gray-200);
+    color: var(--gray-700);
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .mini-chat-msg.ai-msg {
+    background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.1));
+    color: var(--gray-700);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Readiness ring mini mock */
+  .mini-ring-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+  .mini-ring {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(var(--green) 0% 78%, var(--gray-200) 78% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .mini-ring::after {
+    content: '78%';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: var(--gray-50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+  }
+  .mini-ring-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mini-ring-stat {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .mini-ring-stat strong {
+    color: var(--black);
+    font-size: 14px;
+  }
+
+  /* ====== SAFARI DASHBOARD SECTION ====== */
+
+  .dashboard-section {
+    padding: 100px 24px;
+    background: var(--gray-50);
+    text-align: center;
+  }
+
+  /* Safari mockup */
+  .safari-mockup {
+    max-width: 960px;
+    margin: 48px auto 0;
+    position: relative;
+    border-radius: 12px;
+    overflow: visible;
+  }
+
+  /* ShineBorder */
+  .safari-shine-border {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .safari-shine-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    background: conic-gradient(from 0deg, #7c3aed, #3b82f6, #06b6d4, #22c55e, #f59e0b, #ef4444, #7c3aed);
+    animation: shineBorderSpin 4s linear infinite;
+    z-index: -1;
+  }
+
+  .safari-bar {
+    background: var(--gray-100);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--gray-200);
+    border-radius: 12px 12px 0 0;
+  }
+  .safari-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .safari-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .safari-dot.r { background: #ff5f57; }
+  .safari-dot.y { background: #febc2e; }
+  .safari-dot.g { background: #28c840; }
+  .safari-url {
+    flex: 1;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: var(--gray-500);
+    text-align: center;
+  }
+
+  .safari-content {
+    background: var(--white);
+    padding: 24px;
+    border-radius: 0 0 12px 12px;
+    border: 1px solid var(--gray-200);
+    border-top: none;
+  }
+
+  /* Dashboard inside Safari */
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .dash-title-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--black);
+  }
+  .dash-date {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 500;
+  }
+
+  .dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .dash-stat-card {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: left;
+  }
+  .dash-stat-label {
+    font-size: 11px;
+    color: var(--gray-400);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .dash-stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--black);
+  }
+  .dash-stat-change {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .dash-stat-change.up { color: var(--green); }
+  .dash-stat-change.down { color: var(--red); }
+
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+  }
+
+  .dash-chart-card {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .dash-chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 12px;
+  }
+  .dash-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 100px;
+  }
+  .dash-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .dash-bar {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    background: var(--gradient);
+    animation: barGrow 1.2s ease-out forwards;
+    transform-origin: bottom;
+  }
+  .dash-bar-label {
+    font-size: 9px;
+    color: var(--gray-400);
+    font-weight: 600;
+  }
+
+  .dash-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .dash-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--gray-600);
+  }
+  .dash-alert-icon {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ====== HOW IT WORKS ====== */
+
+  .how-section {
+    padding: 100px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+
+  /* NeonGradientCard */
+  .neon-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    animation: neonPulse 4s ease infinite;
+    position: relative;
+  }
+
+  .neon-step {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 auto 16px;
+  }
+
+  .neon-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+  .neon-desc {
+    font-size: 14px;
+    color: var(--gray-500);
+    line-height: 1.5;
+  }
+
+  /* ====== MARQUEE TESTIMONIALS ====== */
+
+  .testimonials-section {
+    padding: 100px 24px;
+    background: var(--gray-900);
+    overflow: hidden;
+  }
+  .testimonials-section .section-label {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
+    color: var(--cyan);
+  }
+  .testimonials-section .section-title { color: var(--white); }
+  .testimonials-section .section-sub { color: var(--gray-400); }
+
+  .marquee-track-wrap {
+    position: relative;
+    margin-top: 48px;
+    overflow: hidden;
+  }
+  /* Fade masks */
+  .marquee-track-wrap::before,
+  .marquee-track-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-track-wrap::before {
+    left: 0;
+    background: linear-gradient(to right, var(--gray-900), transparent);
+  }
+  .marquee-track-wrap::after {
+    right: 0;
+    background: linear-gradient(to left, var(--gray-900), transparent);
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  .marquee-track.reverse {
+    animation: marqueeReverse 40s linear infinite;
+  }
+  .marquee-track.reverse:hover { animation-play-state: paused; }
+
+  .marquee-row + .marquee-row { margin-top: 20px; }
+
+  .testimonial-card {
+    width: 320px;
+    flex-shrink: 0;
+    background: var(--gray-800);
+    border: 1px solid var(--gray-700);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .testimonial-stars {
+    color: var(--amber);
+    font-size: 14px;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .testimonial-text {
+    font-size: 14px;
+    color: var(--gray-300);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .testimonial-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+  }
+  .testimonial-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .testimonial-role {
+    font-size: 11px;
+    color: var(--gray-500);
+  }
+
+  /* ====== FINAL CTA ====== */
+
+  .final-cta {
+    position: relative;
+    padding: 120px 24px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  /* RetroGrid background */
+  .retro-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .retro-grid::before {
+    content: '';
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    bottom: 0;
+    height: 60%;
+    background:
+      linear-gradient(to right, rgba(124,58,237,0.15) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(124,58,237,0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: center bottom;
+    animation: retroGrid 2s linear infinite;
+    mask-image: linear-gradient(to top, black 30%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to top, black 30%, transparent 90%);
+  }
+
+  .final-cta-content {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .final-headline {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 16px;
+    background: var(--gradient-text);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .final-sub {
+    font-size: 17px;
+    color: var(--gray-500);
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  /* ShimmerButton */
+  .btn-shimmer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 40px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .btn-shimmer:hover { transform: translateY(-1px); }
+  .btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: shimmer 2.5s infinite;
+  }
+
+  /* ====== FOOTER ====== */
+
+  footer {
+    padding: 48px 24px;
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
+  }
+  .footer-logo {
+    font-size: 18px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .footer-text {
+    font-size: 13px;
+    color: var(--gray-400);
+  }
+
+  /* ====== RESPONSIVE ====== */
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .hero-left { align-items: center; }
+    .hero-right { order: -1; }
+    .iphone-mockup { width: 260px; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-card.span-2 { grid-column: span 1; }
+    .how-grid { grid-template-columns: 1fr 1fr; }
+    .dash-stats { grid-template-columns: repeat(2, 1fr); }
+    .dash-grid { grid-template-columns: 1fr; }
+    .gradient-headline { font-size: 36px; }
+    .section-title { font-size: 32px; }
+    .final-headline { font-size: 32px; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+    .hero { padding: 100px 16px 60px; }
+    .how-grid { grid-template-columns: 1fr; }
+    .gradient-headline { font-size: 30px; }
+    .orbit-container { width: 280px; height: 280px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Reflect</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#how">How It Works</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#cta" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="shiny-badge">
+        <span>&#9733;</span> The Always-On Assistant Coach
+      </div>
+      <h1 class="gradient-headline">Every athlete checked in.<br>Every insight delivered.</h1>
+      <p class="hero-sub">Reflect automates post-practice and post-competition check-ins via SMS. Coaches get real-time dashboards, injury heatmaps, flag alerts, and AI insights — without athletes downloading an app.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn-pulsate">Start Free Trial &rarr;</a>
+        <div style="display:flex;align-items:center;">
+          <div class="avatar-circles">
+            <div class="avatar-circle ac1">JM</div>
+            <div class="avatar-circle ac2">KS</div>
+            <div class="avatar-circle ac3">LR</div>
+            <div class="avatar-circle ac4">DT</div>
+            <div class="avatar-count">+200</div>
+          </div>
+          <span class="avatar-label">coaches trust Reflect</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="iphone-mockup">
+        <div class="iphone-notch"></div>
+        <div class="iphone-screen">
+          <div class="sms-header">Reflect <small>SMS &middot; Today 4:32 PM</small></div>
+          <div class="sms-body">
+            <div class="sms-msg incoming">Hey Sarah! &#128075; Time for your post-practice check-in. Ready? Reply YES to start.</div>
+            <div class="sms-msg outgoing">YES</div>
+            <div class="sms-msg incoming">How would you rate your overall readiness today? (1-10)</div>
+            <div class="sms-msg outgoing">8</div>
+            <div class="sms-msg incoming">Great! How was your energy level? (1-10)</div>
+            <div class="sms-msg outgoing">7</div>
+            <div class="sms-msg incoming">Rate your effort today (1-10):</div>
+            <div class="sms-msg outgoing">9</div>
+            <div class="sms-msg incoming">Any pain or soreness? Reply the area (e.g. "left knee") or NONE.</div>
+            <div class="sms-msg outgoing">NONE</div>
+            <div class="sms-msg incoming">All done! &#9989; Your readiness is trending up 12% this week. Keep it up, Sarah! Coach J has been notified.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== ORBITING CIRCLES ====== -->
+<section class="orbiting-section">
+  <div class="section-label">&#128260; Ecosystem</div>
+  <h2 class="section-title">Everything connects through Reflect</h2>
+  <p class="section-sub">SMS, WhatsApp, dashboards, heatmaps, and AI — all orbiting around your team's wellness data.</p>
+
+  <div class="orbit-container">
+    <div class="orbit-ring ring1"></div>
+    <div class="orbit-ring ring2"></div>
+    <div class="orbit-center">R</div>
+
+    <div class="orbit-item" style="--orbit-duration:12s; --radius:100px;">
+      <div class="orbit-item-inner">&#128172;<small>SMS</small></div>
+    </div>
+    <div class="orbit-item" style="--orbit-duration:12s; --radius:100px; animation-delay:-4s;">
+      <div class="orbit-item-inner">&#128241;<small>WHATS</small></div>
+    </div>
+    <div class="orbit-item" style="--orbit-duration:12s; --radius:100px; animation-delay:-8s;">
+      <div class="orbit-item-inner">&#128202;<small>DASH</small></div>
+    </div>
+    <div class="orbit-item" style="--orbit-duration:18s; --radius:148px;">
+      <div class="orbit-item-inner">&#128293;<small>HEAT</small></div>
+    </div>
+    <div class="orbit-item" style="--orbit-duration:18s; --radius:148px; animation-delay:-9s;">
+      <div class="orbit-item-inner">&#129302;<small>AI</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== BENTO GRID FEATURES ====== -->
+<section class="bento-section" id="features">
+  <div style="text-align:center;">
+    <div class="section-label">&#9881;&#65039; Features</div>
+    <h2 class="section-title">Everything coaches need. Nothing athletes install.</h2>
+    <p class="section-sub">Six powerful capabilities that transform athlete wellness tracking from manual to automatic.</p>
+  </div>
+
+  <div class="bento-grid">
+    <!-- Card 1: Readiness Ring (span 2) -->
+    <div class="bento-card span-2">
+      <div class="bento-icon violet">&#128201;</div>
+      <div class="bento-title">Team Readiness Scores</div>
+      <div class="bento-desc">Real-time readiness rings show each athlete's wellness at a glance. Track trends over time with automated daily scoring.</div>
+      <div class="mini-mock">
+        <div class="mini-ring-wrap">
+          <div class="mini-ring"></div>
+          <div class="mini-ring-stats">
+            <div class="mini-ring-stat"><strong>78%</strong> avg readiness</div>
+            <div class="mini-ring-stat"><strong>+5%</strong> vs last week</div>
+            <div class="mini-ring-stat"><strong>42/45</strong> athletes checked in</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Flag Alerts -->
+    <div class="bento-card">
+      <div class="bento-icon red">&#128680;</div>
+      <div class="bento-title">Flag Alerts</div>
+      <div class="bento-desc">Get instant notifications when an athlete reports pain, low energy, or declining trends.</div>
+      <div class="mini-mock">
+        <div class="mini-alert">
+          <div class="mini-alert-dot" style="background:var(--red);"></div>
+          <div class="mini-alert-text"><strong>Sarah M.</strong> — left knee pain (new)</div>
+        </div>
+        <div class="mini-alert">
+          <div class="mini-alert-dot" style="background:var(--amber);"></div>
+          <div class="mini-alert-text"><strong>Jake R.</strong> — energy down 3 days</div>
+        </div>
+        <div class="mini-alert">
+          <div class="mini-alert-dot" style="background:var(--red);"></div>
+          <div class="mini-alert-text"><strong>Emma L.</strong> — readiness below 4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Injury Heatmap -->
+    <div class="bento-card">
+      <div class="bento-icon amber">&#128293;</div>
+      <div class="bento-title">Injury Heatmap</div>
+      <div class="bento-desc">Visual body map showing where injuries cluster across your team. Spot patterns before they become problems.</div>
+      <div class="mini-mock">
+        <div class="mini-heatmap">
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.5);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.15);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.15);"></div>
+          <div class="heatmap-cell" style="background:rgba(239,68,68,0.5);"></div>
+          <div class="heatmap-cell" style="background:rgba(239,68,68,0.7);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.4);"></div>
+          <div class="heatmap-cell" style="background:rgba(239,68,68,0.4);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.1);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(239,68,68,0.6);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.5);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.15);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.1);"></div>
+          <div class="heatmap-cell" style="background:rgba(245,158,11,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(239,68,68,0.3);"></div>
+          <div class="heatmap-cell" style="background:rgba(34,197,94,0.2);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Leaderboard (span 2) -->
+    <div class="bento-card span-2">
+      <div class="bento-icon blue">&#127942;</div>
+      <div class="bento-title">Team Leaderboards</div>
+      <div class="bento-desc">Gamify compliance. Athletes who check in consistently rise to the top, driving team-wide engagement.</div>
+      <div class="mini-mock">
+        <div class="mini-leaderboard">
+          <div class="lb-row">
+            <div class="lb-rank">1</div>
+            <div class="lb-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);"></div>
+            <div class="lb-name">Sarah Martinez</div>
+            <div class="lb-score" style="color:var(--green);">98% &#8593;</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">2</div>
+            <div class="lb-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);"></div>
+            <div class="lb-name">Jake Robinson</div>
+            <div class="lb-score" style="color:var(--green);">95% &#8593;</div>
+          </div>
+          <div class="lb-row">
+            <div class="lb-rank">3</div>
+            <div class="lb-avatar" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);"></div>
+            <div class="lb-name">Emma Liu</div>
+            <div class="lb-score" style="color:var(--amber);">91% &#8594;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: AI Coaching Assistant -->
+    <div class="bento-card">
+      <div class="bento-icon cyan">&#129302;</div>
+      <div class="bento-title">AI Coaching Assistant</div>
+      <div class="bento-desc">Ask questions about your team's data in natural language. Get actionable insights instantly.</div>
+      <div class="mini-mock">
+        <div class="mini-chat-bubbles">
+          <div class="mini-chat-msg user-msg">Who should I rest this week?</div>
+          <div class="mini-chat-msg ai-msg">Based on 7-day trends, Jake R. and Emma L. show declining readiness. Consider reduced load for both.</div>
+          <div class="mini-chat-msg user-msg">What about knee injuries?</div>
+          <div class="mini-chat-msg ai-msg">3 athletes reported knee pain this week — up from 1 last week. Recommend reviewing training volume.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: Weekly Bar Chart -->
+    <div class="bento-card">
+      <div class="bento-icon green">&#128200;</div>
+      <div class="bento-title">Trend Analytics</div>
+      <div class="bento-desc">7-day readiness charts for every athlete. Spot patterns and plan training loads accordingly.</div>
+      <div class="mini-mock">
+        <div class="mini-bars">
+          <div class="mini-bar" style="height:55%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:70%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:62%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:80%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:75%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:85%; background:var(--gradient);"></div>
+          <div class="mini-bar" style="height:78%; background:var(--gradient);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SAFARI DASHBOARD ====== -->
+<section class="dashboard-section">
+  <div class="section-label">&#128187; Dashboard</div>
+  <h2 class="section-title">Your team's health at a glance</h2>
+  <p class="section-sub">One dashboard. Every athlete. Real-time data that tells you exactly who needs attention today.</p>
+
+  <div class="safari-mockup">
+    <div class="safari-shine-border">
+      <div class="safari-bar">
+        <div class="safari-dots">
+          <div class="safari-dot r"></div>
+          <div class="safari-dot y"></div>
+          <div class="safari-dot g"></div>
+        </div>
+        <div class="safari-url">app.reflectsalus.app/dashboard</div>
+      </div>
+      <div class="safari-content">
+        <div class="dash-header">
+          <div class="dash-title-text">Team Dashboard</div>
+          <div class="dash-date">March 31, 2026 &middot; Varsity Basketball</div>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Avg Readiness</div>
+            <div class="dash-stat-value">7.8</div>
+            <div class="dash-stat-change up">&uarr; 12% vs last week</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Response Rate</div>
+            <div class="dash-stat-value">94%</div>
+            <div class="dash-stat-change up">&uarr; 3% vs last week</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Active Injuries</div>
+            <div class="dash-stat-value" style="color:var(--amber);">4</div>
+            <div class="dash-stat-change down">&darr; 2 from last week</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-label">Athletes</div>
+            <div class="dash-stat-value">45</div>
+            <div class="dash-stat-change up">42 checked in today</div>
+          </div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-chart-card">
+            <div class="dash-chart-title">7-Day Readiness Trend</div>
+            <div class="dash-bars">
+              <div class="dash-bar-col"><div class="dash-bar" style="height:60px;"></div><div class="dash-bar-label">Mon</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:72px;"></div><div class="dash-bar-label">Tue</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:65px;"></div><div class="dash-bar-label">Wed</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:80px;"></div><div class="dash-bar-label">Thu</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:70px;"></div><div class="dash-bar-label">Fri</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:88px;"></div><div class="dash-bar-label">Sat</div></div>
+              <div class="dash-bar-col"><div class="dash-bar" style="height:78px;"></div><div class="dash-bar-label">Sun</div></div>
+            </div>
+          </div>
+          <div class="dash-chart-card">
+            <div class="dash-chart-title">Flag Alerts</div>
+            <div class="dash-alerts">
+              <div class="dash-alert"><div class="dash-alert-icon" style="background:var(--red);"></div>Sarah M. — knee pain (new)</div>
+              <div class="dash-alert"><div class="dash-alert-icon" style="background:var(--amber);"></div>Jake R. — energy declining</div>
+              <div class="dash-alert"><div class="dash-alert-icon" style="background:var(--red);"></div>Li W. — readiness 3/10</div>
+              <div class="dash-alert"><div class="dash-alert-icon" style="background:var(--amber);"></div>Emma L. — sleep issues</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== HOW IT WORKS ====== -->
+<section class="how-section" id="how">
+  <div class="section-label">&#128640; Process</div>
+  <h2 class="section-title">Up and running in 10 minutes</h2>
+  <p class="section-sub">No app downloads. No athlete onboarding. Just add numbers and go.</p>
+
+  <div class="how-grid">
+    <div class="neon-card">
+      <div class="neon-step">1</div>
+      <div class="neon-title">Import Your Roster</div>
+      <div class="neon-desc">Upload a CSV or add athletes manually. Name and phone number — that's all Reflect needs.</div>
+    </div>
+    <div class="neon-card" style="animation-delay: 1s;">
+      <div class="neon-step">2</div>
+      <div class="neon-title">Schedule Check-Ins</div>
+      <div class="neon-desc">Set when check-ins go out — post-practice, game day, rest day. Customize questions per sport.</div>
+    </div>
+    <div class="neon-card" style="animation-delay: 2s;">
+      <div class="neon-step">3</div>
+      <div class="neon-title">Athletes Reply via SMS</div>
+      <div class="neon-desc">60-second text conversations. No app to download. Athletes just reply to messages like they already do.</div>
+    </div>
+    <div class="neon-card" style="animation-delay: 3s;">
+      <div class="neon-step">4</div>
+      <div class="neon-title">Coach Gets Insights</div>
+      <div class="neon-desc">Real-time dashboard with readiness scores, injury heatmaps, flag alerts, and AI-powered recommendations.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== TESTIMONIALS ====== -->
+<section class="testimonials-section" id="testimonials">
+  <div style="text-align:center;">
+    <div class="section-label">&#128172; Testimonials</div>
+    <h2 class="section-title">Coaches love Reflect</h2>
+    <p class="section-sub">Hear from coaches who transformed their athlete wellness tracking.</p>
+  </div>
+
+  <div class="marquee-row">
+    <div class="marquee-track-wrap">
+      <div class="marquee-track">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"We went from 30% check-in compliance to 94% in the first week. The SMS approach is genius — athletes actually respond."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">JM</div>
+            <div><div class="testimonial-name">Coach James Miller</div><div class="testimonial-role">Head Coach, D1 Basketball</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The injury heatmap caught a pattern we completely missed. Three ACL scares in the same position — we adjusted training immediately."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">KS</div>
+            <div><div class="testimonial-name">Dr. Karen Singh</div><div class="testimonial-role">Head of Sports Medicine</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"I manage 60+ athletes. Reflect saves me 5 hours a week on manual check-ins. The AI insights are like having a second assistant coach."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);">LR</div>
+            <div><div class="testimonial-name">Coach Laura Rodriguez</div><div class="testimonial-role">Athletic Director</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"My athletes love how fast the check-ins are. 60 seconds, done. And I see everything instantly on my dashboard."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#22c55e,#4ade80);">DT</div>
+            <div><div class="testimonial-name">Coach David Thompson</div><div class="testimonial-role">Head Coach, Soccer</div></div>
+          </div>
+        </div>
+        <!-- Duplicate for infinite scroll -->
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"We went from 30% check-in compliance to 94% in the first week. The SMS approach is genius — athletes actually respond."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">JM</div>
+            <div><div class="testimonial-name">Coach James Miller</div><div class="testimonial-role">Head Coach, D1 Basketball</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The injury heatmap caught a pattern we completely missed. Three ACL scares in the same position — we adjusted training immediately."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">KS</div>
+            <div><div class="testimonial-name">Dr. Karen Singh</div><div class="testimonial-role">Head of Sports Medicine</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"I manage 60+ athletes. Reflect saves me 5 hours a week on manual check-ins. The AI insights are like having a second assistant coach."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);">LR</div>
+            <div><div class="testimonial-name">Coach Laura Rodriguez</div><div class="testimonial-role">Athletic Director</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"My athletes love how fast the check-ins are. 60 seconds, done. And I see everything instantly on my dashboard."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#22c55e,#4ade80);">DT</div>
+            <div><div class="testimonial-name">Coach David Thompson</div><div class="testimonial-role">Head Coach, Soccer</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee-row">
+    <div class="marquee-track-wrap">
+      <div class="marquee-track reverse">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The flag alerts are a game-changer. I knew about a freshman's knee issue before he even told me in person."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">RP</div>
+            <div><div class="testimonial-name">Coach Rachel Park</div><div class="testimonial-role">Assistant Coach, Track & Field</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"We tried three wellness apps before Reflect. The difference? Athletes don't need to download anything. Adoption was instant."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171);">MW</div>
+            <div><div class="testimonial-name">Mike Williams</div><div class="testimonial-role">Director of Performance</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The AI told me to reduce load for my midfielder group — I did, and we had zero soft-tissue injuries that month. First time all season."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#8b5cf6,#c084fc);">AN</div>
+            <div><div class="testimonial-name">Coach Alex Nguyen</div><div class="testimonial-role">Head Coach, MLS Next</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"Parents love it too. They know their kids are being monitored. It builds trust with the entire program."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#14b8a6,#2dd4bf);">SB</div>
+            <div><div class="testimonial-name">Coach Sandra Blake</div><div class="testimonial-role">Head Coach, High School Football</div></div>
+          </div>
+        </div>
+        <!-- Duplicates -->
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The flag alerts are a game-changer. I knew about a freshman's knee issue before he even told me in person."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">RP</div>
+            <div><div class="testimonial-name">Coach Rachel Park</div><div class="testimonial-role">Assistant Coach, Track & Field</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"We tried three wellness apps before Reflect. The difference? Athletes don't need to download anything. Adoption was instant."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171);">MW</div>
+            <div><div class="testimonial-name">Mike Williams</div><div class="testimonial-role">Director of Performance</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"The AI told me to reduce load for my midfielder group — I did, and we had zero soft-tissue injuries that month. First time all season."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#8b5cf6,#c084fc);">AN</div>
+            <div><div class="testimonial-name">Coach Alex Nguyen</div><div class="testimonial-role">Head Coach, MLS Next</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="testimonial-text">"Parents love it too. They know their kids are being monitored. It builds trust with the entire program."</div>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#14b8a6,#2dd4bf);">SB</div>
+            <div><div class="testimonial-name">Coach Sandra Blake</div><div class="testimonial-role">Head Coach, High School Football</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FINAL CTA ====== -->
+<section class="final-cta" id="cta">
+  <div class="retro-grid"></div>
+  <div class="final-cta-content">
+    <h2 class="final-headline">Ready to transform your team's wellness tracking?</h2>
+    <p class="final-sub">Join 200+ coaches who've replaced clipboard check-ins with automated SMS conversations. Free for teams under 25 athletes.</p>
+    <a href="https://reflectsalus.app" class="btn-shimmer">Start Free Trial &rarr;</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Reflect</div>
+  <div class="footer-text">&copy; 2026 Reflect. The always-on assistant coach.</div>
+</footer>
+
+</body>
+</html>

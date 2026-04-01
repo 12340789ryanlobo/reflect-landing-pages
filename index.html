@@ -326,26 +326,81 @@
     <header>
         <p class="label">MPCS 51238 &middot; Design, Build, Ship &middot; Spring 2026</p>
         <h1>Iterating on <span>Reflect</span></h1>
-        <p class="subtitle">A rapid prototyping exercise: 25 initial explorations narrowed to 10 refined directions for a fitness and rehab tracking app.</p>
+        <p class="subtitle">A rapid prototyping exercise: 25 explorations, 10 combinations, and 10 component-driven refinements for a fitness and rehab tracking app.</p>
     </header>
 
     <section class="narrative">
         <h2>The Design Story</h2>
-        <p>This project compresses the full design exploration process into two rounds of iteration. Round 1 explores 25 radically different visual directions. Round 2 takes the strongest elements and combines them into 10 refined templates, incorporating patterns inspired by shadcn and Magic UI component libraries.</p>
+        <p>This project compresses the full design exploration process into three rounds. Round 1 goes wide with 25 directions. Round 2 combines favorites. Round 2.5 rebuilds from scratch using Magic UI and shadcn component patterns as the primary design system.</p>
 
         <div class="phase">
-            <h3><span class="range">Round 1 (v1&ndash;v25):</span> Go Wide</h3>
-            <p>25 radically different explorations &mdash; from minimal SaaS to brutalist, editorial to cyberpunk, athletic to blueprint. Each version inhabits a completely different visual world. The goal: divergent thinking across every direction imaginable.</p>
+            <h3><span class="range">Round 2.5 (v1&ndash;v10):</span> Component-Driven Rebuild</h3>
+            <p>A fresh start built primarily from Magic UI and shadcn component patterns: DotPattern backgrounds, OrbitingCircles, BorderBeam, ShineBorder, AnimatedGradientText, iPhone 15 Pro mockups, Safari browser frames, BentoGrids, Marquee testimonials, Ripple effects, RetroGrid, WarpBackground, NeonGradientCards, PulsatingButtons, and InteractiveHoverButtons &mdash; all translated to pure CSS. Every section uses named component patterns.</p>
         </div>
 
         <div class="phase">
             <h3><span class="range">Round 2 (v1&ndash;v10):</span> Converge &amp; Combine</h3>
-            <p>After reviewing Round 1, the strongest elements were identified: Apple-minimal typography, vibrant gradients, dark premium feel, product demos showing SMS conversations, dashboard data visualization, and discoverable hover interactions. Round 2 combines these into 10 focused templates using Magic UI-inspired effects &mdash; shimmer buttons, border beams, animated gradient text, marquee testimonials, iPhone mockups, and bento grids &mdash; all in pure CSS.</p>
+            <p>After reviewing Round 1, the strongest elements were identified: Apple-minimal typography, vibrant gradients, dark premium feel, product demos, dashboard data, and hover discovery. Round 2 combines these into 10 focused templates.</p>
+        </div>
+
+        <div class="phase">
+            <h3><span class="range">Round 1 (v1&ndash;v25):</span> Go Wide</h3>
+            <p>25 radically different explorations &mdash; from minimal SaaS to brutalist, editorial to cyberpunk, athletic to blueprint. Divergent thinking across every direction imaginable.</p>
         </div>
     </section>
 
-    <!-- ── ROUND 2 (featured first) ── -->
+    <!-- ── ROUND 2.5 (featured first) ── -->
     <section class="grid-section">
+        <h2>Round 2.5 &mdash; Component-Driven Rebuild</h2>
+        <p class="section-sub">10 templates built from Magic UI + shadcn patterns. Click any card to view.</p>
+
+        <div class="grid">
+            <a href="round2.5/v1.html" class="card">
+                <div class="card-preview" style="background:white;display:flex;align-items:center;justify-content:center;background-image:radial-gradient(circle,rgba(0,0,0,0.08) 1px,transparent 1px);background-size:20px 20px;"></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V1</span><h3>DotPattern + Gradient + Ripple</h3><p>Airy Apple-minimal with dot background, expanding ripple rings, gradient headline.</p></div>
+            </a>
+            <a href="round2.5/v2.html" class="card">
+                <div class="card-preview" style="background:#0a0a0b;display:flex;align-items:center;justify-content:center;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:40px 40px;"><span style="font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,#7c3aed,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Orbit</span></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V2</span><h3>Dark + OrbitingCircles + BorderBeam</h3><p>Dark premium with orbiting icons, spinning border beams, grid pattern.</p></div>
+            </a>
+            <a href="round2.5/v3.html" class="card">
+                <div class="card-preview" style="background:white;display:flex;align-items:center;justify-content:center;"><div style="width:60px;height:110px;background:#1a1a1a;border-radius:14px;padding:4px;"><div style="background:white;border-radius:10px;height:100%;"></div></div></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V3</span><h3>iPhone Demo + BentoGrid</h3><p>Full SMS conversation in phone mockup, bento feature grid, hover reveals.</p></div>
+            </a>
+            <a href="round2.5/v4.html" class="card">
+                <div class="card-preview" style="background:white;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#a1a1aa;font-style:italic;">hover to discover</div>
+                <div class="card-body"><span class="version">R2.5 &middot; V4</span><h3>Hover Discovery + MagicCard</h3><p>Clean at rest, reveals on hover. MagicCard glow, interactive buttons.</p></div>
+            </a>
+            <a href="round2.5/v5.html" class="card">
+                <div class="card-preview" style="background:#0a0a0b;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;"><div style="position:absolute;width:2px;height:60px;background:linear-gradient(to bottom,transparent,#7c3aed,transparent);animation:none;top:20%;left:30%;"></div><div style="position:absolute;width:2px;height:80px;background:linear-gradient(to bottom,transparent,#3b82f6,transparent);top:10%;left:60%;"></div><span style="z-index:1;font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,#d4a054,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Warp</span></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V5</span><h3>WarpBackground + Dark + Premium</h3><p>Animated warp beams, perspective grid, neon glow cards. Futuristic.</p></div>
+            </a>
+            <a href="round2.5/v6.html" class="card">
+                <div class="card-preview" style="background:#0a0a0b;display:flex;align-items:center;justify-content:center;clip-path:polygon(0 0,100% 2%,100% 100%,0 98%);"><span style="color:#22c55e;font-size:1.4rem;font-weight:900;letter-spacing:2px;">PERFORM.</span></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V6</span><h3>Athletic + RetroGrid + Orbiting</h3><p>Electric green on dark, perspective grid, orbiting integrations.</p></div>
+            </a>
+            <a href="round2.5/v7.html" class="card">
+                <div class="card-preview" style="background:#f8fafc;display:flex;align-items:center;justify-content:center;gap:8px;"><div style="width:45%;height:110px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;"></div><div style="width:35%;height:110px;background:white;border:1px solid #e5e7eb;border-radius:8px;"></div></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V7</span><h3>Dashboard Hero + Safari + Stats</h3><p>Split hero with Safari dashboard mockup, data viz everywhere.</p></div>
+            </a>
+            <a href="round2.5/v8.html" class="card">
+                <div class="card-preview" style="background:#111;display:flex;align-items:center;justify-content:center;"><span style="font-size:1.8rem;font-weight:700;color:#d4a054;">Restraint.</span></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V8</span><h3>Premium Restraint + Ripple + Warm</h3><p>Dark, amber accents, minimal words. Ripple rings, intentional emptiness.</p></div>
+            </a>
+            <a href="round2.5/v9.html" class="card">
+                <div class="card-preview" style="background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(59,130,246,0.06),rgba(6,182,212,0.06));display:flex;align-items:center;justify-content:center;"><div style="width:55px;height:100px;border:2px solid #7c3aed;border-radius:14px;"></div></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V9</span><h3>Full Demo + OrbitingCircles</h3><p>iPhone demo, orbiting integrations, two-row marquee, every section alive.</p></div>
+            </a>
+            <a href="round2.5/v10.html" class="card highlight" data-badge="The Ultimate">
+                <div class="card-preview" style="background:white;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;"><div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:#0a0a0b;"></div><span style="z-index:1;font-size:1.4rem;font-weight:800;letter-spacing:1px;background:linear-gradient(135deg,#7c3aed,#3b82f6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">THE ONE</span></div>
+                <div class="card-body"><span class="version">R2.5 &middot; V10</span><h3>The Best of Everything</h3><p>Every best pattern combined. 8 sections alternating light/dark. The final page.</p></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ── ROUND 2 ── -->
+    <div class="divider">
+    <section class="grid-section" style="padding:0; margin-bottom:4rem;">
         <h2>Round 2 &mdash; Refined Directions</h2>
         <p class="section-sub">10 templates combining the best elements. Click any card to view.</p>
 
@@ -441,6 +496,7 @@
             </a>
         </div>
     </section>
+    </div>
 
     <!-- ── ROUND 1 ── -->
     <div class="divider">

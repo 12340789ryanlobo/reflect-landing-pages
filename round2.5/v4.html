@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reflect — Discover on Hover</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e5e5e5;
+      --text: #0f0f0f;
+      --text-secondary: #6b6b6b;
+      --text-tertiary: #a0a0a0;
+      --accent: #7c3aed;
+      --accent-blue: #3b82f6;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== GridPattern ===== */
+    .grid-pattern {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(600px circle at 50% 30%, white, transparent);
+      -webkit-mask-image: radial-gradient(600px circle at 50% 30%, white, transparent);
+    }
+
+    /* ===== AnimatedGradientText ===== */
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-gradient-text {
+      background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 4s ease infinite;
+    }
+
+    /* ===== AnimatedShinyText badge ===== */
+    @keyframes shinySlide {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+
+    .shiny-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background-color: #fff;
+      background-image: linear-gradient(110deg, transparent 33%, rgba(124,58,237,0.12) 50%, transparent 67%);
+      background-size: 300% 100%;
+      animation: shinySlide 3s ease-in-out infinite;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.01em;
+    }
+
+    /* ===== InteractiveHoverButton ===== */
+    .hover-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border: 1.5px solid var(--text);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: color 0.35s ease;
+      text-decoration: none;
+    }
+
+    .hover-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background: var(--text);
+      transition: width 0.35s ease;
+      z-index: -1;
+    }
+
+    .hover-btn:hover {
+      color: #fff;
+    }
+
+    .hover-btn:hover::before {
+      width: 100%;
+    }
+
+    .hover-btn-accent {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .hover-btn-accent::before {
+      background: var(--accent);
+    }
+
+    .hover-btn-accent:hover {
+      color: #fff;
+    }
+
+    /* ===== MagicCard (hover glow) ===== */
+    .magic-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      overflow: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .magic-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(400px circle at 50% 50%, rgba(124,58,237,0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .magic-card:hover {
+      border-color: rgba(124,58,237,0.25);
+      box-shadow: 0 8px 32px rgba(124,58,237,0.06);
+    }
+
+    .magic-card:hover::before {
+      opacity: 1;
+    }
+
+    .magic-card .card-description {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.5s ease, opacity 0.4s ease, margin-top 0.4s ease;
+      margin-top: 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .magic-card:hover .card-description {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 12px;
+    }
+
+    /* ===== BorderBeam ===== */
+    @keyframes borderBeamSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .border-beam {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+    }
+
+    .border-beam::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent 80%, #7c3aed, #3b82f6, transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      animation: borderBeamSpin 3s linear infinite;
+      z-index: 0;
+    }
+
+    .border-beam::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: var(--surface);
+      border-radius: calc(var(--radius-lg) - 2px);
+      z-index: 1;
+    }
+
+    .border-beam:hover::before {
+      opacity: 1;
+    }
+
+    .border-beam > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== Safari Mockup ===== */
+    .safari-frame {
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+    }
+
+    .safari-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #f8f8f8;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .safari-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .safari-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .safari-dots span:nth-child(1) { background: #ff5f57; }
+    .safari-dots span:nth-child(2) { background: #febc2e; }
+    .safari-dots span:nth-child(3) { background: #28c840; }
+
+    .safari-url {
+      flex: 1;
+      background: #efefef;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .safari-content {
+      padding: 24px;
+      min-height: 300px;
+      background: #fafafa;
+    }
+
+    /* ===== Marquee ===== */
+    @keyframes marqueeScroll {
+      to { transform: translateX(-50%); }
+    }
+
+    .marquee {
+      overflow: hidden;
+      position: relative;
+      mask-image: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, white 10%, white 90%, transparent);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+      animation: marqueeScroll 35s linear infinite;
+    }
+
+    .marquee:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      flex-shrink: 0;
+      width: 320px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .marquee-item p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .marquee-item .attribution {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .marquee-item .role {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== Sections ===== */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== Nav ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250,250,250,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ===== Hero ===== */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin: 20px 0 16px;
+    }
+
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ===== Product Explanation ===== */
+    .product-section {
+      padding: 80px 0;
+    }
+
+    .product-section .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .product-section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+
+    .product-section .lead {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    /* ===== Features ===== */
+    .features-section {
+      padding: 80px 0;
+    }
+
+    .features-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .features-section .section-sub {
+      text-align: center;
+      color: var(--text-secondary);
+      max-width: 480px;
+      margin: 0 auto 48px;
+      font-size: 1rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .magic-card .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .magic-card h3 {
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .magic-card .card-preview {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      transition: opacity 0.3s ease;
+    }
+
+    .magic-card:hover .card-preview {
+      opacity: 0.4;
+    }
+
+    /* ===== How It Works ===== */
+    .how-section {
+      padding: 80px 0;
+    }
+
+    .how-section h2 {
+      text-align: center;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      padding: 28px 20px;
+    }
+
+    .step-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 650;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ===== Dashboard (Safari) ===== */
+    .dashboard-section {
+      padding: 60px 0 80px;
+      text-align: center;
+    }
+
+    .dashboard-section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .dashboard-section .section-sub {
+      color: var(--text-secondary);
+      max-width: 460px;
+      margin: 0 auto 40px;
+      font-size: 1rem;
+    }
+
+    .safari-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard mock content */
+    .dash-mock {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .dash-stat {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: left;
+    }
+
+    .dash-stat .label {
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .dash-stat .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .dash-stat .change {
+      font-size: 0.75rem;
+      color: #22c55e;
+      margin-top: 2px;
+    }
+
+    .dash-chart {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      height: 140px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .dash-bar {
+      flex: 1;
+      background: linear-gradient(to top, rgba(124,58,237,0.15), rgba(124,58,237,0.4));
+      border-radius: 4px 4px 0 0;
+      min-height: 12px;
+    }
+
+    /* ===== Testimonials ===== */
+    .testimonials-section {
+      padding: 80px 0;
+    }
+
+    .testimonials-section h2 {
+      text-align: center;
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 36px;
+    }
+
+    /* ===== CTA ===== */
+    .cta-section {
+      padding: 80px 0 100px;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .cta-section p {
+      color: var(--text-secondary);
+      max-width: 440px;
+      margin: 0 auto 32px;
+      font-size: 1rem;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .product-grid { grid-template-columns: 1fr; gap: 32px; }
+      .steps { grid-template-columns: 1fr; gap: 16px; }
+      .dash-mock { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 0 50px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- GridPattern background -->
+<div class="grid-pattern" aria-hidden="true"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">Reflect</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#" class="hover-btn" style="padding:8px 20px; font-size:0.8rem;">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <span class="shiny-badge">&#10024; Now with AI coaching insights</span>
+    <h1>
+      <span class="animated-gradient-text">Know how every athlete feels.</span><br>
+      Before they tell you.
+    </h1>
+    <p class="subtitle">
+      Reflect automates post-practice and post-competition check-ins via SMS and WhatsApp. Real-time wellness data, delivered to your dashboard.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="hover-btn hover-btn-accent">Start Free Trial</a>
+      <a href="#" class="hover-btn">See the Dashboard &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Product Explanation -->
+<section class="product-section">
+  <div class="container">
+    <div class="product-grid">
+      <div>
+        <p class="section-label">The Problem</p>
+        <h2>Coaches can't track 60 athletes with spreadsheets</h2>
+        <p class="lead">
+          Post-practice check-ins get skipped. Injuries go unreported. Coaches find out too late. Reflect fixes this by meeting athletes where they already are — their phones — with automated, conversational check-ins that take 30 seconds.
+        </p>
+      </div>
+      <div class="border-beam" style="padding: 0;">
+        <div style="background: var(--surface); border-radius: 18px; padding: 32px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div style="background: rgba(124,58,237,0.06); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;">Response Rate</div>
+              <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;">94%</div>
+            </div>
+            <div style="background: rgba(59,130,246,0.06); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;">Avg. Response</div>
+              <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;">28s</div>
+            </div>
+            <div style="background: rgba(34,197,94,0.06); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;">Flags Raised</div>
+              <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;">12</div>
+            </div>
+            <div style="background: rgba(245,158,11,0.06); border-radius: 12px; padding: 20px;">
+              <div style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em;">Athletes</div>
+              <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;">47</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features-section" id="features">
+  <div class="container">
+    <h2>Everything you need to see clearly</h2>
+    <p class="section-sub">Hover to discover what each feature does for your team.</p>
+    <div class="features-grid">
+      <div class="magic-card">
+        <div class="card-icon">&#128172;</div>
+        <h3>SMS &amp; WhatsApp Check-ins</h3>
+        <p class="card-preview">Automated, conversational</p>
+        <div class="card-description">
+          Athletes respond to simple questions via text in under 30 seconds. No app download required. Reflect sends at the times you set — post-practice, morning, or game day.
+        </div>
+      </div>
+      <div class="magic-card">
+        <div class="card-icon">&#128200;</div>
+        <h3>Real-Time Dashboard</h3>
+        <p class="card-preview">Wellness at a glance</p>
+        <div class="card-description">
+          See every athlete's readiness, soreness, sleep, and mood in one view. Trend lines, flags, and daily snapshots update as responses come in — no refresh needed.
+        </div>
+      </div>
+      <div class="magic-card">
+        <div class="card-icon">&#128681;</div>
+        <h3>Smart Flag Alerts</h3>
+        <p class="card-preview">Never miss a warning sign</p>
+        <div class="card-description">
+          Reflect detects concerning patterns — declining sleep, spiking soreness, missed check-ins — and alerts you before small issues become serious injuries.
+        </div>
+      </div>
+      <div class="magic-card">
+        <div class="card-icon">&#129656;</div>
+        <h3>Injury Heatmaps</h3>
+        <p class="card-preview">See where pain clusters</p>
+        <div class="card-description">
+          Visual body maps aggregate soreness data across the team. Spot patterns — like hamstring tightness spiking across your sprinters — and adjust training proactively.
+        </div>
+      </div>
+      <div class="magic-card">
+        <div class="card-icon">&#129302;</div>
+        <h3>AI Coaching Assistant</h3>
+        <p class="card-preview">Insight, not just data</p>
+        <div class="card-description">
+          Ask questions in natural language: "Who should I rest this week?" or "How is the team trending since last tournament?" Reflect's AI synthesizes your data into answers.
+        </div>
+      </div>
+      <div class="magic-card">
+        <div class="card-icon">&#128274;</div>
+        <h3>Athlete Privacy Controls</h3>
+        <p class="card-preview">Trust is the foundation</p>
+        <div class="card-description">
+          Athletes control what's shared. Coaches see aggregate wellness, not private details. Full FERPA and HIPAA alignment ensures data stays protected.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-section" id="how">
+  <div class="container">
+    <h2>Three steps. That's it.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Connect your roster</h3>
+        <p>Import athletes from a spreadsheet or add them manually. Set check-in schedules per team or individual.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Athletes respond via text</h3>
+        <p>Automated check-ins go out via SMS or WhatsApp. Athletes reply in 30 seconds with quick-tap responses.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>You see everything</h3>
+        <p>Wellness dashboards, flag alerts, injury heatmaps, and AI insights — all updated in real time on your screen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Mockup -->
+<section class="dashboard-section" id="dashboard">
+  <div class="container">
+    <h2>Your new command center</h2>
+    <p class="section-sub">Every data point from every athlete, organized and actionable.</p>
+    <div class="safari-wrapper border-beam">
+      <div class="safari-frame" style="position: relative; z-index: 2;">
+        <div class="safari-bar">
+          <div class="safari-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="safari-url">app.reflectsalus.app/dashboard</div>
+        </div>
+        <div class="safari-content">
+          <div class="dash-mock">
+            <div class="dash-stat">
+              <div class="label">Response Rate</div>
+              <div class="value">94%</div>
+              <div class="change">&#9650; 3% from last week</div>
+            </div>
+            <div class="dash-stat">
+              <div class="label">Active Flags</div>
+              <div class="value">4</div>
+              <div class="change" style="color:#ef4444;">&#9650; 2 new today</div>
+            </div>
+            <div class="dash-stat">
+              <div class="label">Team Readiness</div>
+              <div class="value">7.8</div>
+              <div class="change">&#9650; 0.4 avg increase</div>
+            </div>
+          </div>
+          <div class="dash-chart">
+            <div class="dash-bar" style="height:45%;"></div>
+            <div class="dash-bar" style="height:55%;"></div>
+            <div class="dash-bar" style="height:50%;"></div>
+            <div class="dash-bar" style="height:70%;"></div>
+            <div class="dash-bar" style="height:65%;"></div>
+            <div class="dash-bar" style="height:80%;"></div>
+            <div class="dash-bar" style="height:75%;"></div>
+            <div class="dash-bar" style="height:90%;"></div>
+            <div class="dash-bar" style="height:85%;"></div>
+            <div class="dash-bar" style="height:60%;"></div>
+            <div class="dash-bar" style="height:72%;"></div>
+            <div class="dash-bar" style="height:88%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Marquee -->
+<section class="testimonials-section">
+  <div class="container">
+    <h2>Trusted by coaches everywhere</h2>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <p>"We caught a stress fracture early because Reflect flagged declining wellness scores two weeks before any visible symptoms."</p>
+        <div class="attribution">Coach Sarah Kim</div>
+        <div class="role">D1 Track &amp; Field, 48 athletes</div>
+      </div>
+      <div class="marquee-item">
+        <p>"My athletes actually respond — 94% rate. Before this, paper surveys got maybe 30%. The SMS approach is genius."</p>
+        <div class="attribution">Marcus Rivera</div>
+        <div class="role">Head Coach, Club Soccer</div>
+      </div>
+      <div class="marquee-item">
+        <p>"The AI assistant told me to rest my top 3 sprinters before regionals. They peaked at exactly the right time."</p>
+        <div class="attribution">Coach David Chen</div>
+        <div class="role">High School Athletics Director</div>
+      </div>
+      <div class="marquee-item">
+        <p>"Injury heatmaps changed how we plan training. We saw hamstring tightness clustering and adjusted before anyone got hurt."</p>
+        <div class="attribution">Dr. Anika Patel</div>
+        <div class="role">Sports Rehab Director</div>
+      </div>
+      <div class="marquee-item">
+        <p>"I used to spend Sunday nights calling athletes. Now I open my dashboard over coffee and know exactly where we stand."</p>
+        <div class="attribution">James Okoro</div>
+        <div class="role">Collegiate Volleyball, 32 athletes</div>
+      </div>
+      <div class="marquee-item">
+        <p>"The flag alerts are a game changer. Two athletes were struggling silently and Reflect surfaced it for me to act."</p>
+        <div class="attribution">Lisa Moreno</div>
+        <div class="role">Youth Performance Coach</div>
+      </div>
+      <!-- duplicate for seamless loop -->
+      <div class="marquee-item">
+        <p>"We caught a stress fracture early because Reflect flagged declining wellness scores two weeks before any visible symptoms."</p>
+        <div class="attribution">Coach Sarah Kim</div>
+        <div class="role">D1 Track &amp; Field, 48 athletes</div>
+      </div>
+      <div class="marquee-item">
+        <p>"My athletes actually respond — 94% rate. Before this, paper surveys got maybe 30%. The SMS approach is genius."</p>
+        <div class="attribution">Marcus Rivera</div>
+        <div class="role">Head Coach, Club Soccer</div>
+      </div>
+      <div class="marquee-item">
+        <p>"The AI assistant told me to rest my top 3 sprinters before regionals. They peaked at exactly the right time."</p>
+        <div class="attribution">Coach David Chen</div>
+        <div class="role">High School Athletics Director</div>
+      </div>
+      <div class="marquee-item">
+        <p>"Injury heatmaps changed how we plan training. We saw hamstring tightness clustering and adjusted before anyone got hurt."</p>
+        <div class="attribution">Dr. Anika Patel</div>
+        <div class="role">Sports Rehab Director</div>
+      </div>
+      <div class="marquee-item">
+        <p>"I used to spend Sunday nights calling athletes. Now I open my dashboard over coffee and know exactly where we stand."</p>
+        <div class="attribution">James Okoro</div>
+        <div class="role">Collegiate Volleyball, 32 athletes</div>
+      </div>
+      <div class="marquee-item">
+        <p>"The flag alerts are a game changer. Two athletes were struggling silently and Reflect surfaced it for me to act."</p>
+        <div class="attribution">Lisa Moreno</div>
+        <div class="role">Youth Performance Coach</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="animated-gradient-text">Ready to see your team clearly?</h2>
+    <p>Join hundreds of coaches using Reflect to stay connected with their athletes — effortlessly.</p>
+    <div class="hero-actions">
+      <a href="#" class="hover-btn hover-btn-accent">Start Free Trial</a>
+      <a href="#" class="hover-btn">Book a Demo &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    &copy; 2026 Reflect. The always-on assistant coach.
+  </div>
+</footer>
+
+</body>
+</html>

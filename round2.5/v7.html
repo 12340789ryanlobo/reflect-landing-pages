@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — Dashboard Hero</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #fafafa;
+    color: #1a1a2e;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated Gradient Text ── */
+  .gradient-text {
+    background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* ── Animated Shiny Text Badge ── */
+  .shiny-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: #f0f0f5;
+    border: 1px solid #e0e0ea;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #555;
+    position: relative;
+    overflow: hidden;
+  }
+  .shiny-badge::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(124,58,237,0.12), transparent);
+    animation: shinySlide 3s ease-in-out infinite;
+  }
+  @keyframes shinySlide {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  /* ── Pulsating Button ── */
+  .pulse-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 1;
+  }
+  .pulse-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    z-index: -1;
+    animation: pulseRing 2s ease-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+
+  /* ── Shimmer Button ── */
+  .shimmer-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 40px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden;
+  }
+  .shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    100% { left: 100%; }
+  }
+
+  /* ── Border Beam ── */
+  .border-beam {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .border-beam::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px;
+    background: conic-gradient(from var(--beam-angle, 0deg), transparent 70%, #7c3aed, #3b82f6, transparent 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beamSpin 3s linear infinite;
+  }
+  @keyframes beamSpin {
+    to { --beam-angle: 360deg; }
+  }
+  @property --beam-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .border-beam::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 14px;
+    background: #fff;
+    z-index: 0;
+  }
+  .border-beam > * { position: relative; z-index: 1; }
+
+  /* ── Shine Border ── */
+  .shine-border {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+  .shine-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 2px;
+    background: conic-gradient(from var(--shine-angle, 0deg), #7c3aed, #3b82f6, #06b6d4, #7c3aed);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: shineSpin 4s linear infinite;
+  }
+  @keyframes shineSpin {
+    to { --shine-angle: 360deg; }
+  }
+  @property --shine-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  .shine-border::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 14px;
+    background: #fff;
+    z-index: 0;
+  }
+  .shine-border > * { position: relative; z-index: 1; }
+
+  /* ── Safari Mockup ── */
+  .safari-mockup {
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  }
+  .safari-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f5f5f7;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .safari-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .safari-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .safari-dots span:nth-child(1) { background: #ff5f57; }
+  .safari-dots span:nth-child(2) { background: #febc2e; }
+  .safari-dots span:nth-child(3) { background: #28c840; }
+  .safari-url {
+    flex: 1;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #888;
+    background: #e8e8ed;
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+  .safari-content {
+    padding: 16px;
+    min-height: 200px;
+  }
+
+  /* ── iPhone 15 Pro Mockup ── */
+  .iphone-frame {
+    background: #1a1a1a;
+    border-radius: 44px;
+    padding: 12px;
+    width: 280px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .iphone-screen {
+    background: #fff;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    min-height: 520px;
+  }
+  .iphone-notch {
+    width: 100px;
+    height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+  .iphone-content {
+    padding: 8px 16px 16px;
+  }
+
+  /* ── Avatar Circles ── */
+  .avatar-circles {
+    display: flex;
+    align-items: center;
+  }
+  .avatar-circles .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-left: -10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .avatar-circles .avatar:first-child { margin-left: 0; }
+  .avatar-circles .avatar-count {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin-left: -10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #f0f0f5;
+    color: #555;
+  }
+
+  /* ── Marquee ── */
+  .marquee-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  .marquee-container::before,
+  .marquee-container::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 100px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-container::before {
+    left: 0;
+    background: linear-gradient(to right, #fafafa, transparent);
+  }
+  .marquee-container::after {
+    right: 0;
+    background: linear-gradient(to left, #fafafa, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: marqueeScroll 30s linear infinite;
+  }
+  .marquee-container:hover .marquee-track {
+    animation-play-state: paused;
+  }
+  @keyframes marqueeScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── Bento Grid ── */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .bento-wide { grid-column: span 2; }
+
+  /* ── Dot Pattern ── */
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 40%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, #000 40%, transparent 75%);
+  }
+
+  /* ── Retro Grid ── */
+  .retro-grid-bg {
+    position: relative;
+    overflow: hidden;
+  }
+  .retro-grid-bg::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: -50%; right: -50%;
+    height: 400px;
+    background-image:
+      linear-gradient(to right, rgba(124,58,237,0.15) 1px, transparent 1px),
+      linear-gradient(to top, rgba(124,58,237,0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: bottom center;
+    -webkit-mask-image: linear-gradient(to top, #000 20%, transparent 80%);
+    mask-image: linear-gradient(to top, #000 20%, transparent 80%);
+  }
+
+  /* ── Layout ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 80px 0; }
+
+  /* ── Hero ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    min-height: 90vh;
+    padding-top: 60px;
+  }
+  .hero-left h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 16px 0 20px;
+  }
+  .hero-left p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 28px;
+    max-width: 440px;
+  }
+  .hero-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #777;
+  }
+
+  /* ── Dashboard inside Safari ── */
+  .dash-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dash-stat {
+    background: #f8f8fc;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+  }
+  .dash-stat-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .dash-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .dash-stat-value.green { color: #22c55e; }
+  .dash-stat-value.blue { color: #3b82f6; }
+  .dash-stat-value.red { color: #ef4444; }
+  .dash-stat-value.purple { color: #7c3aed; }
+
+  /* Bar chart */
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+    margin-bottom: 14px;
+    padding: 0 4px;
+  }
+  .bar-chart .bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: linear-gradient(to top, #7c3aed, #3b82f6);
+    position: relative;
+  }
+  .bar-chart .bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem;
+    color: #aaa;
+  }
+  .bar-chart-title {
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  /* Alert feed */
+  .alert-feed { list-style: none; }
+  .alert-feed li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.7rem;
+    color: #555;
+  }
+  .alert-feed li:last-child { border-bottom: none; }
+  .alert-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .alert-dot.red { background: #ef4444; }
+  .alert-dot.yellow { background: #eab308; }
+  .alert-dot.green { background: #22c55e; }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,250,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #eee;
+    padding: 14px 0;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.88rem;
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .nav-links a:hover { color: #7c3aed; }
+
+  /* ── Section titles ── */
+  .section-label {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-subtitle {
+    text-align: center;
+    font-size: 1.05rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 48px;
+  }
+
+  /* ── Product Demo Section ── */
+  .product-demo {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  /* ── SMS conversation ── */
+  .sms-list { list-style: none; }
+  .sms-list li {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 16px;
+    font-size: 0.78rem;
+    max-width: 85%;
+    line-height: 1.4;
+  }
+  .sms-incoming {
+    background: #e8e8ed;
+    color: #333;
+    border-bottom-left-radius: 4px;
+  }
+  .sms-outgoing {
+    background: #3b82f6;
+    color: #fff;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+  .sms-header {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+  }
+
+  /* ── Bento feature cards ── */
+  .bento-card {
+    padding: 24px;
+    background: #fff;
+    min-height: 220px;
+  }
+  .bento-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1a1a2e;
+  }
+  .bento-card p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  /* Mini bar chart in card */
+  .mini-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 50px;
+  }
+  .mini-bars .mb {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(to top, #7c3aed, #a78bfa);
+  }
+
+  /* Readiness ring */
+  .readiness-ring {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(#22c55e 0% 87%, #e5e7eb 87% 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+  }
+  .readiness-ring-inner {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #22c55e;
+  }
+
+  /* Body heatmap */
+  .heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+    max-width: 140px;
+    margin: 0 auto;
+  }
+  .heatmap-grid span {
+    aspect-ratio: 1;
+    border-radius: 3px;
+  }
+
+  /* AI chat mock */
+  .ai-chat { list-style: none; font-size: 0.78rem; }
+  .ai-chat li {
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+  }
+  .ai-user {
+    background: #f0f0f5;
+    color: #333;
+    max-width: 80%;
+  }
+  .ai-bot {
+    background: linear-gradient(135deg, #7c3aed11, #3b82f611);
+    color: #444;
+    max-width: 90%;
+    border: 1px solid #e8e0f5;
+  }
+
+  /* ── Marquee testimonial card ── */
+  .testimonial-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 20px 24px;
+    min-width: 320px;
+    max-width: 360px;
+    flex-shrink: 0;
+  }
+  .testimonial-card p {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .testimonial-author {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+  .testimonial-role {
+    font-size: 0.75rem;
+    color: #888;
+  }
+
+  /* ── How it works ── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step {
+    text-align: center;
+    padding: 24px;
+  }
+  .step-number {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 auto 16px;
+  }
+  .step h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 0.88rem;
+    color: #666;
+  }
+
+  /* ── Final CTA ── */
+  .final-cta {
+    text-align: center;
+    padding: 100px 24px;
+    position: relative;
+  }
+  .final-cta h2 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .final-cta p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 32px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 0.82rem;
+    color: #aaa;
+    border-top: 1px solid #eee;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; text-align: center; }
+    .hero-left p { margin-left: auto; margin-right: auto; }
+    .hero-social { justify-content: center; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-wide { grid-column: span 1; }
+    .product-demo { flex-direction: column; align-items: center; }
+    .steps { grid-template-columns: 1fr; }
+    .hero-left h1 { font-size: 2.4rem; }
+  }
+  @media (max-width: 600px) {
+    .hero-left h1 { font-size: 1.9rem; }
+    .section-title { font-size: 1.7rem; }
+    .dash-stats { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Reflect</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it Works</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#cta">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="container" style="padding-top: 80px;">
+  <div class="hero">
+    <!-- Left: Content -->
+    <div class="hero-left">
+      <div class="shiny-badge">New: AI Coaching Insights</div>
+      <h1>
+        Your athletes' wellness,<br>
+        <span class="gradient-text">always visible.</span>
+      </h1>
+      <p>Automated SMS/WhatsApp check-ins after every practice and competition. Real-time dashboards, flag alerts, injury heatmaps, and AI insights — so no athlete slips through the cracks.</p>
+      <a href="#cta" class="pulse-btn">Start Free Trial</a>
+      <div class="hero-social">
+        <div class="avatar-circles">
+          <div class="avatar" style="background: linear-gradient(135deg, #7c3aed, #a78bfa);">JK</div>
+          <div class="avatar" style="background: linear-gradient(135deg, #3b82f6, #60a5fa);">ML</div>
+          <div class="avatar" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">SR</div>
+          <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #4ade80);">TP</div>
+          <div class="avatar-count">+240</div>
+        </div>
+        <span>coaches trust Reflect</span>
+      </div>
+    </div>
+
+    <!-- Right: Safari Dashboard Mockup with Border Beam -->
+    <div class="border-beam" style="max-width: 520px;">
+      <div class="safari-mockup" style="position: relative; z-index: 1;">
+        <div class="safari-bar">
+          <div class="safari-dots"><span></span><span></span><span></span></div>
+          <div class="safari-url">app.reflectsalus.app/dashboard</div>
+        </div>
+        <div class="safari-content" style="background: #fafafe;">
+          <!-- Stat cards -->
+          <div class="dash-stats">
+            <div class="dash-stat">
+              <div class="dash-stat-label">Readiness</div>
+              <div class="dash-stat-value green">87%</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Response Rate</div>
+              <div class="dash-stat-value blue">94%</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Active Flags</div>
+              <div class="dash-stat-value red">4</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-label">Athletes</div>
+              <div class="dash-stat-value purple">42</div>
+            </div>
+          </div>
+          <!-- Bar chart -->
+          <div class="bar-chart-title">7-Day Response Trend</div>
+          <div class="bar-chart">
+            <div class="bar" style="height: 75%;"><span class="bar-label">M</span></div>
+            <div class="bar" style="height: 88%;"><span class="bar-label">T</span></div>
+            <div class="bar" style="height: 92%;"><span class="bar-label">W</span></div>
+            <div class="bar" style="height: 68%;"><span class="bar-label">T</span></div>
+            <div class="bar" style="height: 95%;"><span class="bar-label">F</span></div>
+            <div class="bar" style="height: 55%;"><span class="bar-label">S</span></div>
+            <div class="bar" style="height: 80%;"><span class="bar-label">S</span></div>
+          </div>
+          <!-- Alert feed -->
+          <div style="margin-top: 20px;">
+            <div style="font-size: 0.7rem; font-weight: 600; color: #888; margin-bottom: 6px;">Recent Alerts</div>
+            <ul class="alert-feed">
+              <li><span class="alert-dot red"></span> Sarah M. — knee pain worsening (2nd day)</li>
+              <li><span class="alert-dot yellow"></span> James T. — sleep score dropped below 50</li>
+              <li><span class="alert-dot red"></span> Kai L. — missed 3 check-ins this week</li>
+              <li><span class="alert-dot green"></span> Team avg. readiness up 4% from last week</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Product Demo: iPhone + Safari side by side ── -->
+<section style="background: #f4f4f8;">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">See it in action</span></div>
+    <h2 class="section-title">Two screens. <span class="gradient-text">Complete picture.</span></h2>
+    <p class="section-subtitle">Athletes reply to simple SMS check-ins. You get a real-time dashboard with every data point you need.</p>
+
+    <div class="product-demo">
+      <!-- iPhone SMS -->
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="iphone-notch"></div>
+          <div class="iphone-content">
+            <div class="sms-header">Reflect Check-in</div>
+            <ul class="sms-list">
+              <li class="sms-incoming">Hey Sarah! Quick post-practice check-in. How are you feeling overall? (1-10)</li>
+              <li class="sms-outgoing">7</li>
+              <li class="sms-incoming">Got it. Any pain or soreness today?</li>
+              <li class="sms-outgoing">Yeah, left knee is a bit sore</li>
+              <li class="sms-incoming">Thanks for flagging. On a scale 1-10, how bad is the knee?</li>
+              <li class="sms-outgoing">4</li>
+              <li class="sms-incoming">Noted — your coach will be informed. How many hours of sleep last night?</li>
+              <li class="sms-outgoing">6.5</li>
+              <li class="sms-incoming">All logged. Take care, Sarah! See you tomorrow.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safari Dashboard -->
+      <div style="flex: 1; max-width: 480px; min-width: 300px;">
+        <div class="border-beam">
+          <div class="safari-mockup" style="position: relative; z-index: 1;">
+            <div class="safari-bar">
+              <div class="safari-dots"><span></span><span></span><span></span></div>
+              <div class="safari-url">app.reflectsalus.app/athlete/sarah-m</div>
+            </div>
+            <div class="safari-content" style="background: #fafafe;">
+              <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; color: #1a1a2e;">Sarah Mitchell — Athlete Profile</div>
+              <div class="dash-stats">
+                <div class="dash-stat">
+                  <div class="dash-stat-label">Today's Readiness</div>
+                  <div class="dash-stat-value green">7/10</div>
+                </div>
+                <div class="dash-stat">
+                  <div class="dash-stat-label">Sleep</div>
+                  <div class="dash-stat-value blue">6.5h</div>
+                </div>
+                <div class="dash-stat">
+                  <div class="dash-stat-label">Pain Flag</div>
+                  <div class="dash-stat-value red">L. Knee</div>
+                </div>
+                <div class="dash-stat">
+                  <div class="dash-stat-label">Check-in Streak</div>
+                  <div class="dash-stat-value purple">12 days</div>
+                </div>
+              </div>
+              <div class="bar-chart-title" style="margin-top: 12px;">Readiness — Last 7 Days</div>
+              <div class="bar-chart">
+                <div class="bar" style="height: 80%;"><span class="bar-label">M</span></div>
+                <div class="bar" style="height: 85%;"><span class="bar-label">T</span></div>
+                <div class="bar" style="height: 90%;"><span class="bar-label">W</span></div>
+                <div class="bar" style="height: 75%;"><span class="bar-label">T</span></div>
+                <div class="bar" style="height: 70%;"><span class="bar-label">F</span></div>
+                <div class="bar" style="height: 65%;"><span class="bar-label">S</span></div>
+                <div class="bar" style="height: 70%; background: linear-gradient(to top, #ef4444, #f87171);"><span class="bar-label">S</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Bento Features ── -->
+<section id="features">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">Features</span></div>
+    <h2 class="section-title">Everything you need. <span class="gradient-text">Nothing you don't.</span></h2>
+    <p class="section-subtitle">Five core capabilities that give you complete visibility into your athletes' wellness.</p>
+
+    <div class="bento-grid">
+      <!-- Card 1: Bar Chart — wide -->
+      <div class="shine-border bento-wide">
+        <div class="bento-card" style="position: relative; z-index: 1;">
+          <h3>Team Readiness Analytics</h3>
+          <p>See readiness trends across your entire roster at a glance. Spot patterns before they become problems.</p>
+          <div class="mini-bars">
+            <div class="mb" style="height: 70%;"></div>
+            <div class="mb" style="height: 85%;"></div>
+            <div class="mb" style="height: 60%;"></div>
+            <div class="mb" style="height: 90%;"></div>
+            <div class="mb" style="height: 75%;"></div>
+            <div class="mb" style="height: 95%;"></div>
+            <div class="mb" style="height: 80%;"></div>
+            <div class="mb" style="height: 65%;"></div>
+            <div class="mb" style="height: 88%;"></div>
+            <div class="mb" style="height: 72%;"></div>
+            <div class="mb" style="height: 92%;"></div>
+            <div class="mb" style="height: 68%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Readiness Ring -->
+      <div class="shine-border">
+        <div class="bento-card" style="position: relative; z-index: 1; text-align: center;">
+          <h3>Readiness Score</h3>
+          <p>Composite wellness metric updated in real-time.</p>
+          <div class="readiness-ring">
+            <div class="readiness-ring-inner">87%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Body Heatmap -->
+      <div class="shine-border">
+        <div class="bento-card" style="position: relative; z-index: 1; text-align: center;">
+          <h3>Injury Heatmap</h3>
+          <p>Visualize pain reports across the body. Catch recurring patterns.</p>
+          <div class="heatmap-grid">
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fca5a5;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fca5a5;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fca5a5;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #dcfce7;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #fca5a5;"></span>
+            <span style="background: #fef9c3;"></span>
+            <span style="background: #dcfce7;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Alert List -->
+      <div class="shine-border">
+        <div class="bento-card" style="position: relative; z-index: 1;">
+          <h3>Smart Flag Alerts</h3>
+          <p>Get notified when something needs attention.</p>
+          <ul class="alert-feed">
+            <li><span class="alert-dot red"></span> Knee pain — recurring 3 days</li>
+            <li><span class="alert-dot yellow"></span> Sleep below 6h — 2 athletes</li>
+            <li><span class="alert-dot red"></span> Missed check-in — Kai L.</li>
+            <li><span class="alert-dot green"></span> Team readiness trending up</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 5: AI Chat — wide -->
+      <div class="shine-border bento-wide">
+        <div class="bento-card" style="position: relative; z-index: 1;">
+          <h3>AI Coaching Assistant</h3>
+          <p>Ask questions about your team's data and get actionable answers instantly.</p>
+          <ul class="ai-chat">
+            <li class="ai-user">Which athletes should I monitor closely this week?</li>
+            <li class="ai-bot">Based on recent data, I'd flag Sarah M. (recurring knee pain, declining sleep) and James T. (3 consecutive readiness scores below 5). Consider modified training loads for both.</li>
+            <li class="ai-user">What's the team's biggest risk factor right now?</li>
+            <li class="ai-bot">Sleep quality has dropped 12% team-wide over the past 10 days, correlating with a 7% decrease in average readiness. This pattern preceded last season's injury cluster.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it Works ── -->
+<section id="how" class="dot-pattern" style="background-color: #f4f4f8;">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">Simple setup</span></div>
+    <h2 class="section-title">Three steps to <span class="gradient-text">complete visibility.</span></h2>
+    <p class="section-subtitle">Get running in under 10 minutes. No app installs for athletes.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Add Your Roster</h3>
+        <p>Import your athletes' phone numbers. That's it — no downloads, no accounts for them to create.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Athletes Reply via SMS</h3>
+        <p>After practices and games, Reflect texts your athletes a quick check-in. They reply in under 60 seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>You See Everything</h3>
+        <p>Dashboards, trends, flags, and AI insights update in real-time. Make informed decisions, faster.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Testimonials Marquee ── -->
+<section id="testimonials">
+  <div class="container">
+    <div class="section-label"><span class="shiny-badge">Trusted by coaches</span></div>
+    <h2 class="section-title">What coaches are saying.</h2>
+    <p class="section-subtitle">From D1 programs to high school teams, Reflect changes how coaches stay connected.</p>
+  </div>
+
+  <div class="marquee-container" style="margin-top: 32px;">
+    <div class="marquee-track">
+      <!-- First set -->
+      <div class="testimonial-card">
+        <p>"I used to find out about injuries days too late. Now I know within hours. Reflect has genuinely changed how I manage my 45-athlete roster."</p>
+        <div class="testimonial-author">Coach Rivera</div>
+        <div class="testimonial-role">Head Coach, D1 Soccer</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The response rate blew me away — 94% of my athletes reply to every check-in. No app could ever get that kind of engagement."</p>
+        <div class="testimonial-author">Marcus Chen</div>
+        <div class="testimonial-role">Athletic Director, Prep School</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The AI assistant is like having a sports scientist on staff. It flagged a sleep trend I completely missed — prevented at least two potential injuries."</p>
+        <div class="testimonial-author">Dr. Amara Osei</div>
+        <div class="testimonial-role">Head of Sports Medicine</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Setup took 8 minutes. My athletes didn't need to download anything. The data started flowing that same evening."</p>
+        <div class="testimonial-author">Jake Thompson</div>
+        <div class="testimonial-role">Assistant Coach, College Basketball</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The injury heatmap alone is worth it. We reduced soft tissue injuries by 30% in one season just by catching patterns earlier."</p>
+        <div class="testimonial-author">Lisa Park</div>
+        <div class="testimonial-role">Head Trainer, Olympic Program</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Finally, a tool that meets athletes where they are — their phone. Not another app, not another login. Just a text."</p>
+        <div class="testimonial-author">Coach Williams</div>
+        <div class="testimonial-role">High School Football</div>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="testimonial-card">
+        <p>"I used to find out about injuries days too late. Now I know within hours. Reflect has genuinely changed how I manage my 45-athlete roster."</p>
+        <div class="testimonial-author">Coach Rivera</div>
+        <div class="testimonial-role">Head Coach, D1 Soccer</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The response rate blew me away — 94% of my athletes reply to every check-in. No app could ever get that kind of engagement."</p>
+        <div class="testimonial-author">Marcus Chen</div>
+        <div class="testimonial-role">Athletic Director, Prep School</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The AI assistant is like having a sports scientist on staff. It flagged a sleep trend I completely missed — prevented at least two potential injuries."</p>
+        <div class="testimonial-author">Dr. Amara Osei</div>
+        <div class="testimonial-role">Head of Sports Medicine</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Setup took 8 minutes. My athletes didn't need to download anything. The data started flowing that same evening."</p>
+        <div class="testimonial-author">Jake Thompson</div>
+        <div class="testimonial-role">Assistant Coach, College Basketball</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"The injury heatmap alone is worth it. We reduced soft tissue injuries by 30% in one season just by catching patterns earlier."</p>
+        <div class="testimonial-author">Lisa Park</div>
+        <div class="testimonial-role">Head Trainer, Olympic Program</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Finally, a tool that meets athletes where they are — their phone. Not another app, not another login. Just a text."</p>
+        <div class="testimonial-author">Coach Williams</div>
+        <div class="testimonial-role">High School Football</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Final CTA ── -->
+<section id="cta" class="retro-grid-bg final-cta">
+  <div class="container" style="position: relative; z-index: 1;">
+    <h2>Ready to see <span class="gradient-text">everything?</span></h2>
+    <p>Join 240+ coaches using Reflect to keep every athlete healthy, happy, and performing at their best.</p>
+    <a href="#" class="shimmer-btn">Start Your Free Trial</a>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>&copy; 2026 Reflect. The always-on assistant coach.</p>
+</footer>
+
+</body>
+</html>
