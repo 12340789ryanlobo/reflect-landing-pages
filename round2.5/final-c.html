@@ -216,15 +216,17 @@
     position: absolute;
     top: 50%;
     left: 50%;
+    opacity: 0;
     width: 300px;
     height: 300px;
     border: 1px solid rgba(124,58,237,0.08);
     border-radius: 50%;
     animation: ripple 6s ease-out infinite;
   }
-  .ripple-ring:nth-child(2) { animation-delay: 1.5s; }
-  .ripple-ring:nth-child(3) { animation-delay: 3s; }
-  .ripple-ring:nth-child(4) { animation-delay: 4.5s; }
+  .ripple-ring:nth-child(1) { animation-delay: 0.5s; }
+  .ripple-ring:nth-child(2) { animation-delay: 2s; }
+  .ripple-ring:nth-child(3) { animation-delay: 3.5s; }
+  .ripple-ring:nth-child(4) { animation-delay: 5s; }
 
   .hero-content {
     position: relative;
@@ -967,6 +969,31 @@
   .bento-icon.amber { background: rgba(245,158,11,0.1); }
   .bento-icon.red { background: rgba(239,68,68,0.1); }
 
+  /* CSS-only icons */
+  .icon-bar { width: 14px; height: 10px; display: flex; align-items: flex-end; gap: 2px; }
+  .icon-bar span { flex: 1; border-radius: 1px; }
+  .icon-bar .b1 { height: 40%; background: var(--violet); } .icon-bar .b2 { height: 70%; background: var(--blue); } .icon-bar .b3 { height: 100%; background: var(--cyan); }
+  .icon-bolt { width: 10px; height: 14px; position: relative; }
+  .icon-bolt::before { content: ''; position: absolute; top: 0; left: 1px; width: 8px; height: 8px; background: var(--violet); clip-path: polygon(50% 0%, 100% 50%, 60% 50%, 70% 100%, 0% 45%, 40% 45%); }
+  .icon-alert { width: 14px; height: 14px; position: relative; }
+  .icon-alert::before { content: ''; position: absolute; inset: 0; border: 2px solid var(--red); border-radius: 50%; }
+  .icon-alert::after { content: ''; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); width: 2px; height: 5px; background: var(--red); border-radius: 1px; }
+  .icon-body { width: 12px; height: 16px; position: relative; }
+  .icon-body::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; border: 1.5px solid var(--amber); }
+  .icon-body::after { content: ''; position: absolute; top: 7px; left: 50%; transform: translateX(-50%); width: 8px; height: 9px; border: 1.5px solid var(--amber); border-radius: 2px; }
+  .icon-chat { width: 14px; height: 12px; position: relative; }
+  .icon-chat::before { content: ''; position: absolute; inset: 0; border: 2px solid var(--cyan); border-radius: 4px 4px 4px 0; }
+  .icon-trend { width: 14px; height: 12px; position: relative; }
+  .icon-trend::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; border-bottom: 2px solid var(--green); border-left: 2px solid var(--green); }
+  .icon-trend::after { content: ''; position: absolute; bottom: 3px; left: 2px; width: 10px; height: 6px; border-bottom: 2px solid var(--green); border-radius: 0; clip-path: polygon(0% 100%, 40% 20%, 70% 60%, 100% 0%); background: transparent; border-top: 2px solid var(--green); }
+  .icon-clock { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--blue); position: relative; }
+  .icon-clock::before { content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 1.5px; height: 4px; background: var(--blue); }
+  .icon-clock::after { content: ''; position: absolute; top: 4px; left: 50%; width: 3px; height: 1.5px; background: var(--blue); }
+  .icon-sms { width: 14px; height: 11px; border: 2px solid var(--gray-400); border-radius: 3px; position: relative; }
+  .icon-sms::after { content: ''; position: absolute; top: 2px; left: 3px; right: 3px; height: 1.5px; background: var(--gray-400); box-shadow: 0 3px 0 var(--gray-400); }
+  .section-icon { display: inline-flex; align-items: center; gap: 6px; }
+  .section-icon > span { display: inline-flex; }
+
   .bento-title {
     font-size: 18px;
     font-weight: 700;
@@ -1257,7 +1284,9 @@
   }
   .testimonial-stars {
     color: var(--amber);
-    font-size: 14px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: 700;
     margin-bottom: 12px;
     letter-spacing: 2px;
   }
@@ -1457,7 +1486,7 @@
 
   <div class="hero-content">
     <div class="shiny-badge">
-      <span class="shiny-badge-accent">&#9733;</span> The Always-On Assistant Coach <span style="color:var(--gray-400);">&rarr;</span>
+      The Always-On Assistant Coach <span style="color:var(--gray-400);">&rarr;</span>
     </div>
 
     <h1 style="font-size:clamp(36px,5vw,58px);font-weight:800;line-height:1.06;letter-spacing:-2.5px;color:var(--black);white-space:nowrap;">Your athletes are already talking.</h1>
@@ -1518,20 +1547,20 @@
 <section class="sms-section" id="sms-demo">
   <div class="sms-inner">
     <div class="sms-copy">
-      <div class="sms-label">&#128172; The Check-In</div>
+      <div class="sms-label">The Check-In</div>
       <h2 class="sms-title">60 seconds. 5 questions. Zero friction.</h2>
       <p class="sms-desc">Athletes get a text after practice. They reply like they already text. Reflect captures readiness, energy, effort, and injury data — automatically.</p>
       <div class="sms-features">
         <div class="sms-feature">
-          <div class="sms-feature-icon">&#128172;</div>
+          <div class="sms-feature-icon"><div class="icon-sms"></div></div>
           <div class="sms-feature-text"><strong>SMS or WhatsApp</strong> — works on every phone, no app needed. Athletes reply naturally.</div>
         </div>
         <div class="sms-feature">
-          <div class="sms-feature-icon">&#9889;</div>
+          <div class="sms-feature-icon"><div class="icon-clock"></div></div>
           <div class="sms-feature-text"><strong>Smart scheduling</strong> — check-ins go out after practice, games, or on custom schedules you set.</div>
         </div>
         <div class="sms-feature">
-          <div class="sms-feature-icon">&#128200;</div>
+          <div class="sms-feature-icon"><div class="icon-trend"></div></div>
           <div class="sms-feature-text"><strong>Trend summaries</strong> — athletes see their own progress. Coaches see the team view instantly.</div>
         </div>
       </div>
@@ -1544,7 +1573,7 @@
           <div class="iphone-screen">
             <div class="sms-header">Reflect <small>SMS &middot; Today 4:32 PM</small></div>
             <div class="sms-body">
-              <div class="sms-msg incoming">Hey Sarah! &#128075; Post-practice check-in time. Reply YES to start.</div>
+              <div class="sms-msg incoming">Hey Sarah! Post-practice check-in time. Reply YES to start.</div>
               <div class="sms-msg outgoing">YES</div>
               <div class="sms-msg incoming">How would you rate your overall readiness today? (1-10)</div>
               <div class="sms-msg outgoing">8</div>
@@ -1554,7 +1583,7 @@
               <div class="sms-msg outgoing">9</div>
               <div class="sms-msg incoming">Any new pain or soreness? Reply the area (e.g. "left knee") or NONE.</div>
               <div class="sms-msg outgoing">NONE</div>
-              <div class="sms-msg incoming">All done! &#9989; Your readiness is trending up 12% this week. Great work, Sarah! Coach J has been notified.</div>
+              <div class="sms-msg incoming">All done. Your readiness is trending up 12% this week. Great work, Sarah! Coach J has been notified.</div>
             </div>
           </div>
         </div>
@@ -1567,7 +1596,7 @@
      SECTION 4 — Dashboard (Light)
      ======================================== -->
 <section class="dashboard-section">
-  <div class="section-label">&#128187; Coach Dashboard</div>
+  <div class="section-label">Coach Dashboard</div>
   <h2 class="section-title">Your team's health. One screen.</h2>
   <p class="section-sub">Four stat cards, readiness trends, and flag alerts — everything a coach needs to make informed decisions, updated in real time.</p>
 
@@ -1643,7 +1672,7 @@
 <section class="features-section" id="features">
   <div class="features-inner">
     <div style="text-align:center;">
-      <div class="section-label">&#9881;&#65039; Features</div>
+      <div class="section-label">Features</div>
       <h2 class="section-title">Everything coaches need. Nothing athletes don't.</h2>
       <p class="section-sub">Six powerful capabilities that make athlete wellness tracking automatic, actionable, and impossible to ignore.</p>
     </div>
@@ -1651,7 +1680,7 @@
     <div class="bento-grid">
       <!-- Card 1: Readiness Scores (span 2) -->
       <div class="bento-card span-2">
-        <div class="bento-icon violet">&#9889;</div>
+        <div class="bento-icon violet"><div class="icon-bar"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div></div>
         <div class="bento-title">Team Readiness Scores</div>
         <div class="bento-desc">Real-time readiness rings for every athlete. Track daily wellness, spot declines early, and plan training loads with confidence.</div>
         <div class="bento-detail">Composite score from readiness, energy, effort, and sleep data. Updated after every check-in. Historical trends available for each athlete.</div>
@@ -1669,7 +1698,7 @@
 
       <!-- Card 2: Flag Alerts -->
       <div class="bento-card">
-        <div class="bento-icon red">&#9888;</div>
+        <div class="bento-icon red"><div class="icon-alert"></div></div>
         <div class="bento-title">Flag Alerts</div>
         <div class="bento-desc">Instant notifications when an athlete reports pain, low energy, or declining trends.</div>
         <div class="bento-detail">Configurable thresholds per team. Push to email, Slack, or in-dashboard. Never miss a warning sign.</div>
@@ -1693,36 +1722,35 @@
 
       <!-- Card 3: Injury Heatmap -->
       <div class="bento-card">
-        <div class="bento-icon amber">&#129728;</div>
+        <div class="bento-icon amber"><div class="icon-body"></div></div>
         <div class="bento-title">Injury Heatmap</div>
         <div class="bento-desc">Visual body map showing where injuries cluster across your roster. Spot patterns before they become problems.</div>
         <div class="bento-detail">Aggregated across all athletes. Filter by position, time period, or severity. Export for medical staff review.</div>
-        <div class="mini-mock" style="display:flex;align-items:center;justify-content:center;gap:24px;">
-          <div style="position:relative;width:70px;">
-            <!-- CSS body figure -->
-            <div style="width:20px;height:20px;border-radius:50%;background:rgba(34,197,94,0.3);border:1.5px solid rgba(34,197,94,0.5);margin:0 auto;"></div>
-            <div style="width:30px;height:6px;background:rgba(239,68,68,0.5);border:1.5px solid rgba(239,68,68,0.6);border-radius:2px;margin:3px auto 0;"></div>
-            <div style="width:22px;height:28px;background:rgba(245,158,11,0.35);border:1.5px solid rgba(245,158,11,0.5);border-radius:4px;margin:2px auto 0;"></div>
-            <div style="display:flex;justify-content:center;gap:4px;margin-top:2px;">
-              <div style="width:8px;height:6px;background:rgba(34,197,94,0.25);border:1.5px solid rgba(34,197,94,0.4);border-radius:2px;"></div>
-              <div style="width:8px;height:6px;background:rgba(34,197,94,0.25);border:1.5px solid rgba(34,197,94,0.4);border-radius:2px;"></div>
+        <div class="mini-mock">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(239,68,68,0.08);border-left:3px solid var(--red);border-radius:0 6px 6px 0;">
+              <span style="font-size:12px;font-weight:600;color:var(--gray-700);">Left Knee</span>
+              <span style="font-size:11px;font-weight:700;color:var(--red);">3 reports</span>
             </div>
-            <div style="display:flex;justify-content:center;gap:6px;margin-top:2px;">
-              <div style="width:9px;height:30px;background:rgba(239,68,68,0.45);border:1.5px solid rgba(239,68,68,0.55);border-radius:3px;"></div>
-              <div style="width:9px;height:30px;background:rgba(34,197,94,0.25);border:1.5px solid rgba(34,197,94,0.4);border-radius:3px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;">
+              <span style="font-size:12px;font-weight:600;color:var(--gray-700);">Right Shoulder</span>
+              <span style="font-size:11px;font-weight:700;color:var(--amber);">2 reports</span>
             </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--gray-500);">
-            <div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;"></span> Left knee (3 reports)</div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0;"></span> Shoulders (2 reports)</div>
-            <div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></span> Other areas (low)</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(34,197,94,0.08);border-left:3px solid var(--green);border-radius:0 6px 6px 0;">
+              <span style="font-size:12px;font-weight:600;color:var(--gray-700);">Lower Back</span>
+              <span style="font-size:11px;font-weight:700;color:var(--green);">1 report</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(34,197,94,0.05);border-left:3px solid var(--gray-200);border-radius:0 6px 6px 0;">
+              <span style="font-size:12px;font-weight:600;color:var(--gray-500);">Ankles</span>
+              <span style="font-size:11px;font-weight:500;color:var(--gray-400);">0 reports</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Card 4: AI Assistant (span 2) -->
       <div class="bento-card span-2">
-        <div class="bento-icon cyan">&#128172;</div>
+        <div class="bento-icon cyan"><div class="icon-chat"></div></div>
         <div class="bento-title">AI Coaching Assistant</div>
         <div class="bento-desc">Ask questions about your team's data in natural language. Get actionable recommendations backed by real athlete data.</div>
         <div class="bento-detail">Powered by your team's historical data. Ask about individuals, groups, trends, or injury risk. Get instant, evidence-based answers.</div>
@@ -1738,7 +1766,7 @@
 
       <!-- Card 5: Trend Analytics -->
       <div class="bento-card">
-        <div class="bento-icon green">&#128202;</div>
+        <div class="bento-icon green"><div class="icon-trend"></div></div>
         <div class="bento-title">Trend Analytics</div>
         <div class="bento-desc">7-day readiness charts for every athlete. Plan training loads with data, not guesses.</div>
         <div class="bento-detail">Compare athletes, positions, or time periods. Export reports for stakeholders. Track progress over entire seasons.</div>
@@ -1757,7 +1785,7 @@
 
       <!-- Card 6: Smart Scheduling -->
       <div class="bento-card">
-        <div class="bento-icon blue">&#128339;</div>
+        <div class="bento-icon blue"><div class="icon-clock"></div></div>
         <div class="bento-title">Smart Scheduling</div>
         <div class="bento-desc">Customize check-in timing per sport, day, and context. Game day vs practice vs rest day — different questions, same ease.</div>
         <div class="bento-detail">Create unlimited schedules. Set different questionnaires for different scenarios. Athletes never see the complexity.</div>
@@ -1786,7 +1814,7 @@
      SECTION 6 — How It Works
      ======================================== -->
 <section class="how-section" id="how">
-  <div class="section-label">&#128640; Process</div>
+  <div class="section-label">Process</div>
   <h2 class="section-title">Three steps. Zero friction.</h2>
   <p class="section-sub" style="margin-bottom:0;">Set up in minutes. Start collecting insights today.</p>
 
@@ -1838,7 +1866,7 @@
      ======================================== -->
 <section class="testimonials-section" id="testimonials">
   <div style="text-align:center;">
-    <div class="section-label">&#128172; Testimonials</div>
+    <div class="section-label">Testimonials</div>
     <h2 class="section-title">Trusted by 200+ coaching programs</h2>
     <p class="section-sub">From D1 programs to high school teams, coaches rely on Reflect to keep athletes healthy and performing.</p>
   </div>
@@ -1846,7 +1874,7 @@
   <div class="marquee-row">
     <div class="marquee-track">
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"We went from 30% check-in compliance to 94% in the first week. The SMS approach is genius — athletes actually respond."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">JM</div>
@@ -1854,7 +1882,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The injury heatmap caught a pattern we completely missed. Three ACL scares in the same position — we adjusted training immediately."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">KS</div>
@@ -1862,7 +1890,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"I manage 60+ athletes across three sports. Reflect saves me 5 hours a week. The AI insights are like having a second assistant coach."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);">LR</div>
@@ -1870,7 +1898,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"My athletes love how fast the check-ins are. 60 seconds, done. And I see everything instantly on my dashboard before the next day."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#22c55e,#4ade80);">DT</div>
@@ -1879,7 +1907,7 @@
       </div>
       <!-- Duplicates for infinite scroll -->
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"We went from 30% check-in compliance to 94% in the first week. The SMS approach is genius — athletes actually respond."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">JM</div>
@@ -1887,7 +1915,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The injury heatmap caught a pattern we completely missed. Three ACL scares in the same position — we adjusted training immediately."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">KS</div>
@@ -1895,7 +1923,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"I manage 60+ athletes across three sports. Reflect saves me 5 hours a week. The AI insights are like having a second assistant coach."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#06b6d4,#22d3ee);">LR</div>
@@ -1903,7 +1931,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"My athletes love how fast the check-ins are. 60 seconds, done. And I see everything instantly on my dashboard before the next day."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#22c55e,#4ade80);">DT</div>
@@ -1916,7 +1944,7 @@
   <div class="marquee-row">
     <div class="marquee-track reverse">
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The flag alerts are a game-changer. I knew about a freshman's knee issue before he even told me in person the next day."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">RP</div>
@@ -1924,7 +1952,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"We tried three wellness apps before Reflect. The difference? Athletes don't need to download anything. Adoption was instant."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171);">MW</div>
@@ -1932,7 +1960,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The AI told me to reduce load for my midfielder group. I did, and we had zero soft-tissue injuries that month. First time all season."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#8b5cf6,#c084fc);">AN</div>
@@ -1940,7 +1968,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"Parents love it. They know their kids are being monitored. It builds trust with the entire program and the community."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#14b8a6,#2dd4bf);">SB</div>
@@ -1949,7 +1977,7 @@
       </div>
       <!-- Duplicates -->
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The flag alerts are a game-changer. I knew about a freshman's knee issue before he even told me in person the next day."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);">RP</div>
@@ -1957,7 +1985,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"We tried three wellness apps before Reflect. The difference? Athletes don't need to download anything. Adoption was instant."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ef4444,#f87171);">MW</div>
@@ -1965,7 +1993,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"The AI told me to reduce load for my midfielder group. I did, and we had zero soft-tissue injuries that month. First time all season."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#8b5cf6,#c084fc);">AN</div>
@@ -1973,7 +2001,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="testimonial-stars">*****</div>
         <div class="testimonial-text">"Parents love it. They know their kids are being monitored. It builds trust with the entire program and the community."</div>
         <div class="testimonial-author">
           <div class="testimonial-avatar" style="background:linear-gradient(135deg,#14b8a6,#2dd4bf);">SB</div>
